@@ -4,12 +4,9 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  HeadContent,
-  Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect } from "react";
 
-import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "sonner";
 
@@ -74,69 +71,19 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Harsha Clinic — Advanced Healthcare in Madhapur, Hyderabad" },
-      {
-        name: "description",
-        content:
-          "Trusted clinic in Madhapur offering general medicine, emergency care, critical care consultation, lab tests and in-house pharmacy. Book an appointment today.",
-      },
-      { name: "theme-color", content: "#6C63FF" },
-      { property: "og:title", content: "Harsha Clinic — Advanced Healthcare in Madhapur, Hyderabad" },
-      {
-        property: "og:description",
-        content: "Expert General Physician, Emergency Care & Family Healthcare in Madhapur, Hyderabad.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Harsha Clinic — Advanced Healthcare in Madhapur, Hyderabad" },
-      { name: "description", content: "Willowbrook Health is a premium medical clinic website offering advanced healthcare and compassionate care." },
-      { property: "og:description", content: "Willowbrook Health is a premium medical clinic website offering advanced healthcare and compassionate care." },
-      { name: "twitter:description", content: "Willowbrook Health is a premium medical clinic website offering advanced healthcare and compassionate care." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/kpkIg8RSYZOM8P7wDIYSDBh7NI82/social-images/social-1781785236871-IMG-20260618-WA0058.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/kpkIg8RSYZOM8P7wDIYSDBh7NI82/social-images/social-1781785236871-IMG-20260618-WA0058.webp" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 }
+

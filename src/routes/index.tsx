@@ -44,25 +44,9 @@ import Autoplay from "embla-carousel-autoplay";
 import { Nav } from "@/components/site/Nav";
 import { Chatbot } from "@/components/site/Chatbot";
 import { toast } from "sonner";
-import drRaviAsset from "@/assets/dr-ravi-kumar.jpg.asset.json";
+import drRaviAsset from "@/assets/dr-ravi-kumar.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Harsha Clinic — Advanced Healthcare in Madhapur, Hyderabad" },
-      {
-        name: "description",
-        content:
-          "Trusted clinic in Madhapur offering general medicine, emergency care, critical care, lab tests and in-house pharmacy. Book your appointment online.",
-      },
-      { property: "og:title", content: "Harsha Clinic — Madhapur, Hyderabad" },
-      {
-        property: "og:description",
-        content: "Advanced Healthcare. Compassionate Care. Book an appointment today.",
-      },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
   component: Home,
 });
 
@@ -280,7 +264,7 @@ function Hero() {
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/12 via-transparent to-orange-start/12 pointer-events-none" />
               <div className="relative mx-auto h-[88px] w-[88px] sm:h-[140px] sm:w-[140px] rounded-full overflow-hidden avatar-ring">
                 <img
-                  src={drRaviAsset.url}
+                  src={drRaviAsset}
                   alt="Dr. D. Ravi Kumar — General Physician at Harsha Clinic"
                   loading="eager"
                   className="absolute inset-0 w-full h-full object-cover object-top"
