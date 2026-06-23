@@ -48,7 +48,7 @@ import drRaviAsset from "@/assets/dr-ravi-kumar.jpg";
 import drPushpalathaAsset from "@/assets/dr-pushpalatha.jpg";
 import clinicLobbyAsset from "@/assets/clinic-lobby.jpg";
 import clinicFacilityAsset from "@/assets/clinic-facility.jpg";
-import { useDoctorAvailability, DoctorAvailability } from "@/hooks/useDoctorAvailability";
+import { useDoctorAvailability, DoctorAvailability, BranchStatus } from "@/hooks/useDoctorAvailability";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/")({
@@ -270,14 +270,14 @@ function Hero() {
               <div className="relative mx-auto h-[88px] w-[88px] sm:h-[140px] sm:w-[140px] rounded-full overflow-hidden avatar-ring">
                 <img
                   src={drRaviAsset}
-                  alt="Dr. D. Ravi Kumar — General Physician at Harsha Clinic"
+                  alt="Dr. Ravi Kumar — General Physician at Harsha Clinic"
                   loading="eager"
                   className="absolute inset-0 w-full h-full object-cover object-top"
                 />
               </div>
               <div className="relative mt-3 sm:mt-4">
                 <div className="font-display text-base sm:text-lg font-extrabold text-foreground">
-                  Dr. D. Ravi Kumar
+                  Dr. Ravi Kumar
                 </div>
                 <div className="text-[11px] sm:text-xs font-semibold text-violet-deep mt-0.5">
                   MBBS, DEM, FCCM
@@ -398,10 +398,10 @@ function DoctorCard({
           </ul>
           {availability && (
             <div className="mt-3 text-xs">
-              {availability.availabilityStatus === "available" ? (
+              {availability.available ? (
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                  Available Today: {availability.currentBranch === "madhapur" ? "Madhapur Branch" : "TNGO's Colony Branch"}
+                  Available Today: {availability.currentBranch.toLowerCase().includes("madhapur") ? "Madhapur Branch" : "TNGO's Colony Branch"}
                 </div>
               ) : (
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 font-semibold">
@@ -438,8 +438,14 @@ function Doctors({
   doctors: DoctorAvailability[];
   onSelectDoctorAndBranch: (doctor: string, branch: string) => void;
 }) {
-  const drRaviAvail = doctors.find((d) => d.id === "dr-ravi-kumar");
-  const drPushpalathaAvail = doctors.find((d) => d.id === "dr-pushpalatha");
+  const drRaviAvail = doctors.find((d) => d.name.toLowerCase().includes("ravi"));
+  const drPushpalathaAvail = doctors.find((d) => d.name.toLowerCase().includes("pushpalatha"));
+
+  const mapBranchName = (b: string | null | undefined) => {
+    if (!b) return "Madhapur";
+    if (b.toLowerCase().includes("tngo")) return "TNGO's Colony";
+    return b;
+  };
 
   return (
     <Section
@@ -450,7 +456,7 @@ function Doctors({
     >
       <div className="grid lg:grid-cols-2 gap-6">
         <DoctorCard
-          name="Dr. D. Ravi Kumar"
+          name="Dr. Ravi Kumar"
           qualifications="MBBS, DEM, FCCM"
           roles={[
             "General Physician & Surgeon",
@@ -460,7 +466,7 @@ function Doctors({
           reg="TSMC/FMR/03090"
           image={drRaviAsset}
           availability={drRaviAvail}
-          onBook={() => onSelectDoctorAndBranch("Dr. D. Ravi Kumar", drRaviAvail?.currentBranch === "madhapur" ? "Madhapur" : "TNGO's Colony")}
+          onBook={() => onSelectDoctorAndBranch("Dr. Ravi Kumar", mapBranchName(drRaviAvail?.currentBranch))}
         />
         <DoctorCard
           name="Dr. P. Pushpalatha"
@@ -469,7 +475,7 @@ function Doctors({
           reg="544/A"
           image={drPushpalathaAsset}
           availability={drPushpalathaAvail}
-          onBook={() => onSelectDoctorAndBranch("Dr. P. Pushpalatha", drPushpalathaAvail?.currentBranch === "madhapur" ? "Madhapur" : "TNGO's Colony")}
+          onBook={() => onSelectDoctorAndBranch("Dr. P. Pushpalatha", mapBranchName(drPushpalathaAvail?.currentBranch))}
         />
       </div>
     </Section>
@@ -590,12 +596,14 @@ const TIME_SLOTS = [
 
 function BookingForm({
   doctors,
+  branches,
   selectedDoctor,
   selectedBranch,
   setSelectedDoctor,
   setSelectedBranch,
 }: {
   doctors: DoctorAvailability[];
+  branches: BranchStatus[];
   selectedDoctor: string;
   selectedBranch: string;
   setSelectedDoctor: (doctor: string) => void;
@@ -623,16 +631,36 @@ function BookingForm({
   useEffect(() => {
     if (
       currentDoctorAvailability &&
-      currentDoctorAvailability.availabilityStatus === "available" &&
+      currentDoctorAvailability.available &&
       currentDoctorAvailability.currentBranch
     ) {
       const assignedBranch =
-        currentDoctorAvailability.currentBranch === "madhapur"
-          ? "Madhapur"
-          : "TNGO's Colony";
+        currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
+          ? "TNGO's Colony"
+          : "Madhapur";
       setSelectedBranch(assignedBranch);
     }
   }, [selectedDoctor, currentDoctorAvailability, setSelectedBranch]);
+
+  // Handle branch Open/Closed statuses
+  const madhapurOpen = branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
+  const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
+
+  const disableMadhapur = !madhapurOpen || !!(
+    currentDoctorAvailability && 
+    currentDoctorAvailability.available && 
+    currentDoctorAvailability.currentBranch && 
+    !currentDoctorAvailability.currentBranch.toLowerCase().includes("madhapur")
+  );
+
+  const disableTngos = !tngosOpen || !!(
+    currentDoctorAvailability && 
+    currentDoctorAvailability.available && 
+    currentDoctorAvailability.currentBranch && 
+    !currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
+  );
+
+  const selectedBranchClosed = (selectedBranch === "Madhapur" && !madhapurOpen) || (selectedBranch === "TNGO's Colony" && !tngosOpen);
 
   // Helper to format date: 2026-06-22 -> 22-06-2026 (22nd June 2026)
   const formatAppointmentDate = (dateStr: string): string => {
@@ -687,6 +715,16 @@ function BookingForm({
       !symptoms
     ) {
       toast.error("Please fill in all the required fields.");
+      return;
+    }
+
+    if (selectedBranchClosed) {
+      toast.error(`The ${selectedBranch} branch is closed today. Appointments cannot be requested.`);
+      return;
+    }
+
+    if (currentDoctorAvailability && !currentDoctorAvailability.available) {
+      toast.error(`${selectedDoctor} is not available today.`);
       return;
     }
 
@@ -803,7 +841,7 @@ ${symptoms}`;
                 <option value="" disabled>
                   Select Doctor
                 </option>
-                <option value="Dr. D. Ravi Kumar">Dr. D. Ravi Kumar</option>
+                <option value="Dr. Ravi Kumar">Dr. Ravi Kumar</option>
                 <option value="Dr. P. Pushpalatha">Dr. P. Pushpalatha</option>
               </select>,
             )}
@@ -814,23 +852,37 @@ ${symptoms}`;
                 className={inputCls}
                 value={selectedBranch}
                 onChange={(e) => setSelectedBranch(e.target.value)}
+                disabled={!!(currentDoctorAvailability && currentDoctorAvailability.available && currentDoctorAvailability.currentBranch)}
               >
                 <option value="" disabled>
                   Select Branch
                 </option>
-                <option value="Madhapur">Madhapur</option>
-                <option value="TNGO's Colony">TNGO's Colony</option>
+                <option value="Madhapur" disabled={disableMadhapur}>
+                  Madhapur {!madhapurOpen && " (Closed Today)"}
+                </option>
+                <option value="TNGO's Colony" disabled={disableTngos}>
+                  TNGO's Colony {!tngosOpen && " (Closed Today)"}
+                </option>
               </select>,
             )}
 
             {/* Notice for doctor branch assignment constraints */}
-            {currentDoctorAvailability &&
-              currentDoctorAvailability.availabilityStatus === "available" &&
-              currentDoctorAvailability.currentBranch && (
-                <div className="sm:col-span-2 p-3.5 rounded-xl bg-violet/8 border border-violet/20 text-xs sm:text-sm text-violet-deep font-semibold animate-fade-up">
-                  📢 {selectedDoctor} is available today only at the {currentDoctorAvailability.currentBranch === "madhapur" ? "Madhapur" : "TNGO's Colony"} Branch.
-                </div>
-              )}
+            {currentDoctorAvailability && (
+              <div className="sm:col-span-2 p-3.5 rounded-xl bg-violet/8 border border-violet/20 text-xs sm:text-sm text-violet-deep font-semibold animate-fade-up">
+                {currentDoctorAvailability.available && currentDoctorAvailability.currentBranch ? (
+                  <span>📢 {selectedDoctor} is available today only at the {currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo") ? "TNGO's Colony" : "Madhapur"} Branch.</span>
+                ) : (
+                  <span>⚠️ {selectedDoctor} is not available today.</span>
+                )}
+              </div>
+            )}
+
+            {/* Notice for closed branch */}
+            {selectedBranchClosed && (
+              <div className="sm:col-span-2 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs sm:text-sm text-red-600 font-semibold animate-fade-up">
+                ⚠️ The {selectedBranch} branch is closed today. Appointment booking is currently disabled.
+              </div>
+            )}
 
             {field(
               "Preferred Date",
@@ -1026,14 +1078,18 @@ function FAQ() {
   );
 }
 
-function Contact() {
-  const branches = [
+function Contact({ branches }: { branches: BranchStatus[] }) {
+  const madhapurOpen = branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
+  const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
+
+  const branchesData = [
     {
       name: "Harsha Clinics | Top Clinic in Madhapur",
       address: "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
       phone: "+91 8247815584",
       whatsapp: "918247815584",
       directionsUrl: "#", // User to insert directions URL later
+      isOpen: madhapurOpen,
     },
     {
       name: "Harsha Clinics | Best Clinic in TNGO's Colony",
@@ -1041,6 +1097,7 @@ function Contact() {
       phone: "+91 8247815584",
       whatsapp: "918247815584",
       directionsUrl: "#", // User to insert directions URL later
+      isOpen: tngosOpen,
     },
   ];
 
@@ -1052,55 +1109,60 @@ function Contact() {
       subtitle="Visit either of our branches for premium clinical care. Direct calls and WhatsApp support available."
     >
       <div className="grid md:grid-cols-2 gap-8">
-        {branches.map((b, i) => (
+        {branchesData.map((b, i) => (
           <div key={i} className="glass-strong rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:shadow-glow transition-all duration-300 relative overflow-hidden">
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/5 via-transparent to-orange-start/5 pointer-events-none" />
             
             <div className="relative space-y-5">
-              <div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8 mb-3">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8">
                   Branch {i + 1}
                 </span>
-                <h3 className="font-display text-xl sm:text-2xl font-extrabold gradient-text leading-tight">
-                  {b.name}
-                </h3>
+                {!b.isOpen && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 border border-red-500/20 animate-pulse">
+                    Closed Today
+                  </span>
+                )}
+              </div>
+              <h3 className="font-display text-xl sm:text-2xl font-extrabold gradient-text leading-tight pt-1">
+                {b.name}
+              </h3>
+            </div>
+
+            <div className="relative space-y-4 pt-4">
+              <div className="flex items-start gap-4">
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
+                  <MapPin className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Address</div>
+                  <p className="text-sm text-foreground/80 leading-relaxed mt-0.5">
+                    {b.address}
+                  </p>
+                </div>
               </div>
 
-              <div className="space-y-4 pt-2">
-                <div className="flex items-start gap-4">
-                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
-                    <MapPin className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Address</div>
-                    <p className="text-sm text-foreground/80 leading-relaxed mt-0.5">
-                      {b.address}
-                    </p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
+                  <Phone className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Phone</div>
+                  <a href={`tel:${b.phone.replace(/\s+/g, '')}`} className="text-sm font-semibold text-foreground/80 hover:text-violet-deep transition-colors mt-0.5 block">
+                    {b.phone}
+                  </a>
                 </div>
+              </div>
 
-                <div className="flex items-center gap-4">
-                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
-                    <Phone className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Phone</div>
-                    <a href={`tel:${b.phone.replace(/\s+/g, '')}`} className="text-sm font-semibold text-foreground/80 hover:text-violet-deep transition-colors mt-0.5 block">
-                      {b.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
-                    <Clock className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Hours</div>
-                    <p className="text-sm text-foreground/80 mt-0.5">
-                      Open daily • 10:00 AM – 10:00 PM
-                    </p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
+                  <Clock className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Hours</div>
+                  <p className="text-sm text-foreground/80 mt-0.5">
+                    {b.isOpen ? "Open daily • 10:00 AM – 10:00 PM" : "Closed Today"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -1384,7 +1446,7 @@ function MobileSticky() {
 }
 
 function Home() {
-  const { doctors } = useDoctorAvailability();
+  const { doctors, branches } = useDoctorAvailability();
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
 
@@ -1407,6 +1469,7 @@ function Home() {
         <FacilityGallery />
         <BookingForm
           doctors={doctors}
+          branches={branches}
           selectedDoctor={selectedDoctor}
           selectedBranch={selectedBranch}
           setSelectedDoctor={setSelectedDoctor}
@@ -1414,7 +1477,7 @@ function Home() {
         />
         <Testimonials />
         <FAQ />
-        <Contact />
+        <Contact branches={branches} />
       </main>
       <Footer />
       <MobileSticky />
