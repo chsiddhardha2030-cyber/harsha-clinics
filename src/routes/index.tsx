@@ -42,9 +42,14 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Nav } from "@/components/site/Nav";
-import { Chatbot } from "@/components/site/Chatbot";
+import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { toast } from "sonner";
 import drRaviAsset from "@/assets/dr-ravi-kumar.jpg";
+import drPushpalathaAsset from "@/assets/dr-pushpalatha.jpg";
+import clinicLobbyAsset from "@/assets/clinic-lobby.jpg";
+import clinicFacilityAsset from "@/assets/clinic-facility.jpg";
+import { useDoctorAvailability, DoctorAvailability } from "@/hooks/useDoctorAvailability";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -141,7 +146,7 @@ const TESTIMONIALS = [
 const FAQS = [
   {
     q: "What are the clinic timings?",
-    a: "We are open every day from 9:00 AM to 10:00 PM. Emergency consultation is available on call.",
+    a: "We are open every day from 10:00 AM to 10:00 PM. Emergency consultation is available on call.",
   },
   { q: "Do you accept walk-ins?", a: "Yes — walk-ins are welcome. Booking ahead reduces your wait." },
   {
@@ -155,7 +160,7 @@ const FAQS = [
   { q: "Is pharmacy available?", a: "Yes, an in-house pharmacy serves all our patients." },
   {
     q: "Can I book online?",
-    a: "Absolutely. Use the Book Appointment form on this page or chat with our AI assistant.",
+    a: "Absolutely. Use the Book Appointment form on this page or tap the floating WhatsApp button to chat directly with us.",
   },
 ];
 
@@ -213,7 +218,7 @@ function Hero() {
         <div className="animate-fade-up text-center lg:text-left lg:col-span-7">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold text-violet-deep glass mb-4 sm:mb-6">
             <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-            Open today • 9 AM – 10 PM
+            Open today • 10:00 AM – 10:00 PM
           </div>
           <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
             Advanced Healthcare.{" "}
@@ -348,14 +353,16 @@ function DoctorCard({
   qualifications,
   roles,
   reg,
-  initials,
+  image,
+  availability,
   onBook,
 }: {
   name: string;
   qualifications: string;
   roles: string[];
   reg: string;
-  initials: string;
+  image?: string;
+  availability?: DoctorAvailability;
   onBook?: () => void;
 }) {
   return (
@@ -363,9 +370,15 @@ function DoctorCard({
       <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-violet/15 blur-2xl group-hover:bg-violet/25 transition-colors" />
       <div className="relative flex items-start gap-5">
         <div className="shrink-0 relative">
-          <div className="h-24 w-24 rounded-3xl gradient-orange grid place-items-center font-display text-3xl font-extrabold text-white shadow-soft">
-            {initials}
-          </div>
+          {image ? (
+            <div className="h-24 w-24 rounded-3xl overflow-hidden shadow-soft">
+              <img src={image} alt={name} className="w-full h-full object-cover object-top" />
+            </div>
+          ) : (
+            <div className="h-24 w-24 rounded-3xl gradient-orange grid place-items-center font-display text-3xl font-extrabold text-white shadow-soft">
+              {name.split(" ").pop()?.substring(0, 2) || "Dr"}
+            </div>
+          )}
           <span className="absolute -bottom-2 -right-2 grid h-9 w-9 place-items-center rounded-2xl glass-strong">
             <Stethoscope className="h-4 w-4 text-violet-deep" />
           </span>
@@ -383,6 +396,21 @@ function DoctorCard({
               </li>
             ))}
           </ul>
+          {availability && (
+            <div className="mt-3 text-xs">
+              {availability.availabilityStatus === "available" ? (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                  Available Today: {availability.currentBranch === "madhapur" ? "Madhapur Branch" : "TNGO's Colony Branch"}
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 font-semibold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                  Not Available Today
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="relative mt-6 pt-5 border-t border-border flex items-center justify-between gap-3 flex-wrap">
@@ -404,10 +432,15 @@ function DoctorCard({
 }
 
 function Doctors({
+  doctors,
   onSelectDoctorAndBranch,
 }: {
+  doctors: DoctorAvailability[];
   onSelectDoctorAndBranch: (doctor: string, branch: string) => void;
 }) {
+  const drRaviAvail = doctors.find((d) => d.id === "dr-ravi-kumar");
+  const drPushpalathaAvail = doctors.find((d) => d.id === "dr-pushpalatha");
+
   return (
     <Section
       id="doctors"
@@ -425,16 +458,18 @@ function Doctors({
             "Consultant Critical Care",
           ]}
           reg="TSMC/FMR/03090"
-          initials="RK"
-          onBook={() => onSelectDoctorAndBranch("Dr. D. Ravi Kumar", "Madhapur")}
+          image={drRaviAsset}
+          availability={drRaviAvail}
+          onBook={() => onSelectDoctorAndBranch("Dr. D. Ravi Kumar", drRaviAvail?.currentBranch === "madhapur" ? "Madhapur" : "TNGO's Colony")}
         />
         <DoctorCard
           name="Dr. P. Pushpalatha"
           qualifications="BAMS"
           roles={["Female Specialist", "Family Physician"]}
           reg="544/A"
-          initials="PL"
-          onBook={() => onSelectDoctorAndBranch("Dr. P. Pushpalatha", "Gachibowli")}
+          image={drPushpalathaAsset}
+          availability={drPushpalathaAvail}
+          onBook={() => onSelectDoctorAndBranch("Dr. P. Pushpalatha", drPushpalathaAvail?.currentBranch === "madhapur" ? "Madhapur" : "TNGO's Colony")}
         />
       </div>
     </Section>
@@ -545,12 +580,22 @@ function Facilities() {
   );
 }
 
+const TIME_SLOTS = [
+  "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+  "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM",
+  "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM",
+  "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM",
+  "9:00 PM", "9:30 PM", "10:00 PM"
+];
+
 function BookingForm({
+  doctors,
   selectedDoctor,
   selectedBranch,
   setSelectedDoctor,
   setSelectedBranch,
 }: {
+  doctors: DoctorAvailability[];
   selectedDoctor: string;
   selectedBranch: string;
   setSelectedDoctor: (doctor: string) => void;
@@ -558,6 +603,64 @@ function BookingForm({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [preferredTime, setPreferredTime] = useState("");
+  const isMobile = useIsMobile();
+
+  // On mobile devices, default Preferred Time should always be 9:00 AM
+  useEffect(() => {
+    if (isMobile) {
+      setPreferredTime("9:00 AM");
+    } else {
+      setPreferredTime("");
+    }
+  }, [isMobile]);
+
+  // Find availability of the selected doctor to trigger automatic branch assignment
+  const currentDoctorAvailability = doctors.find(
+    (d) => d.name === selectedDoctor
+  );
+
+  useEffect(() => {
+    if (
+      currentDoctorAvailability &&
+      currentDoctorAvailability.availabilityStatus === "available" &&
+      currentDoctorAvailability.currentBranch
+    ) {
+      const assignedBranch =
+        currentDoctorAvailability.currentBranch === "madhapur"
+          ? "Madhapur"
+          : "TNGO's Colony";
+      setSelectedBranch(assignedBranch);
+    }
+  }, [selectedDoctor, currentDoctorAvailability, setSelectedBranch]);
+
+  // Helper to format date: 2026-06-22 -> 22-06-2026 (22nd June 2026)
+  const formatAppointmentDate = (dateStr: string): string => {
+    if (!dateStr) return "";
+    const parts = dateStr.split("-");
+    if (parts.length !== 3) return dateStr;
+    const year = parts[0];
+    const monthIdx = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const monthName = months[monthIdx] || "";
+    
+    const getOrdinal = (n: number) => {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+    
+    const formattedDay = getOrdinal(day);
+    const formattedMonthStr = parts[1];
+    const formattedDayStr = parts[2];
+    
+    return `${formattedDayStr}-${formattedMonthStr}-${year} (${formattedDay} ${monthName} ${year})`;
+  };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -587,17 +690,25 @@ function BookingForm({
       return;
     }
 
-    const message = `*New Appointment Request*
+    const formattedDate = formatAppointmentDate(date);
 
-*Full Name:* ${name}
-*Phone Number:* ${phone}
-*Age:* ${age}
-*Gender:* ${gender}
-*Doctor:* ${doctor}
-*Branch:* ${branch}
-*Preferred Date:* ${date}
-*Preferred Time:* ${time}
-*Symptoms / Reason:* ${symptoms}`;
+    const message = `New Appointment Request
+
+Full Name: ${name}
+Phone Number: ${phone}
+Age: ${age}
+Gender: ${gender}
+Doctor: ${doctor}
+Branch: ${branch}
+
+Preferred Date:
+${formattedDate}
+
+Preferred Time:
+${time}
+
+Symptoms:
+${symptoms}`;
 
     const url = `https://wa.me/918247815584?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
@@ -610,6 +721,7 @@ function BookingForm({
       e.currentTarget.reset?.();
       setSelectedDoctor("");
       setSelectedBranch("");
+      setPreferredTime(isMobile ? "9:00 AM" : "");
     }, 800);
   };
 
@@ -707,16 +819,40 @@ function BookingForm({
                   Select Branch
                 </option>
                 <option value="Madhapur">Madhapur</option>
-                <option value="Gachibowli">Gachibowli</option>
+                <option value="TNGO's Colony">TNGO's Colony</option>
               </select>,
             )}
+
+            {/* Notice for doctor branch assignment constraints */}
+            {currentDoctorAvailability &&
+              currentDoctorAvailability.availabilityStatus === "available" &&
+              currentDoctorAvailability.currentBranch && (
+                <div className="sm:col-span-2 p-3.5 rounded-xl bg-violet/8 border border-violet/20 text-xs sm:text-sm text-violet-deep font-semibold animate-fade-up">
+                  📢 {selectedDoctor} is available today only at the {currentDoctorAvailability.currentBranch === "madhapur" ? "Madhapur" : "TNGO's Colony"} Branch.
+                </div>
+              )}
+
             {field(
               "Preferred Date",
               <input name="date" type="date" className={inputCls} />,
             )}
             {field(
               "Preferred Time",
-              <input name="time" type="time" className={inputCls} />,
+              <select
+                name="time"
+                className={inputCls}
+                value={preferredTime}
+                onChange={(e) => setPreferredTime(e.target.value)}
+              >
+                <option value="" disabled>
+                  Select Time
+                </option>
+                {TIME_SLOTS.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>,
             )}
           </div>
           {field(
@@ -847,7 +983,7 @@ function FAQ() {
       id="faq"
       eyebrow="FAQ"
       title="Answers to common questions"
-      subtitle="Need something else? Chat with our assistant or give us a call."
+      subtitle="Need something else? Tap the WhatsApp button or give us a call."
     >
       <div className="max-w-3xl mx-auto space-y-4">
         {FAQS.map((f, i) => {
@@ -891,77 +1027,128 @@ function FAQ() {
 }
 
 function Contact() {
+  const branches = [
+    {
+      name: "Harsha Clinics | Top Clinic in Madhapur",
+      address: "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
+      phone: "+91 8247815584",
+      whatsapp: "918247815584",
+      directionsUrl: "#", // User to insert directions URL later
+    },
+    {
+      name: "Harsha Clinics | Best Clinic in TNGO's Colony",
+      address: "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
+      phone: "+91 8247815584",
+      whatsapp: "918247815584",
+      directionsUrl: "#", // User to insert directions URL later
+    },
+  ];
+
   return (
     <Section
       id="contact"
-      eyebrow="Visit us"
-      title="We're right here in Madhapur"
-      subtitle="Drop in, give us a call, or get directions in one tap."
+      eyebrow="Our Locations"
+      title="We're right here for you and your family"
+      subtitle="Visit either of our branches for premium clinical care. Direct calls and WhatsApp support available."
     >
-      <div className="grid lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-2 glass-strong rounded-3xl p-6 sm:p-8 space-y-5">
-          <div className="flex gap-4">
-            <span className="grid h-11 w-11 place-items-center rounded-2xl gradient-orange shrink-0">
-              <MapPin className="h-5 w-5 text-white" />
-            </span>
-            <div>
-              <div className="font-display font-bold text-foreground">Address</div>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-                Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda,
-                Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.
-              </p>
+      <div className="grid md:grid-cols-2 gap-8">
+        {branches.map((b, i) => (
+          <div key={i} className="glass-strong rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:shadow-glow transition-all duration-300 relative overflow-hidden">
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/5 via-transparent to-orange-start/5 pointer-events-none" />
+            
+            <div className="relative space-y-5">
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8 mb-3">
+                  Branch {i + 1}
+                </span>
+                <h3 className="font-display text-xl sm:text-2xl font-extrabold gradient-text leading-tight">
+                  {b.name}
+                </h3>
+              </div>
+
+              <div className="space-y-4 pt-2">
+                <div className="flex items-start gap-4">
+                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
+                    <MapPin className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Address</div>
+                    <p className="text-sm text-foreground/80 leading-relaxed mt-0.5">
+                      {b.address}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
+                    <Phone className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Phone</div>
+                    <a href={`tel:${b.phone.replace(/\s+/g, '')}`} className="text-sm font-semibold text-foreground/80 hover:text-violet-deep transition-colors mt-0.5 block">
+                      {b.phone}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
+                    <Clock className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Hours</div>
+                    <p className="text-sm text-foreground/80 mt-0.5">
+                      Open daily • 10:00 AM – 10:00 PM
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative pt-6 mt-6 border-t border-border space-y-4">
+              {/* Map Placeholder container for future embed */}
+              <div className="aspect-[16/9] w-full bg-violet/5 border border-dashed border-violet/25 rounded-2xl flex flex-col items-center justify-center p-4 text-center">
+                <MapPin className="h-6 w-6 text-violet-deep mb-2 animate-bounce" />
+                <span className="text-xs font-semibold text-foreground/80">Interactive Map View Ready</span>
+                <span className="text-[10px] text-muted-foreground mt-1 max-w-[200px]">Exact Google Maps embed will be inserted here.</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 pt-2">
+                <a
+                  href={`tel:${b.phone.replace(/\s+/g, '')}`}
+                  className="inline-flex flex-col items-center justify-center gap-1.5 px-2 py-3 rounded-2xl bg-violet/8 hover:bg-violet/15 transition-colors text-violet-deep font-semibold"
+                >
+                  <Phone className="h-4 w-4" />
+                  <span className="text-[10px] sm:text-xs">Call</span>
+                </a>
+                <a
+                  href={`https://wa.me/${b.whatsapp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex flex-col items-center justify-center gap-1.5 px-2 py-3 rounded-2xl bg-violet/8 hover:bg-[#25D366]/10 hover:text-[#25D366] transition-colors text-violet-deep font-semibold"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span className="text-[10px] sm:text-xs">WhatsApp</span>
+                </a>
+                <a
+                  href={b.directionsUrl}
+                  onClick={(e) => {
+                    if (b.directionsUrl === "#") {
+                      e.preventDefault();
+                      toast.info("Google Directions URL will be configured soon.");
+                    }
+                  }}
+                  target={b.directionsUrl !== "#" ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="inline-flex flex-col items-center justify-center gap-1.5 px-2 py-3 rounded-2xl gradient-orange text-white hover:shadow-glow transition-all font-semibold"
+                >
+                  <Navigation className="h-4 w-4" />
+                  <span className="text-[10px] sm:text-xs">Directions</span>
+                </a>
+              </div>
             </div>
           </div>
-          <div className="flex gap-4">
-            <span className="grid h-11 w-11 place-items-center rounded-2xl gradient-orange shrink-0">
-              <Clock className="h-5 w-5 text-white" />
-            </span>
-            <div>
-              <div className="font-display font-bold text-foreground">Hours</div>
-              <p className="text-sm text-muted-foreground mt-1">
-                Open daily • Clinic closes at 10:00 PM
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 pt-2">
-            <a
-              href="tel:+910000000000"
-              className="inline-flex flex-col items-center gap-1 px-3 py-3 rounded-2xl bg-violet/8 hover:bg-violet/15 transition-colors text-violet-deep"
-            >
-              <Phone className="h-4 w-4" />
-              <span className="text-xs font-semibold">Call</span>
-            </a>
-            <a
-              href="https://wa.me/910000000000"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex flex-col items-center gap-1 px-3 py-3 rounded-2xl bg-violet/8 hover:bg-violet/15 transition-colors text-violet-deep"
-            >
-              <MessageSquare className="h-4 w-4" />
-              <span className="text-xs font-semibold">WhatsApp</span>
-            </a>
-            <a
-              href="https://maps.google.com/?q=Madhapur+Hyderabad"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex flex-col items-center gap-1 px-3 py-3 rounded-2xl gradient-orange text-white hover:shadow-glow transition-all"
-            >
-              <Navigation className="h-4 w-4" />
-              <span className="text-xs font-semibold">Directions</span>
-            </a>
-          </div>
-        </div>
-
-        <div className="lg:col-span-3 glass-strong rounded-3xl overflow-hidden h-[360px] lg:h-auto">
-          <iframe
-            title="Clinic location"
-            className="w-full h-full min-h-[360px] border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps?q=Madhapur,+Hyderabad&output=embed"
-          />
-        </div>
+        ))}
       </div>
     </Section>
   );
@@ -990,8 +1177,8 @@ function Footer() {
     {
       title: "Contact",
       links: [
-        { href: "tel:+910000000000", label: "Call clinic" },
-        { href: "https://wa.me/910000000000", label: "WhatsApp" },
+        { href: "tel:+918247815584", label: "Call clinic" },
+        { href: "https://wa.me/918247815584", label: "WhatsApp" },
         { href: "#contact", label: "Get directions" },
         { href: "mailto:hello@harshaclinic.in", label: "Email us" },
       ],
@@ -1013,20 +1200,25 @@ function Footer() {
               </span>
             </a>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              Advanced healthcare with a compassionate, family-first touch. Serving Madhapur
-              and beyond.
+              Advanced healthcare with a compassionate, family-first touch. Open daily 10:00 AM – 10:00 PM.
             </p>
             <div className="mt-5 flex items-center gap-2">
-              {[Facebook, Instagram, Twitter, Youtube, Mail].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  aria-label="social"
-                  className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep hover:gradient-orange hover:text-white transition-all"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
+              <a
+                href="https://wa.me/918247815584"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep hover:bg-[#25D366]/10 hover:text-[#25D366] transition-all"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </a>
+              <a
+                href="mailto:hello@harshaclinic.in"
+                aria-label="Email"
+                className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep hover:gradient-orange hover:text-white transition-all"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
             </div>
           </div>
 
@@ -1054,11 +1246,128 @@ function Footer() {
             © {new Date().getFullYear()} Harsha Clinic. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
-            Crafted with care for the families of Madhapur.
+            Crafted with care for the families of Hyderabad.
           </p>
         </div>
       </div>
     </footer>
+  );
+}
+
+function WhyChooseUs() {
+  const features = [
+    {
+      title: "Experienced Doctors",
+      desc: "Our board-certified medical specialists bring decades of clinical experience in family medicine, critical care, and emergency response.",
+      icon: Award,
+    },
+    {
+      title: "Family Healthcare",
+      desc: "Comprehensive primary care services tailored for patients of all ages, from infants to seniors, ensuring complete family wellness.",
+      icon: Users,
+    },
+    {
+      title: "Convenient Locations",
+      desc: "Easily accessible premium clinics located across Hyderabad's key hubs, in Madhapur and TNGO's Colony, Gachibowli.",
+      icon: MapPin,
+    },
+    {
+      title: "Emergency Care",
+      desc: "Equipped with advanced diagnostic tools and stabilization beds to handle urgent treatments, suturing, and medical emergencies.",
+      icon: HeartPulse,
+    },
+    {
+      title: "Affordable Consultation",
+      desc: "Quality, transparent healthcare designed to be accessible. Clean, professional check-ups without inflated medical costs.",
+      icon: ShieldCheck,
+    },
+    {
+      title: "Patient-Centered Treatment",
+      desc: "A warm, personalized approach where our doctors take the time to listen, diagnose thoroughly, and explain treatment paths clearly.",
+      icon: Stethoscope,
+    },
+  ];
+
+  return (
+    <Section
+      id="why-choose-us"
+      eyebrow="Why Choose Us"
+      title="Healthcare you can trust, right in your neighborhood"
+      subtitle="We combine clinical expertise with compassionate care to deliver a premium medical experience for you and your loved ones."
+    >
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {features.map((f, i) => {
+          const Icon = f.icon;
+          return (
+            <div
+              key={i}
+              className="group glass-strong rounded-3xl p-6 sm:p-8 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/5 via-transparent to-orange-start/5 pointer-events-none" />
+              <div className="grid h-12 w-12 place-items-center rounded-2xl gradient-orange text-white shadow-soft mb-6 group-hover:scale-110 transition-transform">
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-3">
+                {f.title}
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {f.desc}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
+
+function FacilityGallery() {
+  const images = [
+    {
+      src: clinicLobbyAsset,
+      title: "Warm & Calming Lobby",
+      desc: "Designed to help patients feel comfortable and at ease the moment they walk in.",
+    },
+    {
+      src: clinicFacilityAsset,
+      title: "Advanced Consultation Room",
+      desc: "Equipped with state-of-the-art diagnostic tools for accurate clinical assessment.",
+    },
+  ];
+
+  return (
+    <Section
+      id="gallery"
+      eyebrow="Our Facilities"
+      title="Take a look inside our premium clinics"
+      subtitle="Modern, clean, and welcoming spaces built to provide high-quality medical services."
+    >
+      <div className="grid md:grid-cols-2 gap-8">
+        {images.map((img, i) => (
+          <div
+            key={i}
+            className="group relative rounded-3xl overflow-hidden glass-strong shadow-soft hover:shadow-glow transition-all duration-300"
+          >
+            <div className="aspect-[16/10] overflow-hidden relative">
+              <img
+                src={img.src}
+                alt={img.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none" />
+            </div>
+            <div className="absolute bottom-0 inset-x-0 p-6 sm:p-8 text-white">
+              <h3 className="font-display text-xl sm:text-2xl font-extrabold">
+                {img.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-white/80 mt-2 leading-relaxed">
+                {img.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
   );
 }
 
@@ -1075,6 +1384,7 @@ function MobileSticky() {
 }
 
 function Home() {
+  const { doctors } = useDoctorAvailability();
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
 
@@ -1084,7 +1394,9 @@ function Home() {
       <main>
         <Hero />
         <About />
+        <WhyChooseUs />
         <Doctors
+          doctors={doctors}
           onSelectDoctorAndBranch={(doctor, branch) => {
             setSelectedDoctor(doctor);
             setSelectedBranch(branch);
@@ -1092,7 +1404,9 @@ function Home() {
         />
         <Specialties />
         <Facilities />
+        <FacilityGallery />
         <BookingForm
+          doctors={doctors}
           selectedDoctor={selectedDoctor}
           selectedBranch={selectedBranch}
           setSelectedDoctor={setSelectedDoctor}
@@ -1104,7 +1418,7 @@ function Home() {
       </main>
       <Footer />
       <MobileSticky />
-      <Chatbot />
+      <FloatingWhatsApp />
     </div>
   );
 }

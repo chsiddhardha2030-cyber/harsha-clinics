@@ -7,7 +7,6 @@ const links = [
   { href: "#doctors", label: "Doctors" },
   { href: "#specialties", label: "Specialties" },
   { href: "#facilities", label: "Facilities" },
-  { href: "#book", label: "Book Appointment" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -44,7 +43,7 @@ export function Nav() {
           </a>
 
           <nav className="hidden lg:flex items-center gap-1">
-            {links.slice(0, -1).map((l) => (
+            {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
