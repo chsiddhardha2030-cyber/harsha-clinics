@@ -38,16 +38,13 @@ import {
   Baby,
   FlaskConical,
   ClipboardList,
+  X,
 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Nav } from "@/components/site/Nav";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { toast } from "sonner";
-import drRaviAsset from "@/assets/dr-ravi-kumar.jpg";
-import drPushpalathaAsset from "@/assets/dr-pushpalatha.jpg";
-import clinicLobbyAsset from "@/assets/clinic-lobby.jpg";
-import clinicFacilityAsset from "@/assets/clinic-facility.jpg";
 import { useDoctorAvailability, DoctorAvailability, BranchStatus } from "@/hooks/useDoctorAvailability";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -237,7 +234,7 @@ function Hero() {
               Book Appointment
             </a>
             <a
-              href="tel:+910000000000"
+              href="tel:+918247815584"
               className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-violet-deep glass-strong hover:-translate-y-0.5 transition-all"
             >
               <Phone className="h-4 w-4" />
@@ -263,28 +260,42 @@ function Hero() {
           </div>
         </div>
 
-        <div className="lg:col-span-5 order-last">
-          <div className="relative mx-auto max-w-[260px] sm:max-w-[300px]">
-            <div className="relative glass-strong rounded-3xl p-5 sm:p-6 text-center shadow-soft">
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/12 via-transparent to-orange-start/12 pointer-events-none" />
-              <div className="relative mx-auto h-[88px] w-[88px] sm:h-[140px] sm:w-[140px] rounded-full overflow-hidden avatar-ring">
+        <div className="lg:col-span-5 order-last animate-fade-up">
+          <div className="relative mx-auto max-w-lg lg:max-w-none">
+            {/* Decorative background glows specific to the image frame */}
+            <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-violet to-orange-start opacity-35 blur-lg" />
+            <div className="relative glass-strong rounded-3xl p-3 shadow-glow overflow-hidden border border-white/10">
+              <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl relative shadow-inner">
                 <img
-                  src={drRaviAsset}
-                  alt="Dr. Ravi Kumar — General Physician at Harsha Clinic"
+                  src="/Madhapur%20Branch/IMG-20260619-WA0089.jpg"
+                  alt="Harsha Clinic Madhapur Lobby & Reception"
                   loading="eager"
-                  className="absolute inset-0 w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent pointer-events-none" />
+                
+                {/* Overlay Badge */}
+                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white bg-violet-deep/80 backdrop-blur-md border border-white/10 shadow-soft animate-pulse-slow">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  Madhapur Main Branch
+                </div>
               </div>
-              <div className="relative mt-3 sm:mt-4">
-                <div className="font-display text-base sm:text-lg font-extrabold text-foreground">
-                  Dr. Ravi Kumar
+              <div className="mt-4 px-2 pb-2 text-center lg:text-left flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-left">
+                  <h3 className="font-display text-sm sm:text-base font-extrabold text-foreground leading-tight">
+                    Siddi Vinayak Nagar Clinic
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
+                    Our state-of-the-art facility in Madhapur, Hyderabad
+                  </p>
                 </div>
-                <div className="text-[11px] sm:text-xs font-semibold text-violet-deep mt-0.5">
-                  MBBS, DEM, FCCM
-                </div>
-                <div className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 leading-snug">
-                  General Physician • Emergency • Critical Care
-                </div>
+                <a
+                  href="#gallery"
+                  className="shrink-0 inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-[10px] sm:text-xs font-bold text-violet-deep bg-violet/8 border border-violet/15 hover:bg-violet/15 transition-all"
+                >
+                  Tour Clinic
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
               </div>
             </div>
           </div>
@@ -366,46 +377,75 @@ function DoctorCard({
   onBook?: () => void;
 }) {
   return (
-    <div className="group relative glass-strong rounded-3xl p-6 sm:p-8 overflow-hidden hover:-translate-y-1 transition-all duration-300">
-      <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-violet/15 blur-2xl group-hover:bg-violet/25 transition-colors" />
-      <div className="relative flex items-start gap-5">
-        <div className="shrink-0 relative">
+    <div className="group relative glass-strong rounded-[32px] p-5 sm:p-6 overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full border border-violet/10 hover:border-violet/20 hover:shadow-glow">
+      {/* Background soft ambient glows */}
+      <div className="absolute -top-32 -right-32 h-64 w-64 rounded-full bg-violet/10 blur-3xl group-hover:bg-violet/20 transition-all duration-500" />
+      <div className="absolute -bottom-32 -left-32 h-64 w-64 rounded-full bg-orange-start/5 blur-3xl group-hover:bg-orange-start/10 transition-all duration-500" />
+      
+      <div className="relative space-y-6">
+        {/* Large Portrait Image Container */}
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[24px] shadow-soft border border-white/10 bg-slate-100">
           {image ? (
-            <div className="h-24 w-24 rounded-3xl overflow-hidden shadow-soft">
-              <img src={image} alt={name} className="w-full h-full object-cover object-top" />
-            </div>
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            />
           ) : (
-            <div className="h-24 w-24 rounded-3xl gradient-orange grid place-items-center font-display text-3xl font-extrabold text-white shadow-soft">
+            <div className="w-full h-full gradient-orange grid place-items-center font-display text-4xl font-extrabold text-white">
               {name.split(" ").pop()?.substring(0, 2) || "Dr"}
             </div>
           )}
-          <span className="absolute -bottom-2 -right-2 grid h-9 w-9 place-items-center rounded-2xl glass-strong">
-            <Stethoscope className="h-4 w-4 text-violet-deep" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent pointer-events-none" />
+          
+          {/* Suffix/Registration Badge Overlay */}
+          <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white bg-violet-deep/80 backdrop-blur-md border border-white/5 shadow-soft">
+            <Award className="h-3.5 w-3.5 text-orange-start shrink-0" />
+            <span>TSMC Registered</span>
+          </div>
+
+          <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-xl bg-white text-violet-deep shadow-soft border border-white/20">
+            <Stethoscope className="h-5 w-5" />
           </span>
         </div>
-        <div className="min-w-0">
-          <h3 className="font-display text-xl sm:text-2xl font-extrabold text-foreground">
-            {name}
-          </h3>
-          <p className="text-sm text-violet-deep font-semibold mt-1">{qualifications}</p>
-          <ul className="mt-3 space-y-1.5">
-            {roles.map((r) => (
-              <li key={r} className="flex items-center gap-2 text-sm text-foreground/80">
-                <CheckCircle2 className="h-4 w-4 text-violet shrink-0" />
-                {r}
-              </li>
-            ))}
-          </ul>
+
+        {/* Doctor Info */}
+        <div className="space-y-4">
+          <div className="text-left">
+            <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground group-hover:gradient-text transition-all">
+              {name}
+            </h3>
+            <p className="text-sm sm:text-base text-violet-deep font-bold mt-1 tracking-wide">
+              {qualifications}
+            </p>
+          </div>
+
+          {/* Specialties / Roles */}
+          <div className="space-y-2 text-left">
+            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              Specializations
+            </div>
+            <ul className="space-y-2">
+              {roles.map((r) => (
+                <li key={r} className="flex items-center gap-2.5 text-sm text-foreground/80 font-medium">
+                  <CheckCircle2 className="h-4 w-4 text-violet shrink-0" />
+                  <span>{r}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Availability Pill */}
           {availability && (
-            <div className="mt-3 text-xs">
+            <div className="pt-1 text-left">
               {availability.available ? (
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                  Available Today: {availability.currentBranch.toLowerCase().includes("madhapur") ? "Madhapur Branch" : "TNGO's Colony Branch"}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500/10 text-green-600 text-xs font-bold border border-green-500/20">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  Available: {availability.currentBranch.toLowerCase().includes("madhapur") ? "Madhapur Branch" : "TNGO's Colony Branch"}
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 font-semibold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 text-red-600 text-xs font-bold border border-red-500/20">
+                  <span className="h-2 w-2 rounded-full bg-red-500" />
                   Not Available Today
                 </div>
               )}
@@ -413,18 +453,20 @@ function DoctorCard({
           )}
         </div>
       </div>
-      <div className="relative mt-6 pt-5 border-t border-border flex items-center justify-between gap-3 flex-wrap">
-        <div className="text-xs">
-          <div className="text-muted-foreground">Registration</div>
-          <div className="font-mono font-semibold text-foreground">{reg}</div>
+
+      {/* Card Action & Meta Footer */}
+      <div className="relative mt-6 pt-5 border-t border-border flex items-center justify-between gap-4 flex-wrap">
+        <div className="text-left">
+          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Registration</div>
+          <div className="font-mono text-xs font-semibold text-foreground/95 mt-0.5">{reg}</div>
         </div>
         <a
           href="#book"
           onClick={onBook}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white gradient-orange hover:shadow-glow transition-all"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold text-white gradient-orange hover:shadow-glow transition-all hover:-translate-y-0.5"
         >
           Book Consultation
-          <ArrowRight className="h-3.5 w-3.5" />
+          <ArrowRight className="h-4 w-4" />
         </a>
       </div>
     </div>
@@ -454,7 +496,7 @@ function Doctors({
       title="Skilled, certified and genuinely caring"
       subtitle="Backed by years of clinical experience, our doctors bring world-class expertise to your neighbourhood."
     >
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-8 items-stretch">
         <DoctorCard
           name="Dr. Ravi Kumar"
           qualifications="MBBS, DEM, FCCM"
@@ -464,7 +506,7 @@ function Doctors({
             "Consultant Critical Care",
           ]}
           reg="TSMC/FMR/03090"
-          image={drRaviAsset}
+          image="/doctors/Doctor%20photo.jpg"
           availability={drRaviAvail}
           onBook={() => onSelectDoctorAndBranch("Dr. Ravi Kumar", mapBranchName(drRaviAvail?.currentBranch))}
         />
@@ -473,7 +515,7 @@ function Doctors({
           qualifications="BAMS"
           roles={["Female Specialist", "Family Physician"]}
           reg="544/A"
-          image={drPushpalathaAsset}
+          image="/doctors/Madam%20photo.jpg"
           availability={drPushpalathaAvail}
           onBook={() => onSelectDoctorAndBranch("Dr. P. Pushpalatha", mapBranchName(drPushpalathaAvail?.currentBranch))}
         />
@@ -1090,6 +1132,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       whatsapp: "918247815584",
       directionsUrl: "#", // User to insert directions URL later
       isOpen: madhapurOpen,
+      image: "/Madhapur%20Branch/IMG-20260619-WA0089.jpg",
     },
     {
       name: "Harsha Clinics | Best Clinic in TNGO's Colony",
@@ -1098,6 +1141,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       whatsapp: "918247815584",
       directionsUrl: "#", // User to insert directions URL later
       isOpen: tngosOpen,
+      image: "/TNGO%20Colony%20Branch/IMG-20260619-WA0079.jpg",
     },
   ];
 
@@ -1124,12 +1168,12 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                   </span>
                 )}
               </div>
-              <h3 className="font-display text-xl sm:text-2xl font-extrabold gradient-text leading-tight pt-1">
+              <h3 className="font-display text-xl sm:text-2xl font-extrabold gradient-text leading-tight pt-1 text-left">
                 {b.name}
               </h3>
             </div>
 
-            <div className="relative space-y-4 pt-4">
+            <div className="relative space-y-4 pt-4 text-left">
               <div className="flex items-start gap-4">
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
                   <MapPin className="h-5 w-5" />
@@ -1168,6 +1212,16 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
             </div>
 
             <div className="relative pt-6 mt-6 border-t border-border space-y-4">
+              {/* Representative Branch Image */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border shadow-inner bg-slate-100 group/branch-img">
+                <img
+                  src={b.image}
+                  alt={b.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover/branch-img:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/40 to-transparent pointer-events-none" />
+              </div>
+
               {/* Map Placeholder container for future embed */}
               <div className="aspect-[16/9] w-full bg-violet/5 border border-dashed border-violet/25 rounded-2xl flex flex-col items-center justify-center p-4 text-center">
                 <MapPin className="h-6 w-6 text-violet-deep mb-2 animate-bounce" />
@@ -1253,11 +1307,15 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid lg:grid-cols-4 gap-10">
           <div>
-            <a href="#home" className="flex items-center gap-2">
-              <span className="grid h-10 w-10 place-items-center rounded-xl gradient-orange shadow-soft">
-                <HeartPulse className="h-5 w-5 text-white" />
-              </span>
-              <span className="font-display font-extrabold text-lg gradient-text">
+            <a href="#home" className="flex items-center gap-2.5 group">
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-violet/10 bg-white p-0.5 shadow-soft transition-all duration-300 group-hover:scale-105">
+                <img 
+                  src="/Logo/Logo.jpg" 
+                  alt="Harsha Clinic Logo" 
+                  className="h-full w-full object-contain rounded-lg"
+                />
+              </div>
+              <span className="font-display font-extrabold text-lg gradient-text tracking-tight">
                 Harsha Clinic
               </span>
             </a>
@@ -1383,52 +1441,217 @@ function WhyChooseUs() {
   );
 }
 
-function FacilityGallery() {
-  const images = [
-    {
-      src: clinicLobbyAsset,
-      title: "Warm & Calming Lobby",
-      desc: "Designed to help patients feel comfortable and at ease the moment they walk in.",
-    },
-    {
-      src: clinicFacilityAsset,
-      title: "Advanced Consultation Room",
-      desc: "Equipped with state-of-the-art diagnostic tools for accurate clinical assessment.",
-    },
-  ];
+const GALLERY_ITEMS = [
+  {
+    src: "/Madhapur%20Branch/IMG-20260619-WA0095.jpg",
+    title: "Madhapur Reception Wait Area",
+    branch: "Madhapur",
+    category: "madhapur",
+    desc: "A neat and welcoming lobby wait area in our Siddi Vinayak Nagar branch.",
+  },
+  {
+    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0079.jpg",
+    title: "Gachibowli Lounge Area",
+    branch: "TNGO's Colony",
+    category: "tngo",
+    desc: "Clean and comfortable seating for patients at our TNGO's Colony branch.",
+  },
+  {
+    src: "/Madhapur%20Branch/IMG-20260619-WA0092.jpg",
+    title: "Madhapur Consult Room",
+    branch: "Madhapur",
+    category: "madhapur",
+    desc: "Private and sanitised consult suite designed for thorough checkups.",
+  },
+  {
+    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0080.jpg",
+    title: "Gachibowli Front Lobby",
+    branch: "TNGO's Colony",
+    category: "tngo",
+    desc: "Comfortable and sanitized lounge area at the Gachibowli clinic.",
+  },
+  {
+    src: "/extras/Facilities/IMG-20260626-WA0001.jpg",
+    title: "Diagnostic Equipment",
+    branch: "Facilities",
+    category: "facilities",
+    desc: "Advanced medical diagnostic apparatus available for standard testing.",
+  },
+  {
+    src: "/Madhapur%20Branch/IMG-20260619-WA0091.jpg",
+    title: "Madhapur Doctor Cabin",
+    branch: "Madhapur",
+    category: "madhapur",
+    desc: "Professional consultation room environment for complete patient care.",
+  },
+  {
+    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0078.jpg",
+    title: "Gachibowli Entry Hall",
+    branch: "TNGO's Colony",
+    category: "tngo",
+    desc: "Bright and hygienic passageway at our TNGO's Colony branch.",
+  },
+  {
+    src: "/Madhapur%20Branch/IMG-20260619-WA0098.jpg",
+    title: "Madhapur Ward Room",
+    branch: "Madhapur",
+    category: "madhapur",
+    desc: "Equipped checkup cabin area with basic patient monitoring setups.",
+  },
+  {
+    src: "/Awards/IMG_20260626_084430.jpg",
+    title: "Clinic Excellence & Awards",
+    branch: "Awards",
+    category: "facilities",
+    desc: "Proud recipient of medical excellence and trusted care recognition.",
+  },
+];
+
+function ClinicGallery() {
+  const [filter, setFilter] = useState<"all" | "madhapur" | "tngo" | "facilities">("all");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const filteredItems = GALLERY_ITEMS.filter(
+    (item) => filter === "all" || item.category === filter
+  );
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (lightboxIndex === null) return;
+    const prev = (lightboxIndex - 1 + filteredItems.length) % filteredItems.length;
+    setLightboxIndex(prev);
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (lightboxIndex === null) return;
+    const next = (lightboxIndex + 1) % filteredItems.length;
+    setLightboxIndex(next);
+  };
 
   return (
     <Section
       id="gallery"
       eyebrow="Our Facilities"
       title="Take a look inside our premium clinics"
-      subtitle="Modern, clean, and welcoming spaces built to provide high-quality medical services."
+      subtitle="Step inside our clean, well-equipped branches located in Madhapur and TNGO's Colony, Gachibowli."
     >
-      <div className="grid md:grid-cols-2 gap-8">
-        {images.map((img, i) => (
-          <div
-            key={i}
-            className="group relative rounded-3xl overflow-hidden glass-strong shadow-soft hover:shadow-glow transition-all duration-300"
+      {/* Category Filters */}
+      <div className="flex flex-wrap justify-center gap-2.5 mb-10">
+        {[
+          { id: "all", label: "All Photos" },
+          { id: "madhapur", label: "Madhapur Branch" },
+          { id: "tngo", label: "TNGO's Colony" },
+          { id: "facilities", label: "Facilities & Awards" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setFilter(tab.id as any)}
+            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+              filter === tab.id
+                ? "bg-violet-deep text-white shadow-soft"
+                : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
+            }`}
           >
-            <div className="aspect-[16/10] overflow-hidden relative">
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Gallery Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {filteredItems.map((img, i) => (
+          <div
+            key={img.src}
+            onClick={() => setLightboxIndex(i)}
+            className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft hover:shadow-glow hover:-translate-y-1 cursor-pointer transition-all duration-300"
+          >
+            <div className="aspect-[4/3] overflow-hidden relative bg-slate-100">
               <img
                 src={img.src}
                 alt={img.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/20 to-transparent opacity-90 pointer-events-none" />
+              
+              {/* Branch Tag */}
+              <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10">
+                {img.branch}
+              </div>
             </div>
-            <div className="absolute bottom-0 inset-x-0 p-6 sm:p-8 text-white">
-              <h3 className="font-display text-xl sm:text-2xl font-extrabold">
+            <div className="absolute bottom-0 inset-x-0 p-5 text-white">
+              <h3 className="font-display text-base font-extrabold leading-tight text-left">
                 {img.title}
               </h3>
-              <p className="text-xs sm:text-sm text-white/80 mt-2 leading-relaxed">
+              <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">
                 {img.desc}
               </p>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Lightbox Modal */}
+      {lightboxIndex !== null && filteredItems[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-8 animate-fade-in"
+          onClick={() => setLightboxIndex(null)}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-5 right-5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all"
+            aria-label="Close lightbox"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          {/* Left Arrow */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all"
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+
+          {/* Right Arrow */}
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all"
+            aria-label="Next image"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Main Content Area */}
+          <div
+            className="relative max-w-4xl w-full max-h-[80vh] flex flex-col items-center animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative w-full max-h-[65vh] flex justify-center bg-slate-950 rounded-2xl overflow-hidden border border-white/10">
+              <img
+                src={filteredItems[lightboxIndex].src}
+                alt={filteredItems[lightboxIndex].title}
+                className="max-h-[65vh] object-contain max-w-full"
+              />
+            </div>
+            
+            {/* Image Details */}
+            <div className="mt-4 text-center text-white px-4 max-w-xl">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-violet/70">
+                {filteredItems[lightboxIndex].branch} Clinic
+              </span>
+              <h4 className="font-display text-lg sm:text-xl font-bold mt-1">
+                {filteredItems[lightboxIndex].title}
+              </h4>
+              <p className="text-xs sm:text-sm text-white/70 mt-1.5 leading-relaxed">
+                {filteredItems[lightboxIndex].desc}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </Section>
   );
 }
@@ -1466,7 +1689,7 @@ function Home() {
         />
         <Specialties />
         <Facilities />
-        <FacilityGallery />
+        <ClinicGallery />
         <BookingForm
           doctors={doctors}
           branches={branches}

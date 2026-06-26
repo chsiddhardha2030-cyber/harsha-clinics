@@ -27,6 +27,13 @@ function AdminPage() {
     refresh,
   } = useDoctorAvailability();
 
+  // Add console.log statements for debugging admin state
+  console.log("AdminPage state - doctors:", doctors);
+  console.log("AdminPage state - branches:", branches);
+  console.log("AdminPage state - loading:", loading);
+  console.log("AdminPage state - error:", error);
+  console.log("AdminPage state - usingFallback:", usingFallback);
+
   // Local state for edits
   const [doctorEdits, setDoctorEdits] = useState<
     Record<number, { available: boolean; currentBranch: string }>

@@ -33,11 +33,15 @@ export function Nav() {
             scrolled ? "shadow-soft" : ""
           }`}
         >
-          <a href="#home" className="flex items-center gap-2 shrink-0">
-            <span className="grid h-9 w-9 place-items-center rounded-xl gradient-orange shadow-soft">
-              <HeartPulse className="h-5 w-5" />
-            </span>
-            <span className="font-display font-extrabold text-lg gradient-text">
+          <a href="#home" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-violet/10 bg-white p-0.5 shadow-soft transition-all duration-300 group-hover:scale-105 group-hover:shadow-glow">
+              <img 
+                src="/Logo/Logo.jpg" 
+                alt="Harsha Clinic Logo" 
+                className="h-full w-full object-contain rounded-lg"
+              />
+            </div>
+            <span className="font-display font-extrabold text-lg sm:text-xl gradient-text tracking-tight">
               Harsha Clinic
             </span>
           </a>

@@ -43,13 +43,16 @@ export function useDoctorAvailability() {
   const [usingFallback, setUsingFallback] = useState(false);
 
   const fetchLiveAvailability = async () => {
+    console.log("fetchLiveAvailability called. isSupabaseConfigured:", isSupabaseConfigured());
     if (!isSupabaseConfigured()) {
+      console.log("Supabase is not configured. Using fallback data.");
       setUsingFallback(true);
       setLoading(false);
       return;
     }
 
     try {
+      console.log("Fetching live data from Supabase...");
       setLoading(true);
       setError(null);
 
@@ -59,16 +62,25 @@ export function useDoctorAvailability() {
         .select("*")
         .order("id", { ascending: true });
 
-      if (branchesError) throw branchesError;
+      if (branchesError) {
+        console.error("Error fetching branches from Supabase:", branchesError);
+        throw branchesError;
+      }
 
       const { data: doctorsData, error: doctorsError } = await supabase
         .from("doctors")
         .select("*")
         .order("id", { ascending: true });
 
-      if (doctorsError) throw doctorsError;
+      if (doctorsError) {
+        console.error("Error fetching doctors from Supabase:", doctorsError);
+        throw doctorsError;
+      }
 
-      if (doctorsData) {
+      console.log("Supabase fetch successful:", { doctorsData, branchesData });
+
+      if (doctorsData && doctorsData.length > 0) {
+        console.log(`Found ${doctorsData.length} doctors in Supabase.`);
         setDoctors(
           doctorsData.map((d: any) => {
             let normalizedName = d.name || "";
@@ -93,9 +105,32 @@ export function useDoctorAvailability() {
             };
           })
         );
+      } else {
+        console.warn("Doctors data from Supabase is empty. Using FALLBACK_DOCTORS and attempting to seed...");
+        setDoctors(FALLBACK_DOCTORS);
+        
+        // Attempt to seed doctors table in background
+        supabase
+          .from("doctors")
+          .insert(
+            FALLBACK_DOCTORS.map((d) => ({
+              id: d.id,
+              name: d.name,
+              available: d.available,
+              current_branch: d.currentBranch,
+            }))
+          )
+          .then(({ error: seedErr }) => {
+            if (seedErr) {
+              console.warn("Seeding doctors table failed (RLS policies might prevent inserts):", seedErr);
+            } else {
+              console.log("Successfully seeded doctors table in Supabase!");
+            }
+          });
       }
 
-      if (branchesData) {
+      if (branchesData && branchesData.length > 0) {
+        console.log(`Found ${branchesData.length} branches in Supabase.`);
         setBranches(
           branchesData.map((b: any) => {
             let normalizedBranchName = b.name || "";
@@ -112,11 +147,32 @@ export function useDoctorAvailability() {
             };
           })
         );
+      } else {
+        console.warn("Branches data from Supabase is empty. Using FALLBACK_BRANCHES and attempting to seed...");
+        setBranches(FALLBACK_BRANCHES);
+
+        // Attempt to seed branches table in background
+        supabase
+          .from("branches")
+          .insert(
+            FALLBACK_BRANCHES.map((b) => ({
+              id: b.id,
+              name: b.name,
+              is_open: b.isOpen,
+            }))
+          )
+          .then(({ error: seedErr }) => {
+            if (seedErr) {
+              console.warn("Seeding branches table failed (RLS policies might prevent inserts):", seedErr);
+            } else {
+              console.log("Successfully seeded branches table in Supabase!");
+            }
+          });
       }
 
       setUsingFallback(false);
     } catch (err: any) {
-      console.warn("Supabase load failed, using local fallback state:", err);
+      console.error("Supabase load failed, using local fallback state:", err);
       setError(err.message || "Failed to load database content");
       setUsingFallback(true);
     } finally {
