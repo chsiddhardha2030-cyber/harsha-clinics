@@ -125,9 +125,7 @@ function AdminPage() {
             <span className="grid h-10 w-10 place-items-center rounded-xl gradient-orange shadow-soft">
               <HeartPulse className="h-5 w-5 text-white" />
             </span>
-            <span className="font-display font-extrabold text-xl gradient-text">
-              Harsha Clinic
-            </span>
+            <span className="font-display font-extrabold text-xl gradient-text">Harsha Clinic</span>
           </Link>
           <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground">
             Admin Portal
@@ -141,9 +139,7 @@ function AdminPage() {
           <div className="glass-strong rounded-3xl p-8 shadow-soft border border-border">
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
-                <label className="block text-xs font-semibold text-foreground/80">
-                  Username
-                </label>
+                <label className="block text-xs font-semibold text-foreground/80">Username</label>
                 <div className="mt-1.5 relative">
                   <input
                     type="text"
@@ -160,9 +156,7 @@ function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-foreground/80">
-                  Password
-                </label>
+                <label className="block text-xs font-semibold text-foreground/80">Password</label>
                 <div className="mt-1.5 relative">
                   <input
                     type="password"
@@ -237,7 +231,8 @@ function AdminPage() {
         {/* Supabase connection warning */}
         {usingFallback && (
           <div className="p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-sm text-yellow-700 font-semibold animate-fade-up">
-            ⚠️ Supabase environment variables are missing or unavailable. Dashboard modifications will update the local fallback states only.
+            ⚠️ Supabase environment variables are missing or unavailable. Dashboard modifications
+            will update the local fallback states only.
           </div>
         )}
 
@@ -265,7 +260,10 @@ function AdminPage() {
                     };
 
                     return (
-                      <div key={d.id} className="p-5 rounded-2xl bg-violet/5 border border-border/60 space-y-4">
+                      <div
+                        key={d.id}
+                        className="p-5 rounded-2xl bg-violet/5 border border-border/60 space-y-4"
+                      >
                         <div className="flex items-center justify-between">
                           <span className="font-display font-bold text-foreground text-sm sm:text-base">
                             {d.name}
@@ -359,7 +357,10 @@ function AdminPage() {
                     const edit = branchEdits[b.id] || { isOpen: b.isOpen };
 
                     return (
-                      <div key={b.id} className="p-5 rounded-2xl bg-violet/5 border border-border/60 space-y-4">
+                      <div
+                        key={b.id}
+                        className="p-5 rounded-2xl bg-violet/5 border border-border/60 space-y-4"
+                      >
                         <div className="flex items-center justify-between">
                           <span className="font-display font-bold text-foreground text-sm sm:text-base">
                             {b.name}
@@ -384,7 +385,7 @@ function AdminPage() {
                             onChange={(e) =>
                               setBranchEdits((prev) => ({
                                 ...prev,
-                                  [b.id]: { ...edit, isOpen: e.target.value === "true" },
+                                [b.id]: { ...edit, isOpen: e.target.value === "true" },
                               }))
                             }
                             className="mt-1.5 w-full h-10 px-3 rounded-lg bg-white border border-border outline-none transition text-xs"

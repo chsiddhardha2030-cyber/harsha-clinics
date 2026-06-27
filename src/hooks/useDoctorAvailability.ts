@@ -103,12 +103,14 @@ export function useDoctorAvailability() {
               available: Boolean(d.available),
               currentBranch: normalizedBranch,
             };
-          })
+          }),
         );
       } else {
-        console.warn("Doctors data from Supabase is empty. Using FALLBACK_DOCTORS and attempting to seed...");
+        console.warn(
+          "Doctors data from Supabase is empty. Using FALLBACK_DOCTORS and attempting to seed...",
+        );
         setDoctors(FALLBACK_DOCTORS);
-        
+
         // Attempt to seed doctors table in background
         supabase
           .from("doctors")
@@ -118,11 +120,14 @@ export function useDoctorAvailability() {
               name: d.name,
               available: d.available,
               current_branch: d.currentBranch,
-            }))
+            })),
           )
           .then(({ error: seedErr }) => {
             if (seedErr) {
-              console.warn("Seeding doctors table failed (RLS policies might prevent inserts):", seedErr);
+              console.warn(
+                "Seeding doctors table failed (RLS policies might prevent inserts):",
+                seedErr,
+              );
             } else {
               console.log("Successfully seeded doctors table in Supabase!");
             }
@@ -145,10 +150,12 @@ export function useDoctorAvailability() {
               name: normalizedBranchName,
               isOpen: Boolean(b.is_open),
             };
-          })
+          }),
         );
       } else {
-        console.warn("Branches data from Supabase is empty. Using FALLBACK_BRANCHES and attempting to seed...");
+        console.warn(
+          "Branches data from Supabase is empty. Using FALLBACK_BRANCHES and attempting to seed...",
+        );
         setBranches(FALLBACK_BRANCHES);
 
         // Attempt to seed branches table in background
@@ -159,11 +166,14 @@ export function useDoctorAvailability() {
               id: b.id,
               name: b.name,
               is_open: b.isOpen,
-            }))
+            })),
           )
           .then(({ error: seedErr }) => {
             if (seedErr) {
-              console.warn("Seeding branches table failed (RLS policies might prevent inserts):", seedErr);
+              console.warn(
+                "Seeding branches table failed (RLS policies might prevent inserts):",
+                seedErr,
+              );
             } else {
               console.log("Successfully seeded branches table in Supabase!");
             }
@@ -187,13 +197,11 @@ export function useDoctorAvailability() {
   const updateDoctorAvailability = async (
     doctorId: number,
     available: boolean,
-    currentBranch: string
+    currentBranch: string,
   ) => {
     // Optimistic local update
     setDoctors((prev) =>
-      prev.map((d) =>
-        d.id === doctorId ? { ...d, available, currentBranch } : d
-      )
+      prev.map((d) => (d.id === doctorId ? { ...d, available, currentBranch } : d)),
     );
 
     if (isSupabaseConfigured() && !usingFallback) {
@@ -216,9 +224,7 @@ export function useDoctorAvailability() {
 
   const updateBranchStatus = async (branchId: number, isOpen: boolean) => {
     // Optimistic local update
-    setBranches((prev) =>
-      prev.map((b) => (b.id === branchId ? { ...b, isOpen } : b))
-    );
+    setBranches((prev) => prev.map((b) => (b.id === branchId ? { ...b, isOpen } : b)));
 
     if (isSupabaseConfigured() && !usingFallback) {
       try {

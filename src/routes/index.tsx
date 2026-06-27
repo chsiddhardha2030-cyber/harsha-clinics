@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Activity,
@@ -45,7 +45,11 @@ import Autoplay from "embla-carousel-autoplay";
 import { Nav } from "@/components/site/Nav";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { toast } from "sonner";
-import { useDoctorAvailability, DoctorAvailability, BranchStatus } from "@/hooks/useDoctorAvailability";
+import {
+  useDoctorAvailability,
+  DoctorAvailability,
+  BranchStatus,
+} from "@/hooks/useDoctorAvailability";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/")({
@@ -105,38 +109,32 @@ const TESTIMONIALS = [
   {
     name: "Priya Sharma",
     role: "Patient",
-    text:
-      "Dr. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
+    text: "Dr. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
   },
   {
     name: "Anil Reddy",
     role: "Patient",
-    text:
-      "Walked in for an emergency at night and was attended to immediately. Professional, calm and thorough. Highly recommend Harsha Clinic.",
+    text: "Walked in for an emergency at night and was attended to immediately. Professional, calm and thorough. Highly recommend Harsha Clinic.",
   },
   {
     name: "Lakshmi Rao",
     role: "Patient",
-    text:
-      "Dr. Pushpalatha is so warm and patient. She listened carefully and explained everything. Best family physician in Madhapur.",
+    text: "Dr. Pushpalatha is so warm and patient. She listened carefully and explained everything. Best family physician in Madhapur.",
   },
   {
     name: "Rahul Verma",
     role: "Patient",
-    text:
-      "In-house pharmacy and lab is a game changer — got everything done in one visit. Clean, quick and very affordable.",
+    text: "In-house pharmacy and lab is a game changer — got everything done in one visit. Clean, quick and very affordable.",
   },
   {
     name: "Sneha Iyer",
     role: "Patient",
-    text:
-      "Booked online, got a reminder, walked in on time. Felt like a 5-star healthcare experience right in our neighbourhood.",
+    text: "Booked online, got a reminder, walked in on time. Felt like a 5-star healthcare experience right in our neighbourhood.",
   },
   {
     name: "Mohammed Aslam",
     role: "Patient",
-    text:
-      "Critical care consultation here saved my father's recovery time. Forever grateful to the team at Harsha Clinic.",
+    text: "Critical care consultation here saved my father's recovery time. Forever grateful to the team at Harsha Clinic.",
   },
 ];
 
@@ -145,7 +143,10 @@ const FAQS = [
     q: "What are the clinic timings?",
     a: "We are open every day from 10:00 AM to 10:00 PM. Emergency consultation is available on call.",
   },
-  { q: "Do you accept walk-ins?", a: "Yes — walk-ins are welcome. Booking ahead reduces your wait." },
+  {
+    q: "Do you accept walk-ins?",
+    a: "Yes — walk-ins are welcome. Booking ahead reduces your wait.",
+  },
   {
     q: "Is emergency care available?",
     a: "Yes. We offer emergency consultation, suturing, nebulization and stabilization during clinic hours.",
@@ -228,11 +229,11 @@ function parseRgb(rgbStr: string): [number, number, number] {
 function blendColors(predStr: string, extStr: string, weightExt: number = 0.25): string {
   const [pr, pg, pb] = parseRgb(predStr);
   const [er, eg, eb] = parseRgb(extStr);
-  
+
   const r = Math.round(pr * (1 - weightExt) + er * weightExt);
   const g = Math.round(pg * (1 - weightExt) + eg * weightExt);
   const b = Math.round(pb * (1 - weightExt) + eb * weightExt);
-  
+
   return `rgb(${r}, ${g}, ${b})`;
 }
 
@@ -262,18 +263,18 @@ function extractDominantColors(imageUrl: string): Promise<string[]> {
         const colorCounts: { [key: string]: number } = {};
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
-          const g = data[i+1];
-          const b = data[i+2];
-          const a = data[i+3];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
           if (a < 200) continue;
-          
+
           const qr = Math.round(r / 32) * 32;
           const qg = Math.round(g / 32) * 32;
           const qb = Math.round(b / 32) * 32;
-          
+
           const luma = 0.2126 * qr + 0.7152 * qg + 0.0722 * qb;
           if (luma < 40 || luma > 225) continue;
-          
+
           const rgb = `rgb(${qr}, ${qg}, ${qb})`;
           colorCounts[rgb] = (colorCounts[rgb] || 0) + 1;
         }
@@ -306,17 +307,16 @@ function Hero() {
   const isMobile = useIsMobile();
 
   // Color state containing blended colors for each slide
-  const [slideColors, setSlideColors] = useState<{[key: string]: [string, string, string]}>(CURATED_PALETTES);
-
-  // Background cross-fade state (Layer A and Layer B)
-  const [layerA, setLayerA] = useState<[string, string, string]>(CURATED_PALETTES[HERO_SLIDES[0]]);
-  const [layerB, setLayerB] = useState<[string, string, string]>(CURATED_PALETTES[HERO_SLIDES[0]]);
-  const [activeLayer, setActiveLayer] = useState<'A' | 'B'>('A');
+  const [slideColors, setSlideColors] = useState<{ [key: string]: [string, string, string] }>(
+    CURATED_PALETTES,
+  );
 
   // Trigger color extraction and blending on mount
   useEffect(() => {
+    let active = true;
     HERO_SLIDES.forEach(async (slide) => {
       const extracted = await extractDominantColors(slide);
+      if (!active) return;
       const curated = CURATED_PALETTES[slide];
       // Blend 75% curated colors with 25% extracted colors to preserve hospital aesthetics
       const blended: [string, string, string] = [
@@ -329,20 +329,30 @@ function Hero() {
         [slide]: blended,
       }));
     });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  // Softly cross-fade gradients when the slide index changes (2.5s duration)
+  // Set up event listeners to clear isHovered on scroll or when window loses focus
   useEffect(() => {
-    const current = slideColors[HERO_SLIDES[currentIndex]] || CURATED_PALETTES[HERO_SLIDES[currentIndex]];
-    if (activeLayer === 'A') {
-      setLayerB(current);
-      setActiveLayer('B');
-    } else {
-      setLayerA(current);
-      setActiveLayer('A');
-    }
-  }, [currentIndex, slideColors]);
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setIsHovered(false);
+      }
+    };
+    const handleBlur = () => {
+      setIsHovered(false);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("blur", handleBlur);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("blur", handleBlur);
+    };
+  }, []);
 
+  // Autoplay interval with proper cleanup
   useEffect(() => {
     if (isHovered && !isMobile) return;
     const interval = setInterval(() => {
@@ -351,49 +361,40 @@ function Hero() {
     return () => clearInterval(interval);
   }, [isHovered, isMobile]);
 
-  const currentColors = slideColors[HERO_SLIDES[currentIndex]] || CURATED_PALETTES[HERO_SLIDES[currentIndex]];
+  const currentColors =
+    slideColors[HERO_SLIDES[currentIndex]] || CURATED_PALETTES[HERO_SLIDES[currentIndex]];
 
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-background min-h-[85vh] flex items-center pt-28 pb-16 md:pt-36 md:pb-24 lg:pt-40 lg:pb-32"
+      className="relative overflow-hidden bg-background min-h-[85vh] flex items-center pt-28 pb-16 md:pt-28 md:pb-20 lg:pt-24 lg:pb-16"
       onMouseEnter={() => {
         if (!isMobile) setIsHovered(true);
       }}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Layer A (transition: opacity 2500ms ease-in-out) */}
-      <div
-        className="absolute inset-0 pointer-events-none -z-20"
-        style={{
-          opacity: activeLayer === 'A' ? 1 : 0,
-          transition: "opacity 2500ms ease-in-out",
-          backgroundImage: `
-            radial-gradient(circle at 75% 30%, ${getRgba(layerA[0], 0.12)} 0%, transparent 65%),
-            radial-gradient(circle at 25% 70%, ${getRgba(layerA[1], 0.08)} 0%, transparent 70%),
-            radial-gradient(circle at 60% 50%, ${getRgba(layerA[2], 0.05)} 0%, transparent 75%),
-            radial-gradient(circle at 10% 15%, ${getRgba(layerA[0], 0.04)} 0%, transparent 50%)
-          `,
-        }}
-      />
-      
-      {/* Background Layer B (transition: opacity 2500ms ease-in-out) */}
-      <div
-        className="absolute inset-0 pointer-events-none -z-20"
-        style={{
-          opacity: activeLayer === 'B' ? 1 : 0,
-          transition: "opacity 2500ms ease-in-out",
-          backgroundImage: `
-            radial-gradient(circle at 75% 30%, ${getRgba(layerB[0], 0.12)} 0%, transparent 65%),
-            radial-gradient(circle at 25% 70%, ${getRgba(layerB[1], 0.08)} 0%, transparent 70%),
-            radial-gradient(circle at 60% 50%, ${getRgba(layerB[2], 0.05)} 0%, transparent 75%),
-            radial-gradient(circle at 10% 15%, ${getRgba(layerB[0], 0.04)} 0%, transparent 50%)
-          `,
-        }}
-      />
+      {/* Background ambient layers for each slide to support smooth GPU-accelerated opacity cross-fade */}
+      {HERO_SLIDES.map((slide, index) => {
+        const colors = slideColors[slide] || CURATED_PALETTES[slide];
+        return (
+          <div
+            key={`bg-ambient-${slide}`}
+            className="absolute inset-0 pointer-events-none -z-20 transition-opacity duration-[2500ms] ease-in-out"
+            style={{
+              opacity: index === currentIndex ? 1 : 0,
+              backgroundImage: `
+                radial-gradient(circle at 75% 30%, ${getRgba(colors[0], 0.12)} 0%, transparent 65%),
+                radial-gradient(circle at 25% 70%, ${getRgba(colors[1], 0.08)} 0%, transparent 70%),
+                radial-gradient(circle at 60% 50%, ${getRgba(colors[2], 0.05)} 0%, transparent 75%),
+                radial-gradient(circle at 10% 15%, ${getRgba(colors[0], 0.04)} 0%, transparent 50%)
+              `,
+            }}
+          />
+        );
+      })}
 
       {/* Subtle Vignette to naturally blend edges into page background */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none -z-10"
         style={{
           backgroundImage: `radial-gradient(circle at center, transparent 35%, var(--background) 95%)`,
@@ -402,7 +403,6 @@ function Hero() {
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
           {/* Left Content Area */}
           <div className="lg:col-span-5 flex items-center order-2 lg:order-1 pt-4 pb-8 lg:py-12">
             <div className="animate-fade-up text-left max-w-xl mx-auto lg:mx-0 w-full">
@@ -411,12 +411,11 @@ function Hero() {
                 Open today • 10:00 AM – 10:00 PM
               </div>
               <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
-                Advanced Healthcare.{" "}
-                <span className="gradient-text">Compassionate Care.</span>
+                Advanced Healthcare. <span className="gradient-text">Compassionate Care.</span>
               </h1>
               <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground leading-relaxed">
-                Expert General Physician, Emergency Care &amp; Family Healthcare in
-                Madhapur, Hyderabad.
+                Expert General Physician, Emergency Care &amp; Family Healthcare in Madhapur,
+                Hyderabad.
               </p>
               <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
@@ -441,7 +440,10 @@ function Hero() {
                   { k: "20+", v: "Years Experience" },
                   { k: "15k+", v: "Happy Patients" },
                 ].map((s) => (
-                  <div key={s.v} className="glass rounded-2xl px-2 py-2.5 sm:p-3 text-center animate-hover">
+                  <div
+                    key={s.v}
+                    className="glass rounded-2xl px-2 py-2.5 sm:p-3 text-center animate-hover"
+                  >
                     <div className="font-display text-base sm:text-xl font-extrabold gradient-text leading-none">
                       {s.k}
                     </div>
@@ -456,29 +458,44 @@ function Hero() {
 
           {/* Right Image Slider Area */}
           <div className="lg:col-span-7 order-1 lg:order-2 flex items-center justify-center relative w-full aspect-[16/11] sm:aspect-[16/10] md:h-[400px] lg:h-[460px] xl:h-[500px]">
-            {/* Soft Ambient Glow Layer (matching current slide colors) */}
-            <div 
-              className="absolute w-[85%] h-[85%] rounded-full filter blur-[95px] opacity-70 pointer-events-none"
-              style={{
-                transition: "background 2500ms ease-in-out",
-                background: `radial-gradient(circle, ${getRgba(currentColors[0], 0.32)} 0%, ${getRgba(currentColors[1], 0.12)} 60%, transparent 100%)`
-              }}
-            />
-            {/* Secondary Ambient Glow Layer */}
-            <div 
-              className="absolute w-[65%] h-[65%] rounded-full filter blur-[65px] opacity-75 pointer-events-none"
-              style={{
-                transition: "background 2500ms ease-in-out",
-                background: `radial-gradient(circle, ${getRgba(currentColors[1], 0.18)} 0%, transparent 80%)`
-              }}
-            />
-            
+            {/* Primary Ambient Glow Layers (cross-fading opacity instead of gradient for smooth rendering) */}
+            {HERO_SLIDES.map((slide, index) => {
+              const colors = slideColors[slide] || CURATED_PALETTES[slide];
+              return (
+                <div
+                  key={`glow-primary-${slide}`}
+                  className="absolute w-[85%] h-[85%] rounded-full filter blur-[95px] opacity-70 pointer-events-none transition-opacity duration-[2500ms] ease-in-out"
+                  style={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    background: `radial-gradient(circle, ${getRgba(colors[0], 0.32)} 0%, ${getRgba(colors[1], 0.12)} 60%, transparent 100%)`,
+                  }}
+                />
+              );
+            })}
+
+            {/* Secondary Ambient Glow Layers */}
+            {HERO_SLIDES.map((slide, index) => {
+              const colors = slideColors[slide] || CURATED_PALETTES[slide];
+              return (
+                <div
+                  key={`glow-secondary-${slide}`}
+                  className="absolute w-[65%] h-[65%] rounded-full filter blur-[65px] opacity-75 pointer-events-none transition-opacity duration-[2500ms] ease-in-out"
+                  style={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    background: `radial-gradient(circle, ${getRgba(colors[1], 0.18)} 0%, transparent 80%)`,
+                  }}
+                />
+              );
+            })}
+
             {/* Image Frame with aggressively feathered/melted edges */}
-            <div 
+            <div
               className="relative w-full h-full max-w-[620px] max-h-[440px] pointer-events-none"
               style={{
-                maskImage: 'radial-gradient(circle at center, black 15%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.12) 72%, transparent 96%)',
-                WebkitMaskImage: 'radial-gradient(circle at center, black 15%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.12) 72%, transparent 96%)',
+                maskImage:
+                  "radial-gradient(circle at center, black 15%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.12) 72%, transparent 96%)",
+                WebkitMaskImage:
+                  "radial-gradient(circle at center, black 15%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.12) 72%, transparent 96%)",
               }}
             >
               {HERO_SLIDES.map((slide, index) => (
@@ -503,109 +520,39 @@ function Hero() {
             </div>
 
             {/* Edge blending overlay gradient using the app background color */}
-            <div 
+            <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                backgroundImage: 'radial-gradient(circle at center, transparent 35%, rgba(248, 250, 252, 0.25) 60%, var(--background) 95%)',
+                backgroundImage:
+                  "radial-gradient(circle at center, transparent 35%, rgba(248, 250, 252, 0.25) 60%, var(--background) 95%)",
               }}
             />
           </div>
-
         </div>
       </div>
     </section>
   );
 }
-
-function MeetOurDoctors() {
-  return (
-    <section id="meet-our-doctors" className="relative py-16 sm:py-20 bg-background border-b border-border">
-      <div className="mx-auto max-w-7xl px-4 text-center">
-        <div className="max-w-2xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8 mb-4">
-            <Sparkles className="h-3.5 w-3.5" />
-            Our Specialists
-          </div>
-          <h2 className="font-display text-3xl sm:text-5xl font-extrabold gradient-text leading-tight">
-            Meet Our Doctors
-          </h2>
-          <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
-            Dedicated professionals committed to delivering compassionate, world-class healthcare for your entire family.
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-12 lg:gap-16">
-          {/* Dr. D. Ravi Kumar */}
-          <div className="flex flex-col items-center group text-center max-w-xs">
-            <div className="relative w-[140px] h-[140px] sm:w-[150px] sm:h-[150px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-glow bg-white flex-shrink-0">
-              <img
-                src="/doctors/Doctor%20photo.jpg"
-                alt="Dr. D. Ravi Kumar"
-                className="w-full h-full object-cover object-[center_20%]"
-                loading="lazy"
-              />
-            </div>
-            <div className="mt-5 sm:mt-6">
-              <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-extrabold text-foreground leading-tight">
-                Dr. D. Ravi Kumar
-              </h3>
-              <p className="text-sm font-bold text-violet-deep mt-1">
-                MBBS, DEM, FCCM
-              </p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-semibold uppercase tracking-wider">
-                General Physician & Surgeon
-              </p>
-            </div>
-          </div>
-
-          {/* Dr. P. Pushpalatha */}
-          <div className="flex flex-col items-center group text-center max-w-xs">
-            <div className="relative w-[140px] h-[140px] sm:w-[150px] sm:h-[150px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-glow bg-white flex-shrink-0">
-              <img
-                src="/doctors/Madam%20photo.jpg"
-                alt="Dr. P. Pushpalatha"
-                className="w-full h-full object-cover object-[center_20%]"
-                loading="lazy"
-              />
-            </div>
-            <div className="mt-5 sm:mt-6">
-              <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-extrabold text-foreground leading-tight">
-                Dr. P. Pushpalatha
-              </h3>
-              <p className="text-sm font-bold text-violet-deep mt-1">
-                BAMS
-              </p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-semibold uppercase tracking-wider">
-                Family Physician
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 
 function About() {
   const items = [
     {
-      icon: Stethoscope,
+      image: "/images/clinic_family_2.webp",
       title: "Family Medicine",
       text: "Holistic primary care for every member of your family — from toddlers to grandparents.",
     },
     {
-      icon: Bandage,
+      image: "/images/clinic_patient_4.webp",
       title: "Emergency Care",
       text: "Rapid assessment, suturing, stabilization and on-call critical care when minutes matter.",
     },
     {
-      icon: HeartPulse,
+      image: "/images/clinic_scans_5.webp",
       title: "Critical Care Consult",
       text: "ICU & ventilator case consultation by an experienced FCCM-certified physician.",
     },
     {
-      icon: ShieldCheck,
+      image: "/images/clinic_consult_1.webp",
       title: "Preventive Health",
       text: "Routine check-ups, screenings and lifestyle plans that keep you ahead of disease.",
     },
@@ -617,21 +564,27 @@ function About() {
       title="A trusted neighbourhood clinic, built for modern families"
       subtitle="Harsha Clinic combines compassionate doctors, modern diagnostics and an in-house pharmacy under one calm, welcoming roof in the heart of Madhapur."
     >
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {items.map((it, i) => {
-          const Icon = it.icon;
           return (
             <div
               key={i}
-              className="group glass-strong rounded-3xl p-6 hover:-translate-y-1 transition-all duration-300"
+              className="group glass-strong rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft"
             >
-              <div className="grid h-12 w-12 place-items-center rounded-2xl gradient-orange shadow-soft mb-4 group-hover:scale-110 transition-transform">
-                <Icon className="h-5 w-5 text-white" />
+              <div className="aspect-[4/3] w-full overflow-hidden relative">
+                <img
+                  src={it.image}
+                  alt={it.title}
+                  width={400}
+                  height={300}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
-              <h3 className="font-display text-lg font-bold text-foreground mb-2">
-                {it.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{it.text}</p>
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="font-display text-lg font-bold text-foreground mb-2">{it.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed flex-grow">{it.text}</p>
+              </div>
             </div>
           );
         })}
@@ -658,96 +611,98 @@ function DoctorCard({
   onBook?: () => void;
 }) {
   return (
-    <div className="group relative glass-strong rounded-[32px] p-5 sm:p-6 overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full border border-violet/10 hover:border-violet/20 hover:shadow-glow">
+    <div className="group relative glass-strong rounded-[28px] p-4 sm:p-5 overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full border border-violet/10 hover:border-violet/20 hover:shadow-glow">
       {/* Background soft ambient glows */}
       <div className="absolute -top-32 -right-32 h-64 w-64 rounded-full bg-violet/10 blur-3xl group-hover:bg-violet/20 transition-all duration-500" />
       <div className="absolute -bottom-32 -left-32 h-64 w-64 rounded-full bg-orange-start/5 blur-3xl group-hover:bg-orange-start/10 transition-all duration-500" />
-      
-      <div className="relative space-y-6">
-        {/* Large Portrait Image Container */}
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[24px] shadow-soft border border-white/10 bg-slate-100">
+
+      <div className="relative flex flex-col items-center text-center space-y-4 flex-grow">
+        {/* Centered Circular Image Container */}
+        <div className="relative w-[130px] h-[130px] md:w-[150px] md:h-[150px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-[3px] border-white shadow-md bg-white flex-shrink-0 group-hover:scale-105 transition-all duration-300 mx-auto">
           {image ? (
             <img
               src={image}
               alt={name}
-              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover object-[center_20%]"
+              loading="lazy"
             />
           ) : (
-            <div className="w-full h-full gradient-orange grid place-items-center font-display text-4xl font-extrabold text-white">
+            <div className="w-full h-full gradient-orange grid place-items-center font-display text-2xl font-extrabold text-white">
               {name.split(" ").pop()?.substring(0, 2) || "Dr"}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent pointer-events-none" />
-          
-          {/* Suffix/Registration Badge Overlay */}
-          <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white bg-violet-deep/80 backdrop-blur-md border border-white/5 shadow-soft">
-            <Award className="h-3.5 w-3.5 text-orange-start shrink-0" />
-            <span>TSMC Registered</span>
-          </div>
-
-          <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-xl bg-white text-violet-deep shadow-soft border border-white/20">
-            <Stethoscope className="h-5 w-5" />
-          </span>
         </div>
 
         {/* Doctor Info */}
-        <div className="space-y-4">
-          <div className="text-left">
-            <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground group-hover:gradient-text transition-all">
+        <div className="w-full space-y-3">
+          <div>
+            <h3 className="font-display text-xl sm:text-2xl font-extrabold text-foreground group-hover:gradient-text transition-all leading-tight">
               {name}
             </h3>
-            <p className="text-sm sm:text-base text-violet-deep font-bold mt-1 tracking-wide">
-              {qualifications}
-            </p>
+            <p className="text-sm font-bold text-violet-deep mt-0.5">{qualifications}</p>
+          </div>
+
+          {/* TSMC Registered Badge & Availability Badge side by side */}
+          <div className="flex flex-wrap justify-center gap-2">
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-violet-deep bg-violet/8 border border-violet/10">
+              <Award className="h-3 w-3 text-orange-start shrink-0" />
+              <span>TSMC Registered</span>
+            </div>
+
+            {availability &&
+              (availability.available ? (
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-600 text-[10px] font-bold border border-green-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span>
+                    Available:{" "}
+                    {availability.currentBranch.toLowerCase().includes("madhapur")
+                      ? "Madhapur"
+                      : "TNGO's Colony"}
+                  </span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-600 text-[10px] font-bold border border-red-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                  <span>Not Available Today</span>
+                </div>
+              ))}
           </div>
 
           {/* Specialties / Roles */}
-          <div className="space-y-2 text-left">
-            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+          <div className="text-left bg-violet/4 rounded-2xl p-3 sm:p-4 border border-violet/5 space-y-1.5">
+            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center sm:text-left">
               Specializations
             </div>
-            <ul className="space-y-2">
+            <ul className="space-y-1 sm:space-y-1.5">
               {roles.map((r) => (
-                <li key={r} className="flex items-center gap-2.5 text-sm text-foreground/80 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-violet shrink-0" />
+                <li
+                  key={r}
+                  className="flex items-center gap-2 text-xs sm:text-sm text-foreground/80 font-medium"
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5 text-violet shrink-0" />
                   <span>{r}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* Availability Pill */}
-          {availability && (
-            <div className="pt-1 text-left">
-              {availability.available ? (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500/10 text-green-600 text-xs font-bold border border-green-500/20">
-                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  Available: {availability.currentBranch.toLowerCase().includes("madhapur") ? "Madhapur Branch" : "TNGO's Colony Branch"}
-                </div>
-              ) : (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 text-red-600 text-xs font-bold border border-red-500/20">
-                  <span className="h-2 w-2 rounded-full bg-red-500" />
-                  Not Available Today
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
       {/* Card Action & Meta Footer */}
-      <div className="relative mt-6 pt-5 border-t border-border flex items-center justify-between gap-4 flex-wrap">
+      <div className="relative mt-4 pt-4 border-t border-border flex items-center justify-between gap-4 flex-wrap w-full">
         <div className="text-left">
-          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Registration</div>
-          <div className="font-mono text-xs font-semibold text-foreground/95 mt-0.5">{reg}</div>
+          <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+            Registration
+          </div>
+          <div className="font-mono text-xs font-semibold text-foreground/95">{reg}</div>
         </div>
         <a
           href="#book"
           onClick={onBook}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold text-white gradient-orange hover:shadow-glow transition-all hover:-translate-y-0.5"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white gradient-orange hover:shadow-glow transition-all hover:-translate-y-0.5"
         >
           Book Consultation
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-3.5 w-3.5" />
         </a>
       </div>
     </div>
@@ -777,19 +732,17 @@ function Doctors({
       title="Skilled, certified and genuinely caring"
       subtitle="Backed by years of clinical experience, our doctors bring world-class expertise to your neighbourhood."
     >
-      <div className="grid lg:grid-cols-2 gap-8 items-stretch">
+      <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
         <DoctorCard
           name="Dr. Ravi Kumar"
           qualifications="MBBS, DEM, FCCM"
-          roles={[
-            "General Physician & Surgeon",
-            "Emergency Physician",
-            "Consultant Critical Care",
-          ]}
+          roles={["General Physician & Surgeon", "Emergency Physician", "Consultant Critical Care"]}
           reg="TSMC/FMR/03090"
           image="/doctors/Doctor%20photo.jpg"
           availability={drRaviAvail}
-          onBook={() => onSelectDoctorAndBranch("Dr. Ravi Kumar", mapBranchName(drRaviAvail?.currentBranch))}
+          onBook={() =>
+            onSelectDoctorAndBranch("Dr. Ravi Kumar", mapBranchName(drRaviAvail?.currentBranch))
+          }
         />
         <DoctorCard
           name="Dr. P. Pushpalatha"
@@ -798,14 +751,21 @@ function Doctors({
           reg="544/A"
           image="/doctors/Madam%20photo.jpg"
           availability={drPushpalathaAvail}
-          onBook={() => onSelectDoctorAndBranch("Dr. P. Pushpalatha", mapBranchName(drPushpalathaAvail?.currentBranch))}
+          onBook={() =>
+            onSelectDoctorAndBranch(
+              "Dr. P. Pushpalatha",
+              mapBranchName(drPushpalathaAvail?.currentBranch),
+            )
+          }
         />
       </div>
     </Section>
   );
 }
 
-function ExpandableGrid<T extends { label: string; icon: React.ComponentType<{ className?: string }> }>({
+function ExpandableGrid<
+  T extends { label: string; icon: React.ComponentType<{ className?: string }> },
+>({
   items,
   initial,
   showAllLabel,
@@ -837,17 +797,15 @@ function ExpandableGrid<T extends { label: string; icon: React.ComponentType<{ c
               style={
                 isNew
                   ? {
-                    animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
-                  }
+                      animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
+                    }
                   : undefined
               }
             >
               <div className={iconWrapClass}>
                 <Icon className="h-5 w-5" />
               </div>
-              <div className="text-sm font-semibold text-foreground leading-tight">
-                {s.label}
-              </div>
+              <div className="text-sm font-semibold text-foreground leading-tight">{s.label}</div>
             </div>
           );
         })}
@@ -867,7 +825,77 @@ function ExpandableGrid<T extends { label: string; icon: React.ComponentType<{ c
   );
 }
 
+const FEATURED_SPECIALTIES = [
+  {
+    title: "Family Medicine",
+    desc: "Compassionate primary healthcare including complete diagnostic checkups, wellness advice, and preventive care for family members of all ages.",
+    image: "/extras/IMG-20260619-WA0112.jpg",
+    icon: Stethoscope,
+    anchor: "/specialties#family-medicine",
+  },
+  {
+    title: "Cardiology",
+    desc: "Specialized cardiac assessments, ECG tests, blood pressure checkups, and expert management for complex cardiovascular conditions.",
+    image: "/extras/IMG-20260619-WA0120.jpg",
+    icon: HeartPulse,
+    anchor: "/specialties#cardiology",
+  },
+  {
+    title: "Nephrology",
+    desc: "Dedicated clinical support for kidney diseases, electrolyte imbalance corrections, and coordinated care for outpatient dialysis.",
+    image: "/extras/IMG-20260619-WA0118.jpg",
+    icon: Droplet,
+    anchor: "/specialties#nephrology",
+  },
+  {
+    title: "Diabetes Care",
+    desc: "Advanced therapeutic regimens, regular blood glucose evaluations, diet planning, and management of secondary diabetic symptoms.",
+    image: "/extras/IMG-20260619-WA0113.jpg",
+    icon: Activity,
+    anchor: "/specialties#diabetes-care",
+  },
+  {
+    title: "Emergency Medicine",
+    desc: "Equipped to handle urgent clinical needs including minor surgeries, suturing, immediate patient stabilization, and nebulization.",
+    image: "/extras/IMG-20260619-WA0108.jpg",
+    icon: Bandage,
+    anchor: "/specialties#emergency-medicine",
+  },
+  {
+    title: "Diagnostics & Labs",
+    desc: "Prompt and accurate clinical testing using state-of-the-art laboratory devices to ensure rapid confirmation and reliable results.",
+    image: "/extras/IMG-20260626-WA0016.jpg",
+    icon: Microscope,
+    anchor: "/specialties#diagnostics",
+  },
+];
+
 function Specialties() {
+  const [visibleCount, setVisibleCount] = useState(() => {
+    if (typeof window !== "undefined") {
+      const w = window.innerWidth;
+      if (w < 640) return 3;
+      if (w < 768) return 4;
+    }
+    return 6;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 640) {
+        setVisibleCount(3);
+      } else if (w < 768) {
+        setVisibleCount(4);
+      } else {
+        setVisibleCount(6);
+      }
+    };
+    
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <Section
       id="specialties"
@@ -875,15 +903,58 @@ function Specialties() {
       title="Comprehensive care under one roof"
       subtitle="From everyday concerns to complex conditions — we treat a broad range of medical needs with precision and warmth."
     >
-      <ExpandableGrid
-        items={SPECIALTIES}
-        initial={6}
-        showAllLabel={`View All Specialties (${SPECIALTIES.length})`}
-        showLessLabel="Show Less"
-        gridClass="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6"
-        cardClass="group glass rounded-2xl p-5 sm:p-6 hover:bg-white hover:-translate-y-1 hover:shadow-soft transition-all duration-300"
-        iconWrapClass="grid h-11 w-11 place-items-center rounded-xl bg-violet/10 text-violet-deep group-hover:gradient-orange group-hover:text-white transition-all mb-3"
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {FEATURED_SPECIALTIES.slice(0, visibleCount).map((spec, i) => {
+          const Icon = spec.icon;
+          return (
+            <div
+              key={spec.title}
+              className="group glass-strong rounded-[24px] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft hover:shadow-glow border border-violet/10 hover:border-violet/20"
+            >
+              {/* Image Container - occupies 50-60% of the card on typical ratios, let's use aspect-[16/10] */}
+              <div className="aspect-[16/10] w-full overflow-hidden relative bg-slate-100">
+                <img
+                  src={spec.image}
+                  alt={spec.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Floating department icon badge */}
+                <div className="absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-xl bg-white/90 backdrop-blur-sm text-violet-deep shadow-md">
+                  <Icon className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="p-6 flex flex-col flex-grow text-left">
+                <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-2 group-hover:gradient-text transition-colors">
+                  {spec.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
+                  {spec.desc}
+                </p>
+                <Link
+                  to="/specialties"
+                  hash={spec.anchor.split("#")[1]}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors"
+                >
+                  <span>Learn More</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {/* Centered Button to View All Specialties */}
+      <div className="mt-8 sm:mt-12 flex justify-center">
+        <Link
+          to="/specialties"
+          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
+        >
+          View All 35+ Specialties
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
     </Section>
   );
 }
@@ -910,11 +981,33 @@ function Facilities() {
 }
 
 const TIME_SLOTS = [
-  "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
-  "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM",
-  "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM",
-  "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM",
-  "9:00 PM", "9:30 PM", "10:00 PM"
+  "9:00 AM",
+  "9:30 AM",
+  "10:00 AM",
+  "10:30 AM",
+  "11:00 AM",
+  "11:30 AM",
+  "12:00 PM",
+  "12:30 PM",
+  "1:00 PM",
+  "1:30 PM",
+  "2:00 PM",
+  "2:30 PM",
+  "3:00 PM",
+  "3:30 PM",
+  "4:00 PM",
+  "4:30 PM",
+  "5:00 PM",
+  "5:30 PM",
+  "6:00 PM",
+  "6:30 PM",
+  "7:00 PM",
+  "7:30 PM",
+  "8:00 PM",
+  "8:30 PM",
+  "9:00 PM",
+  "9:30 PM",
+  "10:00 PM",
 ];
 
 function BookingForm({
@@ -947,9 +1040,7 @@ function BookingForm({
   }, [isMobile]);
 
   // Find availability of the selected doctor to trigger automatic branch assignment
-  const currentDoctorAvailability = doctors.find(
-    (d) => d.name === selectedDoctor
-  );
+  const currentDoctorAvailability = doctors.find((d) => d.name === selectedDoctor);
 
   useEffect(() => {
     if (
@@ -957,33 +1048,39 @@ function BookingForm({
       currentDoctorAvailability.available &&
       currentDoctorAvailability.currentBranch
     ) {
-      const assignedBranch =
-        currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
-          ? "TNGO's Colony"
-          : "Madhapur";
+      const assignedBranch = currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
+        ? "TNGO's Colony"
+        : "Madhapur";
       setSelectedBranch(assignedBranch);
     }
   }, [selectedDoctor, currentDoctorAvailability, setSelectedBranch]);
 
   // Handle branch Open/Closed statuses
-  const madhapurOpen = branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
+  const madhapurOpen =
+    branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
   const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
 
-  const disableMadhapur = !madhapurOpen || !!(
-    currentDoctorAvailability && 
-    currentDoctorAvailability.available && 
-    currentDoctorAvailability.currentBranch && 
-    !currentDoctorAvailability.currentBranch.toLowerCase().includes("madhapur")
-  );
+  const disableMadhapur =
+    !madhapurOpen ||
+    !!(
+      currentDoctorAvailability &&
+      currentDoctorAvailability.available &&
+      currentDoctorAvailability.currentBranch &&
+      !currentDoctorAvailability.currentBranch.toLowerCase().includes("madhapur")
+    );
 
-  const disableTngos = !tngosOpen || !!(
-    currentDoctorAvailability && 
-    currentDoctorAvailability.available && 
-    currentDoctorAvailability.currentBranch && 
-    !currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
-  );
+  const disableTngos =
+    !tngosOpen ||
+    !!(
+      currentDoctorAvailability &&
+      currentDoctorAvailability.available &&
+      currentDoctorAvailability.currentBranch &&
+      !currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
+    );
 
-  const selectedBranchClosed = (selectedBranch === "Madhapur" && !madhapurOpen) || (selectedBranch === "TNGO's Colony" && !tngosOpen);
+  const selectedBranchClosed =
+    (selectedBranch === "Madhapur" && !madhapurOpen) ||
+    (selectedBranch === "TNGO's Colony" && !tngosOpen);
 
   // Helper to format date: 2026-06-22 -> 22-06-2026 (22nd June 2026)
   const formatAppointmentDate = (dateStr: string): string => {
@@ -993,23 +1090,33 @@ function BookingForm({
     const year = parts[0];
     const monthIdx = parseInt(parts[1], 10) - 1;
     const day = parseInt(parts[2], 10);
-    
+
     const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     const monthName = months[monthIdx] || "";
-    
+
     const getOrdinal = (n: number) => {
       const s = ["th", "st", "nd", "rd"];
       const v = n % 100;
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
-    
+
     const formattedDay = getOrdinal(day);
     const formattedMonthStr = parts[1];
     const formattedDayStr = parts[2];
-    
+
     return `${formattedDayStr}-${formattedMonthStr}-${year} (${formattedDay} ${monthName} ${year})`;
   };
 
@@ -1026,23 +1133,15 @@ function BookingForm({
     const time = String(fd.get("time") || "").trim();
     const symptoms = String(fd.get("symptoms") || "").trim();
 
-    if (
-      !name ||
-      !phone ||
-      !age ||
-      !gender ||
-      !doctor ||
-      !branch ||
-      !date ||
-      !time ||
-      !symptoms
-    ) {
+    if (!name || !phone || !age || !gender || !doctor || !branch || !date || !time || !symptoms) {
       toast.error("Please fill in all the required fields.");
       return;
     }
 
     if (selectedBranchClosed) {
-      toast.error(`The ${selectedBranch} branch is closed today. Appointments cannot be requested.`);
+      toast.error(
+        `The ${selectedBranch} branch is closed today. Appointments cannot be requested.`,
+      );
       return;
     }
 
@@ -1107,9 +1206,7 @@ ${symptoms}`;
         <div className="lg:col-span-2 glass-strong rounded-3xl p-6 sm:p-8 relative overflow-hidden">
           <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-violet/20 blur-3xl" />
           <div className="relative">
-            <h3 className="font-display text-2xl font-extrabold gradient-text">
-              Why book online?
-            </h3>
+            <h3 className="font-display text-2xl font-extrabold gradient-text">Why book online?</h3>
             <ul className="mt-5 space-y-4">
               {[
                 { icon: Clock, t: "Save time", d: "Skip the wait — we'll have your slot ready." },
@@ -1141,7 +1238,10 @@ ${symptoms}`;
               "Phone",
               <input name="phone" type="tel" className={inputCls} placeholder="+91 ..." />,
             )}
-            {field("Age", <input name="age" type="number" min={0} className={inputCls} placeholder="32" />)}
+            {field(
+              "Age",
+              <input name="age" type="number" min={0} className={inputCls} placeholder="32" />,
+            )}
             {field(
               "Gender",
               <select name="gender" className={inputCls} defaultValue="">
@@ -1175,7 +1275,13 @@ ${symptoms}`;
                 className={inputCls}
                 value={selectedBranch}
                 onChange={(e) => setSelectedBranch(e.target.value)}
-                disabled={!!(currentDoctorAvailability && currentDoctorAvailability.available && currentDoctorAvailability.currentBranch)}
+                disabled={
+                  !!(
+                    currentDoctorAvailability &&
+                    currentDoctorAvailability.available &&
+                    currentDoctorAvailability.currentBranch
+                  )
+                }
               >
                 <option value="" disabled>
                   Select Branch
@@ -1193,7 +1299,13 @@ ${symptoms}`;
             {currentDoctorAvailability && (
               <div className="sm:col-span-2 p-3.5 rounded-xl bg-violet/8 border border-violet/20 text-xs sm:text-sm text-violet-deep font-semibold animate-fade-up">
                 {currentDoctorAvailability.available && currentDoctorAvailability.currentBranch ? (
-                  <span>📢 {selectedDoctor} is available today only at the {currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo") ? "TNGO's Colony" : "Madhapur"} Branch.</span>
+                  <span>
+                    📢 {selectedDoctor} is available today only at the{" "}
+                    {currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
+                      ? "TNGO's Colony"
+                      : "Madhapur"}{" "}
+                    Branch.
+                  </span>
                 ) : (
                   <span>⚠️ {selectedDoctor} is not available today.</span>
                 )}
@@ -1203,14 +1315,12 @@ ${symptoms}`;
             {/* Notice for closed branch */}
             {selectedBranchClosed && (
               <div className="sm:col-span-2 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs sm:text-sm text-red-600 font-semibold animate-fade-up">
-                ⚠️ The {selectedBranch} branch is closed today. Appointment booking is currently disabled.
+                ⚠️ The {selectedBranch} branch is closed today. Appointment booking is currently
+                disabled.
               </div>
             )}
 
-            {field(
-              "Preferred Date",
-              <input name="date" type="date" className={inputCls} />,
-            )}
+            {field("Preferred Date", <input name="date" type="date" className={inputCls} />)}
             {field(
               "Preferred Time",
               <select
@@ -1257,10 +1367,9 @@ ${symptoms}`;
 }
 
 function Testimonials() {
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: "start" },
-    [Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })],
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
+    Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true }),
+  ]);
   const [selected, setSelected] = useState(0);
   const [snaps, setSnaps] = useState<number[]>([]);
 
@@ -1288,10 +1397,7 @@ function Testimonials() {
         <div className="overflow-hidden -mx-2" ref={emblaRef}>
           <div className="flex touch-pan-y">
             {TESTIMONIALS.map((t, i) => (
-              <div
-                key={i}
-                className="shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/3 px-2"
-              >
+              <div key={i} className="shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/3 px-2">
                 <div className="group relative h-full glass-strong rounded-3xl p-6 sm:p-7 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
                   <Quote className="absolute top-5 right-5 h-10 w-10 text-violet/15 group-hover:text-violet/25 transition-colors" />
                   <div className="flex items-center gap-0.5 text-orange-start mb-3">
@@ -1299,17 +1405,13 @@ function Testimonials() {
                       <Star key={j} className="h-4 w-4 fill-current" />
                     ))}
                   </div>
-                  <p className="text-sm text-foreground/85 leading-relaxed flex-1">
-                    "{t.text}"
-                  </p>
+                  <p className="text-sm text-foreground/85 leading-relaxed flex-1">"{t.text}"</p>
                   <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full gradient-orange grid place-items-center text-white font-bold shrink-0">
                       {t.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
-                      <div className="font-semibold text-sm text-foreground truncate">
-                        {t.name}
-                      </div>
+                      <div className="font-semibold text-sm text-foreground truncate">{t.name}</div>
                       <div className="text-xs text-muted-foreground">{t.role}</div>
                     </div>
                   </div>
@@ -1333,8 +1435,9 @@ function Testimonials() {
                 key={i}
                 onClick={() => emblaApi?.scrollTo(i)}
                 aria-label={`Go to testimonial ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
-                  }`}
+                className={`h-2 rounded-full transition-all ${
+                  selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
+                }`}
               />
             ))}
           </div>
@@ -1366,8 +1469,9 @@ function FAQ() {
           return (
             <div
               key={i}
-              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${isOpen ? "shadow-soft" : ""
-                }`}
+              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${
+                isOpen ? "shadow-soft" : ""
+              }`}
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
@@ -1377,15 +1481,19 @@ function FAQ() {
                   {f.q}
                 </span>
                 <span
-                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${isOpen ? "gradient-orange text-white rotate-180" : "bg-violet/10 text-violet-deep"
-                    }`}
+                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
+                    isOpen
+                      ? "gradient-orange text-white rotate-180"
+                      : "bg-violet/10 text-violet-deep"
+                  }`}
                 >
                   {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                 </span>
               </button>
               <div
-                className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
+                className={`grid transition-all duration-300 ease-out ${
+                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                }`}
               >
                 <div className="overflow-hidden">
                   <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -1402,13 +1510,15 @@ function FAQ() {
 }
 
 function Contact({ branches }: { branches: BranchStatus[] }) {
-  const madhapurOpen = branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
+  const madhapurOpen =
+    branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
   const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
 
   const branchesData = [
     {
       name: "Harsha Clinics | Top Clinic in Madhapur",
-      address: "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
+      address:
+        "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
       phone: "+91 8247815584",
       whatsapp: "918247815584",
       directionsUrl: "#", // User to insert directions URL later
@@ -1417,7 +1527,8 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
     },
     {
       name: "Harsha Clinics | Best Clinic in TNGO's Colony",
-      address: "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
+      address:
+        "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
       phone: "+91 8247815584",
       whatsapp: "918247815584",
       directionsUrl: "#", // User to insert directions URL later
@@ -1435,9 +1546,12 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
     >
       <div className="grid md:grid-cols-2 gap-8">
         {branchesData.map((b, i) => (
-          <div key={i} className="glass-strong rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:shadow-glow transition-all duration-300 relative overflow-hidden">
+          <div
+            key={i}
+            className="glass-strong rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:shadow-glow transition-all duration-300 relative overflow-hidden"
+          >
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/5 via-transparent to-orange-start/5 pointer-events-none" />
-            
+
             <div className="relative space-y-5">
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8">
@@ -1460,10 +1574,10 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                   <MapPin className="h-5 w-5" />
                 </span>
                 <div>
-                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Address</div>
-                  <p className="text-sm text-foreground/80 leading-relaxed mt-0.5">
-                    {b.address}
-                  </p>
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Address
+                  </div>
+                  <p className="text-sm text-foreground/80 leading-relaxed mt-0.5">{b.address}</p>
                 </div>
               </div>
 
@@ -1472,8 +1586,13 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                   <Phone className="h-5 w-5" />
                 </span>
                 <div>
-                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Phone</div>
-                  <a href={`tel:${b.phone.replace(/\s+/g, '')}`} className="text-sm font-semibold text-foreground/80 hover:text-violet-deep transition-colors mt-0.5 block">
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Phone
+                  </div>
+                  <a
+                    href={`tel:${b.phone.replace(/\s+/g, "")}`}
+                    className="text-sm font-semibold text-foreground/80 hover:text-violet-deep transition-colors mt-0.5 block"
+                  >
                     {b.phone}
                   </a>
                 </div>
@@ -1484,7 +1603,9 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                   <Clock className="h-5 w-5" />
                 </span>
                 <div>
-                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Hours</div>
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Hours
+                  </div>
                   <p className="text-sm text-foreground/80 mt-0.5">
                     {b.isOpen ? "Open daily • 10:00 AM – 10:00 PM" : "Closed Today"}
                   </p>
@@ -1506,13 +1627,17 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
               {/* Map Placeholder container for future embed */}
               <div className="aspect-[16/9] w-full bg-violet/5 border border-dashed border-violet/25 rounded-2xl flex flex-col items-center justify-center p-4 text-center">
                 <MapPin className="h-6 w-6 text-violet-deep mb-2 animate-bounce" />
-                <span className="text-xs font-semibold text-foreground/80">Interactive Map View Ready</span>
-                <span className="text-[10px] text-muted-foreground mt-1 max-w-[200px]">Exact Google Maps embed will be inserted here.</span>
+                <span className="text-xs font-semibold text-foreground/80">
+                  Interactive Map View Ready
+                </span>
+                <span className="text-[10px] text-muted-foreground mt-1 max-w-[200px]">
+                  Exact Google Maps embed will be inserted here.
+                </span>
               </div>
 
               <div className="grid grid-cols-3 gap-2 pt-2">
                 <a
-                  href={`tel:${b.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${b.phone.replace(/\s+/g, "")}`}
                   className="inline-flex flex-col items-center justify-center gap-1.5 px-2 py-3 rounded-2xl bg-violet/8 hover:bg-violet/15 transition-colors text-violet-deep font-semibold"
                 >
                   <Phone className="h-4 w-4" />
@@ -1551,24 +1676,24 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
   );
 }
 
-function Footer() {
+export function Footer() {
   const sections = [
     {
       title: "Quick Links",
       links: [
-        { href: "#about", label: "About" },
-        { href: "#doctors", label: "Doctors" },
-        { href: "#book", label: "Book Appointment" },
-        { href: "#faq", label: "FAQ" },
+        { href: "/#about", label: "About" },
+        { href: "/#doctors", label: "Doctors" },
+        { href: "/#book", label: "Book Appointment" },
+        { href: "/#faq", label: "FAQ" },
       ],
     },
     {
       title: "Services",
       links: [
-        { href: "#specialties", label: "Specialties" },
-        { href: "#facilities", label: "Facilities" },
-        { href: "#book", label: "Emergency Care" },
-        { href: "#book", label: "Lab Tests" },
+        { href: "/specialties", label: "Specialties" },
+        { href: "/facilities", label: "Facilities" },
+        { href: "/#book", label: "Emergency Care" },
+        { href: "/#book", label: "Lab Tests" },
       ],
     },
     {
@@ -1576,7 +1701,7 @@ function Footer() {
       links: [
         { href: "tel:+918247815584", label: "Call clinic" },
         { href: "https://wa.me/918247815584", label: "WhatsApp" },
-        { href: "#contact", label: "Get directions" },
+        { href: "/#contact", label: "Get directions" },
         { href: "mailto:hello@harshaclinic.in", label: "Email us" },
       ],
     },
@@ -1590,9 +1715,9 @@ function Footer() {
           <div>
             <a href="#home" className="flex items-center gap-2.5 group">
               <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-violet/10 bg-white p-0.5 shadow-soft transition-all duration-300 group-hover:scale-105">
-                <img 
-                  src="/Logo/Logo.jpg" 
-                  alt="Harsha Clinic Logo" 
+                <img
+                  src="/Logo/Logo.jpg"
+                  alt="Harsha Clinic Logo"
                   className="h-full w-full object-contain rounded-lg"
                 />
               </div>
@@ -1601,7 +1726,8 @@ function Footer() {
               </span>
             </a>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              Advanced healthcare with a compassionate, family-first touch. Open daily 10:00 AM – 10:00 PM.
+              Advanced healthcare with a compassionate, family-first touch. Open daily 10:00 AM –
+              10:00 PM.
             </p>
             <div className="mt-5 flex items-center gap-2">
               <a
@@ -1655,72 +1781,6 @@ function Footer() {
   );
 }
 
-function WhyChooseUs() {
-  const features = [
-    {
-      title: "Experienced Doctors",
-      desc: "Our board-certified medical specialists bring decades of clinical experience in family medicine, critical care, and emergency response.",
-      icon: Award,
-    },
-    {
-      title: "Family Healthcare",
-      desc: "Comprehensive primary care services tailored for patients of all ages, from infants to seniors, ensuring complete family wellness.",
-      icon: Users,
-    },
-    {
-      title: "Convenient Locations",
-      desc: "Easily accessible premium clinics located across Hyderabad's key hubs, in Madhapur and TNGO's Colony, Gachibowli.",
-      icon: MapPin,
-    },
-    {
-      title: "Emergency Care",
-      desc: "Equipped with advanced diagnostic tools and stabilization beds to handle urgent treatments, suturing, and medical emergencies.",
-      icon: HeartPulse,
-    },
-    {
-      title: "Affordable Consultation",
-      desc: "Quality, transparent healthcare designed to be accessible. Clean, professional check-ups without inflated medical costs.",
-      icon: ShieldCheck,
-    },
-    {
-      title: "Patient-Centered Treatment",
-      desc: "A warm, personalized approach where our doctors take the time to listen, diagnose thoroughly, and explain treatment paths clearly.",
-      icon: Stethoscope,
-    },
-  ];
-
-  return (
-    <Section
-      id="why-choose-us"
-      eyebrow="Why Choose Us"
-      title="Healthcare you can trust, right in your neighborhood"
-      subtitle="We combine clinical expertise with compassionate care to deliver a premium medical experience for you and your loved ones."
-    >
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {features.map((f, i) => {
-          const Icon = f.icon;
-          return (
-            <div
-              key={i}
-              className="group glass-strong rounded-3xl p-6 sm:p-8 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
-            >
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet/5 via-transparent to-orange-start/5 pointer-events-none" />
-              <div className="grid h-12 w-12 place-items-center rounded-2xl gradient-orange text-white shadow-soft mb-6 group-hover:scale-110 transition-transform">
-                <Icon className="h-5 w-5" />
-              </div>
-              <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-3">
-                {f.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {f.desc}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    </Section>
-  );
-}
 
 const GALLERY_ITEMS = [
   {
@@ -1793,7 +1853,7 @@ function ClinicGallery() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const filteredItems = GALLERY_ITEMS.filter(
-    (item) => filter === "all" || item.category === filter
+    (item) => filter === "all" || item.category === filter,
   );
 
   const handlePrev = (e: React.MouseEvent) => {
@@ -1827,7 +1887,7 @@ function ClinicGallery() {
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setFilter(tab.id as any)}
+            onClick={() => setFilter(tab.id as "all" | "madhapur" | "tngo" | "facilities")}
             className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               filter === tab.id
                 ? "bg-violet-deep text-white shadow-soft"
@@ -1854,7 +1914,7 @@ function ClinicGallery() {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/20 to-transparent opacity-90 pointer-events-none" />
-              
+
               {/* Branch Tag */}
               <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10">
                 {img.branch}
@@ -1864,9 +1924,7 @@ function ClinicGallery() {
               <h3 className="font-display text-base font-extrabold leading-tight text-left">
                 {img.title}
               </h3>
-              <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">
-                {img.desc}
-              </p>
+              <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">{img.desc}</p>
             </div>
           </div>
         ))}
@@ -1917,7 +1975,7 @@ function ClinicGallery() {
                 className="max-h-[65vh] object-contain max-w-full"
               />
             </div>
-            
+
             {/* Image Details */}
             <div className="mt-4 text-center text-white px-4 max-w-xl">
               <span className="text-[10px] uppercase font-bold tracking-widest text-violet/70">
@@ -1959,9 +2017,6 @@ function Home() {
       <Nav />
       <main>
         <Hero />
-        <MeetOurDoctors />
-        <About />
-        <WhyChooseUs />
         <Doctors
           doctors={doctors}
           onSelectDoctorAndBranch={(doctor, branch) => {
@@ -1969,8 +2024,8 @@ function Home() {
             setSelectedBranch(branch);
           }}
         />
+        <About />
         <Specialties />
-        <Facilities />
         <ClinicGallery />
         <BookingForm
           doctors={doctors}
