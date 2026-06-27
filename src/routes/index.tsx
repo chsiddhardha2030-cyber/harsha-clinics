@@ -203,100 +203,381 @@ function Section({
   );
 }
 
+const HERO_SLIDES = [
+  "/hero/slide1.png",
+  "/hero/slide2.png",
+  "/hero/slide3.png",
+  "/hero/slide4.png",
+  "/hero/slide5.png",
+];
+
+const CURATED_PALETTES: { [key: string]: [string, string, string] } = {
+  "/hero/slide1.png": ["rgb(186, 230, 253)", "rgb(224, 242, 254)", "rgb(243, 244, 246)"], // Soft Sky Blue
+  "/hero/slide2.png": ["rgb(233, 213, 255)", "rgb(243, 232, 255)", "rgb(250, 245, 255)"], // Lavender
+  "/hero/slide3.png": ["rgb(207, 250, 254)", "rgb(224, 242, 254)", "rgb(243, 244, 246)"], // Light Cyan
+  "/hero/slide4.png": ["rgb(255, 237, 213)", "rgb(254, 243, 199)", "rgb(255, 251, 235)"], // Warm Peach
+  "/hero/slide5.png": ["rgb(209, 250, 229)", "rgb(236, 253, 245)", "rgb(240, 253, 250)"], // Soft Mint
+};
+
+function parseRgb(rgbStr: string): [number, number, number] {
+  const match = rgbStr.match(/\d+/g);
+  if (!match || match.length < 3) return [255, 255, 255];
+  return [parseInt(match[0], 10), parseInt(match[1], 10), parseInt(match[2], 10)];
+}
+
+function blendColors(predStr: string, extStr: string, weightExt: number = 0.25): string {
+  const [pr, pg, pb] = parseRgb(predStr);
+  const [er, eg, eb] = parseRgb(extStr);
+  
+  const r = Math.round(pr * (1 - weightExt) + er * weightExt);
+  const g = Math.round(pg * (1 - weightExt) + eg * weightExt);
+  const b = Math.round(pb * (1 - weightExt) + eb * weightExt);
+  
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function getRgba(rgbStr: string, opacity: number): string {
+  const match = rgbStr.match(/\d+/g);
+  if (!match || match.length < 3) return rgbStr;
+  return `rgba(${match[0]}, ${match[1]}, ${match[2]}, ${opacity})`;
+}
+
+function extractDominantColors(imageUrl: string): Promise<string[]> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = imageUrl;
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"]);
+          return;
+        }
+        canvas.width = 10;
+        canvas.height = 10;
+        ctx.drawImage(img, 0, 0, 10, 10);
+        const data = ctx.getImageData(0, 0, 10, 10).data;
+        const colorCounts: { [key: string]: number } = {};
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i+1];
+          const b = data[i+2];
+          const a = data[i+3];
+          if (a < 200) continue;
+          
+          const qr = Math.round(r / 32) * 32;
+          const qg = Math.round(g / 32) * 32;
+          const qb = Math.round(b / 32) * 32;
+          
+          const luma = 0.2126 * qr + 0.7152 * qg + 0.0722 * qb;
+          if (luma < 40 || luma > 225) continue;
+          
+          const rgb = `rgb(${qr}, ${qg}, ${qb})`;
+          colorCounts[rgb] = (colorCounts[rgb] || 0) + 1;
+        }
+        const sorted = Object.keys(colorCounts).sort((a, b) => colorCounts[b] - colorCounts[a]);
+        if (sorted.length >= 3) {
+          resolve(sorted.slice(0, 3));
+        } else {
+          const fallbacks = ["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"];
+          const combined = [...sorted];
+          for (const f of fallbacks) {
+            if (combined.length < 3 && !combined.includes(f)) {
+              combined.push(f);
+            }
+          }
+          resolve(combined);
+        }
+      } catch (e) {
+        resolve(["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"]);
+      }
+    };
+    img.onerror = () => {
+      resolve(["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"]);
+    };
+  });
+}
+
 function Hero() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobile();
+
+  // Color state containing blended colors for each slide
+  const [slideColors, setSlideColors] = useState<{[key: string]: [string, string, string]}>(CURATED_PALETTES);
+
+  // Background cross-fade state (Layer A and Layer B)
+  const [layerA, setLayerA] = useState<[string, string, string]>(CURATED_PALETTES[HERO_SLIDES[0]]);
+  const [layerB, setLayerB] = useState<[string, string, string]>(CURATED_PALETTES[HERO_SLIDES[0]]);
+  const [activeLayer, setActiveLayer] = useState<'A' | 'B'>('A');
+
+  // Trigger color extraction and blending on mount
+  useEffect(() => {
+    HERO_SLIDES.forEach(async (slide) => {
+      const extracted = await extractDominantColors(slide);
+      const curated = CURATED_PALETTES[slide];
+      // Blend 75% curated colors with 25% extracted colors to preserve hospital aesthetics
+      const blended: [string, string, string] = [
+        blendColors(curated[0], extracted[0] || "rgb(255, 255, 255)", 0.25),
+        blendColors(curated[1], extracted[1] || "rgb(255, 255, 255)", 0.25),
+        blendColors(curated[2], extracted[2] || "rgb(255, 255, 255)", 0.25),
+      ];
+      setSlideColors((prev) => ({
+        ...prev,
+        [slide]: blended,
+      }));
+    });
+  }, []);
+
+  // Softly cross-fade gradients when the slide index changes (2.5s duration)
+  useEffect(() => {
+    const current = slideColors[HERO_SLIDES[currentIndex]] || CURATED_PALETTES[HERO_SLIDES[currentIndex]];
+    if (activeLayer === 'A') {
+      setLayerB(current);
+      setActiveLayer('B');
+    } else {
+      setLayerA(current);
+      setActiveLayer('A');
+    }
+  }, [currentIndex, slideColors]);
+
+  useEffect(() => {
+    if (isHovered && !isMobile) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [isHovered, isMobile]);
+
+  const currentColors = slideColors[HERO_SLIDES[currentIndex]] || CURATED_PALETTES[HERO_SLIDES[currentIndex]];
+
   return (
-    <section id="home" className="relative pt-24 sm:pt-28 pb-12 sm:pb-20 overflow-hidden">
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute top-20 -left-24 h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-violet/25 blur-3xl" />
-        <div className="absolute top-40 right-0 h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-orange-start/20 blur-3xl" />
-      </div>
+    <section
+      id="home"
+      className="relative overflow-hidden bg-background min-h-[85vh] flex items-center pt-28 pb-16 md:pt-36 md:pb-24 lg:pt-40 lg:pb-32"
+      onMouseEnter={() => {
+        if (!isMobile) setIsHovered(true);
+      }}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Background Layer A (transition: opacity 2500ms ease-in-out) */}
+      <div
+        className="absolute inset-0 pointer-events-none -z-20"
+        style={{
+          opacity: activeLayer === 'A' ? 1 : 0,
+          transition: "opacity 2500ms ease-in-out",
+          backgroundImage: `
+            radial-gradient(circle at 75% 30%, ${getRgba(layerA[0], 0.12)} 0%, transparent 65%),
+            radial-gradient(circle at 25% 70%, ${getRgba(layerA[1], 0.08)} 0%, transparent 70%),
+            radial-gradient(circle at 60% 50%, ${getRgba(layerA[2], 0.05)} 0%, transparent 75%),
+            radial-gradient(circle at 10% 15%, ${getRgba(layerA[0], 0.04)} 0%, transparent 50%)
+          `,
+        }}
+      />
+      
+      {/* Background Layer B (transition: opacity 2500ms ease-in-out) */}
+      <div
+        className="absolute inset-0 pointer-events-none -z-20"
+        style={{
+          opacity: activeLayer === 'B' ? 1 : 0,
+          transition: "opacity 2500ms ease-in-out",
+          backgroundImage: `
+            radial-gradient(circle at 75% 30%, ${getRgba(layerB[0], 0.12)} 0%, transparent 65%),
+            radial-gradient(circle at 25% 70%, ${getRgba(layerB[1], 0.08)} 0%, transparent 70%),
+            radial-gradient(circle at 60% 50%, ${getRgba(layerB[2], 0.05)} 0%, transparent 75%),
+            radial-gradient(circle at 10% 15%, ${getRgba(layerB[0], 0.04)} 0%, transparent 50%)
+          `,
+        }}
+      />
 
-      <div className="mx-auto max-w-7xl px-4 grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-        <div className="animate-fade-up text-center lg:text-left lg:col-span-7">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold text-violet-deep glass mb-4 sm:mb-6">
-            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-            Open today • 10:00 AM – 10:00 PM
-          </div>
-          <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
-            Advanced Healthcare.{" "}
-            <span className="gradient-text">Compassionate Care.</span>
-          </h1>
-          <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
-            Expert General Physician, Emergency Care &amp; Family Healthcare in
-            Madhapur, Hyderabad.
-          </p>
-          <div className="mt-5 sm:mt-7 flex flex-wrap gap-3 justify-center lg:justify-start">
-            <a
-              href="#book"
-              className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
-            >
-              <Calendar className="h-4 w-4" />
-              Book Appointment
-            </a>
-            <a
-              href="tel:+918247815584"
-              className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-violet-deep glass-strong hover:-translate-y-0.5 transition-all"
-            >
-              <Phone className="h-4 w-4" />
-              Call Now
-            </a>
-          </div>
+      {/* Subtle Vignette to naturally blend edges into page background */}
+      <div 
+        className="absolute inset-0 pointer-events-none -z-10"
+        style={{
+          backgroundImage: `radial-gradient(circle at center, transparent 35%, var(--background) 95%)`,
+        }}
+      />
 
-          <div className="mt-6 sm:mt-8 grid grid-cols-3 gap-2 sm:gap-3 max-w-md mx-auto lg:mx-0">
-            {[
-              { k: "4.9★", v: "Rated by Patients" },
-              { k: "20+", v: "Years Experience" },
-              { k: "15k+", v: "Happy Patients" },
-            ].map((s) => (
-              <div key={s.v} className="glass rounded-2xl px-2 py-2.5 sm:p-3 text-center">
-                <div className="font-display text-base sm:text-xl font-extrabold gradient-text leading-none">
-                  {s.k}
-                </div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 leading-tight">
-                  {s.v}
-                </div>
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          {/* Left Content Area */}
+          <div className="lg:col-span-5 flex items-center order-2 lg:order-1 pt-4 pb-8 lg:py-12">
+            <div className="animate-fade-up text-left max-w-xl mx-auto lg:mx-0 w-full">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold text-violet-deep glass mb-4 sm:mb-6">
+                <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                Open today • 10:00 AM – 10:00 PM
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="lg:col-span-5 order-last animate-fade-up">
-          <div className="relative mx-auto max-w-lg lg:max-w-none">
-            {/* Decorative background glows specific to the image frame */}
-            <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-violet to-orange-start opacity-35 blur-lg" />
-            <div className="relative glass-strong rounded-3xl p-3 shadow-glow overflow-hidden border border-white/10">
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl relative shadow-inner">
-                <img
-                  src="/Madhapur%20Branch/IMG-20260619-WA0089.jpg"
-                  alt="Harsha Clinic Madhapur Lobby & Reception"
-                  loading="eager"
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent pointer-events-none" />
-                
-                {/* Overlay Badge */}
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white bg-violet-deep/80 backdrop-blur-md border border-white/10 shadow-soft animate-pulse-slow">
-                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  Madhapur Main Branch
-                </div>
-              </div>
-              <div className="mt-4 px-2 pb-2 text-center lg:text-left flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="text-left">
-                  <h3 className="font-display text-sm sm:text-base font-extrabold text-foreground leading-tight">
-                    Siddi Vinayak Nagar Clinic
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
-                    Our state-of-the-art facility in Madhapur, Hyderabad
-                  </p>
-                </div>
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
+                Advanced Healthcare.{" "}
+                <span className="gradient-text">Compassionate Care.</span>
+              </h1>
+              <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground leading-relaxed">
+                Expert General Physician, Emergency Care &amp; Family Healthcare in
+                Madhapur, Hyderabad.
+              </p>
+              <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
-                  href="#gallery"
-                  className="shrink-0 inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-[10px] sm:text-xs font-bold text-violet-deep bg-violet/8 border border-violet/15 hover:bg-violet/15 transition-all"
+                  href="#book"
+                  className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
                 >
-                  Tour Clinic
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <Calendar className="h-4 w-4" />
+                  Book Appointment
+                </a>
+                <a
+                  href="tel:+918247815584"
+                  className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-violet-deep glass-strong hover:-translate-y-0.5 transition-all"
+                >
+                  <Phone className="h-4 w-4" />
+                  Call Now
                 </a>
               </div>
+
+              <div className="mt-6 sm:mt-8 grid grid-cols-3 gap-2 sm:gap-3 max-w-md">
+                {[
+                  { k: "4.9★", v: "Rated by Patients" },
+                  { k: "20+", v: "Years Experience" },
+                  { k: "15k+", v: "Happy Patients" },
+                ].map((s) => (
+                  <div key={s.v} className="glass rounded-2xl px-2 py-2.5 sm:p-3 text-center animate-hover">
+                    <div className="font-display text-base sm:text-xl font-extrabold gradient-text leading-none">
+                      {s.k}
+                    </div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 leading-tight">
+                      {s.v}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Image Slider Area */}
+          <div className="lg:col-span-7 order-1 lg:order-2 flex items-center justify-center relative w-full aspect-[16/11] sm:aspect-[16/10] md:h-[400px] lg:h-[460px] xl:h-[500px]">
+            {/* Soft Ambient Glow Layer (matching current slide colors) */}
+            <div 
+              className="absolute w-[85%] h-[85%] rounded-full filter blur-[95px] opacity-70 pointer-events-none"
+              style={{
+                transition: "background 2500ms ease-in-out",
+                background: `radial-gradient(circle, ${getRgba(currentColors[0], 0.32)} 0%, ${getRgba(currentColors[1], 0.12)} 60%, transparent 100%)`
+              }}
+            />
+            {/* Secondary Ambient Glow Layer */}
+            <div 
+              className="absolute w-[65%] h-[65%] rounded-full filter blur-[65px] opacity-75 pointer-events-none"
+              style={{
+                transition: "background 2500ms ease-in-out",
+                background: `radial-gradient(circle, ${getRgba(currentColors[1], 0.18)} 0%, transparent 80%)`
+              }}
+            />
+            
+            {/* Image Frame with aggressively feathered/melted edges */}
+            <div 
+              className="relative w-full h-full max-w-[620px] max-h-[440px] pointer-events-none"
+              style={{
+                maskImage: 'radial-gradient(circle at center, black 15%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.12) 72%, transparent 96%)',
+                WebkitMaskImage: 'radial-gradient(circle at center, black 15%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.12) 72%, transparent 96%)',
+              }}
+            >
+              {HERO_SLIDES.map((slide, index) => (
+                <div
+                  key={slide}
+                  className={`absolute inset-0 pointer-events-none`}
+                  style={{
+                    opacity: index === currentIndex ? 1 : 0,
+                    transform: index === currentIndex ? "scale(1.00)" : "scale(1.05)",
+                    transition: "opacity 2500ms ease-in-out, transform 2500ms ease-in-out",
+                  }}
+                >
+                  <img
+                    src={slide}
+                    alt={`Clinic slide ${index + 1}`}
+                    className="w-full h-full object-cover rounded-3xl"
+                    style={{ filter: "brightness(93%) contrast(104%)" }}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Edge blending overlay gradient using the app background color */}
+            <div 
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(circle at center, transparent 35%, rgba(248, 250, 252, 0.25) 60%, var(--background) 95%)',
+              }}
+            />
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MeetOurDoctors() {
+  return (
+    <section id="meet-our-doctors" className="relative py-16 sm:py-20 bg-background border-b border-border">
+      <div className="mx-auto max-w-7xl px-4 text-center">
+        <div className="max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8 mb-4">
+            <Sparkles className="h-3.5 w-3.5" />
+            Our Specialists
+          </div>
+          <h2 className="font-display text-3xl sm:text-5xl font-extrabold gradient-text leading-tight">
+            Meet Our Doctors
+          </h2>
+          <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
+            Dedicated professionals committed to delivering compassionate, world-class healthcare for your entire family.
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-12 lg:gap-16">
+          {/* Dr. D. Ravi Kumar */}
+          <div className="flex flex-col items-center group text-center max-w-xs">
+            <div className="relative w-[140px] h-[140px] sm:w-[150px] sm:h-[150px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-glow bg-white flex-shrink-0">
+              <img
+                src="/doctors/Doctor%20photo.jpg"
+                alt="Dr. D. Ravi Kumar"
+                className="w-full h-full object-cover object-[center_20%]"
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-5 sm:mt-6">
+              <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-extrabold text-foreground leading-tight">
+                Dr. D. Ravi Kumar
+              </h3>
+              <p className="text-sm font-bold text-violet-deep mt-1">
+                MBBS, DEM, FCCM
+              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-semibold uppercase tracking-wider">
+                General Physician & Surgeon
+              </p>
+            </div>
+          </div>
+
+          {/* Dr. P. Pushpalatha */}
+          <div className="flex flex-col items-center group text-center max-w-xs">
+            <div className="relative w-[140px] h-[140px] sm:w-[150px] sm:h-[150px] lg:w-[210px] lg:h-[210px] rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-glow bg-white flex-shrink-0">
+              <img
+                src="/doctors/Madam%20photo.jpg"
+                alt="Dr. P. Pushpalatha"
+                className="w-full h-full object-cover object-[center_20%]"
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-5 sm:mt-6">
+              <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-extrabold text-foreground leading-tight">
+                Dr. P. Pushpalatha
+              </h3>
+              <p className="text-sm font-bold text-violet-deep mt-1">
+                BAMS
+              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-semibold uppercase tracking-wider">
+                Family Physician
+              </p>
             </div>
           </div>
         </div>
@@ -1678,6 +1959,7 @@ function Home() {
       <Nav />
       <main>
         <Hero />
+        <MeetOurDoctors />
         <About />
         <WhyChooseUs />
         <Doctors
