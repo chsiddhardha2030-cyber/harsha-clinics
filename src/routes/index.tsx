@@ -51,6 +51,8 @@ import {
   BranchStatus,
 } from "@/hooks/useDoctorAvailability";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileCarousel } from "@/components/ui/mobile-carousel";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -110,31 +112,37 @@ const TESTIMONIALS = [
     name: "Priya Sharma",
     role: "Patient",
     text: "Dr. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
+    avatar: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Anil Reddy",
     role: "Patient",
     text: "Walked in for an emergency at night and was attended to immediately. Professional, calm and thorough. Highly recommend Harsha Clinic.",
+    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Lakshmi Rao",
     role: "Patient",
     text: "Dr. Pushpalatha is so warm and patient. She listened carefully and explained everything. Best family physician in Madhapur.",
+    avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Rahul Verma",
     role: "Patient",
     text: "In-house pharmacy and lab is a game changer — got everything done in one visit. Clean, quick and very affordable.",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Sneha Iyer",
     role: "Patient",
     text: "Booked online, got a reminder, walked in on time. Felt like a 5-star healthcare experience right in our neighbourhood.",
+    avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Mohammed Aslam",
     role: "Patient",
     text: "Critical care consultation here saved my father's recovery time. Forever grateful to the team at Harsha Clinic.",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
   },
 ];
 
@@ -535,59 +543,168 @@ function Hero() {
 }
 
 function About() {
-  const items = [
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const chips = [
+    { icon: Award, label: "20+ Years Experience" },
+    { icon: MapPin, label: "Two Branches" },
+    { icon: Users, label: "Qualified Doctors" },
+    { icon: Microscope, label: "Modern Facilities" },
+  ];
+
+  const details = [
     {
-      image: "/images/clinic_family_2.webp",
-      title: "Family Medicine",
-      text: "Holistic primary care for every member of your family — from toddlers to grandparents.",
+      title: "Our Clinic Profile",
+      icon: Award,
+      text: "Serving the local community for over two decades, Harsha Clinics is a leading provider of comprehensive primary care and diagnostics in Hyderabad.",
     },
     {
-      image: "/images/clinic_patient_4.webp",
-      title: "Emergency Care",
-      text: "Rapid assessment, suturing, stabilization and on-call critical care when minutes matter.",
+      title: "Experienced Medical Team",
+      icon: Users,
+      text: "Our clinics are staffed by qualified, board-certified senior physicians and consultants specializing in general medicine, intensive care, and family health.",
     },
     {
-      image: "/images/clinic_scans_5.webp",
-      title: "Critical Care Consult",
-      text: "ICU & ventilator case consultation by an experienced FCCM-certified physician.",
+      title: "Two Strategic Branches",
+      icon: MapPin,
+      text: "Conveniently located at Siddi Vinayak Nagar in Madhapur and TNGO's Colony in Gachibowli, making quality healthcare easily accessible in your neighborhood.",
     },
     {
-      image: "/images/clinic_consult_1.webp",
-      title: "Preventive Health",
-      text: "Routine check-ups, screenings and lifestyle plans that keep you ahead of disease.",
+      title: "Modern Infrastructure",
+      icon: Microscope,
+      text: "Equipped with diagnostic labs, standard day-care beds, ECG testing, nebulization units, and a fully stocked pharmacy to manage treatments efficiently.",
+    },
+    {
+      title: "Patient-First Philosophy",
+      icon: HeartPulse,
+      text: "We prioritize patient trust and comfort. We focus on active listening, clear explanations of health conditions, and respecting your recovery goals.",
+    },
+    {
+      title: "Daily Operational Hours",
+      icon: Clock,
+      text: "Open daily from 10:00 AM to 10:00 PM, providing reliable family care and consultations that seamlessly fit your family's schedule.",
     },
   ];
+
   return (
-    <Section
-      id="about"
-      eyebrow="About the clinic"
-      title="A trusted neighbourhood clinic, built for modern families"
-      subtitle="Harsha Clinic combines compassionate doctors, modern diagnostics and an in-house pharmacy under one calm, welcoming roof in the heart of Madhapur."
-    >
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {items.map((it, i) => {
-          return (
-            <div
-              key={i}
-              className="group glass-strong rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft"
-            >
-              <div className="aspect-[4/3] w-full overflow-hidden relative">
-                <img
-                  src={it.image}
-                  alt={it.title}
-                  width={400}
-                  height={300}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-display text-lg font-bold text-foreground mb-2">{it.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-grow">{it.text}</p>
-              </div>
-            </div>
-          );
-        })}
+    <Section id="about">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+        {/* Left Column: Overlapping Real Clinic Images */}
+        <div className="lg:col-span-6 relative flex items-center justify-center min-h-[300px] sm:min-h-[440px] lg:min-h-[480px] w-full max-w-[540px] mx-auto lg:mx-0 select-none group/about-images">
+          {/* Background Ambient Glow */}
+          <div className="absolute w-[70%] h-[70%] rounded-full bg-violet/5 blur-3xl pointer-events-none -z-10 group-hover/about-images:bg-violet/10 transition-all duration-700" />
+          
+          {/* Main Large Clinic Image */}
+          <div className="relative w-[82%] aspect-[4/3] rounded-3xl overflow-hidden glass-strong border border-white/40 shadow-xl transition-all duration-500 group-hover/about-images:scale-[1.01] group-hover/about-images:shadow-glow z-10">
+            <img
+              src="/Madhapur%20Branch/IMG-20260619-WA0095.jpg"
+              alt="Harsha Clinic Madhapur Wait Area"
+              className="w-full h-full object-cover select-none"
+              loading="lazy"
+            />
+          </div>
+
+          {/* Overlapping Image 1 - Top-Right */}
+          <div className="absolute top-0 right-[-8px] sm:right-[-16px] w-[42%] aspect-[4/3] rounded-2xl overflow-hidden border-4 border-background shadow-lg transition-all duration-500 z-20 group-hover/about-images:-translate-y-3 group-hover/about-images:translate-x-3 group-hover/about-images:rotate-1 group-hover/about-images:scale-105">
+            <img
+              src="/TNGO%20Colony%20Branch/IMG-20260619-WA0079.jpg"
+              alt="TNGO's Colony Branch Lounge"
+              className="w-full h-full object-cover select-none"
+              loading="lazy"
+            />
+          </div>
+
+          {/* Overlapping Image 2 - Bottom-Left */}
+          <div className="absolute bottom-0 left-[-8px] sm:left-[-16px] w-[42%] aspect-[4/3] rounded-2xl overflow-hidden border-4 border-background shadow-lg transition-all duration-500 z-20 group-hover/about-images:translate-y-3 group-hover/about-images:-translate-x-3 group-hover/about-images:-rotate-1 group-hover/about-images:scale-105">
+            <img
+              src="/Madhapur%20Branch/IMG-20260619-WA0091.jpg"
+              alt="Doctor Consultation Cabin"
+              className="w-full h-full object-cover select-none"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        {/* Right Column: Text & Features Content */}
+        <div className="lg:col-span-6 flex flex-col justify-center text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-violet-deep bg-violet/8 mb-4 w-fit">
+            <Sparkles className="h-3.5 w-3.5 text-orange-start" />
+            Who We Are
+          </div>
+
+          <h2 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight text-foreground mb-4">
+            Serving Hyderabad with <span className="gradient-text">Trusted Healthcare</span>
+          </h2>
+
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
+            Founded with a vision to deliver reliable primary healthcare and clinical expertise, Harsha Clinics provides comprehensive medical services for families across Hyderabad. Led by senior physicians, our clinics focus on diagnostics, preventive health, and acute treatment under one roof.
+          </p>
+
+          {/* Premium Highlight Chips Grid */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {chips.map((c, i) => {
+              const Icon = c.icon;
+              return (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 p-3.5 rounded-2xl glass-strong border border-violet/10 hover:border-violet/20 shadow-soft hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
+                >
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-violet/8 text-violet-deep group-hover:gradient-orange group-hover:text-white transition-all duration-300">
+                    <Icon className="h-4.5 w-4.5" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">
+                    {c.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Premium Learn More Button */}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all w-fit cursor-pointer mb-2 animate-hover"
+          >
+            <span>{isExpanded ? "Show Less" : "Learn More"}</span>
+            {isExpanded ? (
+              <Minus className="h-4 w-4 shrink-0 transition-transform duration-300" />
+            ) : (
+              <Plus className="h-4 w-4 shrink-0 transition-transform duration-300" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Expandable Section with smooth grid accordion height animation */}
+      <div
+        className={`grid transition-all duration-500 ease-in-out ${
+          isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 pb-2">
+            {details.map((d, i) => {
+              const Icon = d.icon;
+              return (
+                <div
+                  key={i}
+                  className="p-5 rounded-[24px] glass border border-violet/10 hover:border-violet/20 hover:shadow-soft transition-all duration-300 text-left"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep">
+                      <Icon className="h-4.5 w-4.5" />
+                    </div>
+                    <h3 className="font-display text-base font-bold text-foreground">
+                      {d.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    {d.text}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </Section>
   );
@@ -903,7 +1020,8 @@ function Specialties() {
       title="Comprehensive care under one roof"
       subtitle="From everyday concerns to complex conditions — we treat a broad range of medical needs with precision and warmth."
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      {/* Desktop/Tablet Grid */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         {FEATURED_SPECIALTIES.slice(0, visibleCount).map((spec, i) => {
           const Icon = spec.icon;
           return (
@@ -944,6 +1062,49 @@ function Specialties() {
           );
         })}
       </div>
+
+      {/* Mobile Carousel */}
+      <MobileCarousel>
+        {FEATURED_SPECIALTIES.map((spec, i) => {
+          const Icon = spec.icon;
+          return (
+            <div
+              key={spec.title}
+              className="group glass-strong rounded-[24px] overflow-hidden flex flex-col h-full shadow-soft border border-violet/10"
+            >
+              {/* Image Container */}
+              <div className="aspect-[16/10] w-full overflow-hidden relative bg-slate-100">
+                <img
+                  src={spec.image}
+                  alt={spec.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+                {/* Floating department icon badge */}
+                <div className="absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-xl bg-white/90 backdrop-blur-sm text-violet-deep shadow-md">
+                  <Icon className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="p-6 flex flex-col flex-grow text-left">
+                <h3 className="font-display text-lg font-bold text-foreground mb-2">
+                  {spec.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
+                  {spec.desc}
+                </p>
+                <Link
+                  to="/specialties"
+                  hash={spec.anchor.split("#")[1]}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors"
+                >
+                  <span>Learn More</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </MobileCarousel>
       
       {/* Centered Button to View All Specialties */}
       <div className="mt-8 sm:mt-12 flex justify-center">
@@ -1407,9 +1568,17 @@ function Testimonials() {
                   </div>
                   <p className="text-sm text-foreground/85 leading-relaxed flex-1">"{t.text}"</p>
                   <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full gradient-orange grid place-items-center text-white font-bold shrink-0">
-                      {t.name.charAt(0)}
-                    </div>
+                    <Avatar className="h-10 w-10 shrink-0">
+                      <AvatarImage
+                        src={t.avatar}
+                        alt={t.name}
+                        className="object-cover"
+                        loading="lazy"
+                      />
+                      <AvatarFallback className="gradient-orange text-white font-bold">
+                        {t.name.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="min-w-0">
                       <div className="font-semibold text-sm text-foreground truncate">{t.name}</div>
                       <div className="text-xs text-muted-foreground">{t.role}</div>
@@ -1899,13 +2068,13 @@ function ClinicGallery() {
         ))}
       </div>
 
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Desktop/Tablet Grid */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {filteredItems.map((img, i) => (
           <div
             key={img.src}
             onClick={() => setLightboxIndex(i)}
-            className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft hover:shadow-glow hover:-translate-y-1 cursor-pointer transition-all duration-300"
+            className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft hover:shadow-glow hover:-translate-y-1 cursor-pointer transition-all duration-300 flex flex-col h-full"
           >
             <div className="aspect-[4/3] overflow-hidden relative bg-slate-100">
               <img
@@ -1929,6 +2098,37 @@ function ClinicGallery() {
           </div>
         ))}
       </div>
+
+      {/* Mobile Carousel */}
+      <MobileCarousel key={filter}>
+        {filteredItems.map((img, i) => (
+          <div
+            key={img.src}
+            onClick={() => setLightboxIndex(i)}
+            className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft cursor-pointer flex flex-col h-full"
+          >
+            <div className="aspect-[4/3] overflow-hidden relative bg-slate-100">
+              <img
+                src={img.src}
+                alt={img.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/20 to-transparent opacity-90 pointer-events-none" />
+
+              {/* Branch Tag */}
+              <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10">
+                {img.branch}
+              </div>
+            </div>
+            <div className="absolute bottom-0 inset-x-0 p-5 text-white">
+              <h3 className="font-display text-base font-extrabold leading-tight text-left">
+                {img.title}
+              </h3>
+              <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">{img.desc}</p>
+            </div>
+          </div>
+        ))}
+      </MobileCarousel>
 
       {/* Lightbox Modal */}
       {lightboxIndex !== null && filteredItems[lightboxIndex] && (
