@@ -3,10 +3,12 @@ import { Menu, X, HeartPulse } from "lucide-react";
 
 const links = [
   { href: "/#home", label: "Home" },
-  { href: "/#about", label: "About" },
   { href: "/#doctors", label: "Doctors" },
-  { href: "/specialties", label: "Specialties" },
-  { href: "/facilities", label: "Facilities" },
+  { href: "/#about", label: "About" },
+  { href: "/#specialties", label: "Specialties" },
+  { href: "/#lab-tests", label: "Lab Tests" },
+  { href: "/#ambulance", label: "Ambulance" },
+  { href: "/#gallery", label: "Gallery" },
   { href: "/#contact", label: "Contact" },
 ];
 
@@ -37,12 +39,12 @@ export function Nav() {
             <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-violet/10 bg-white p-0.5 shadow-soft transition-all duration-300 group-hover:scale-105 group-hover:shadow-glow">
               <img
                 src="/Logo/Logo.jpg"
-                alt="Harsha Clinic Logo"
+                alt="Harsha Clinics Logo"
                 className="h-full w-full object-contain rounded-lg"
               />
             </div>
             <span className="font-display font-extrabold text-lg sm:text-xl gradient-text tracking-tight">
-              Harsha Clinic
+              Harsha Clinics
             </span>
           </a>
 

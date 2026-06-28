@@ -30,6 +30,7 @@ const DEPARTMENTS = [
     id: "family-medicine",
     name: "Family Medicine & Primary Care",
     icon: Stethoscope,
+    image: "/images/clinic_family_2.webp",
     desc: "Comprehensive health services for patients of all ages. We focus on prevention, diagnosis, and treatment of everyday health conditions.",
     specialties: [
       { name: "Family Physician Consultation", desc: "Routine health checks and general diagnostic consulting for the whole family." },
@@ -45,6 +46,7 @@ const DEPARTMENTS = [
     id: "cardiology",
     name: "Cardiology & Heart Care",
     icon: HeartPulse,
+    image: "/extras/IMG-20260619-WA0120.jpg",
     desc: "Professional cardiovascular care to evaluate heart health, manage chronic cardiac conditions, and screen for coronary diseases.",
     specialties: [
       { name: "Heart Diseases Care", desc: "Outpatient management of coronary issues, angina, and ischemic conditions." },
@@ -57,6 +59,7 @@ const DEPARTMENTS = [
     id: "nephrology",
     name: "Nephrology & Kidney Care",
     icon: Droplet,
+    image: "/extras/IMG-20260619-WA0118.jpg",
     desc: "Dedicated clinical support to evaluate kidney functions, prevent disease progression, and coordinate ongoing care.",
     specialties: [
       { name: "Kidney Diseases Management", desc: "Outpatient treatment of chronic kidney disease (CKD) and nephrotic syndromes." },
@@ -68,6 +71,7 @@ const DEPARTMENTS = [
     id: "diabetes-care",
     name: "Diabetology & Endocrinology",
     icon: Activity,
+    image: "/extras/IMG-20260619-WA0113.jpg",
     desc: "Specialized endocrinological care focusing on blood sugar control, thyroid health, and hormonal/metabolic balance.",
     specialties: [
       { name: "Diabetes Mellitus Care", desc: "Glycated hemoglobin (HbA1c) checks, insulin adjustments, and medication regimes." },
@@ -79,6 +83,7 @@ const DEPARTMENTS = [
     id: "emergency-medicine",
     name: "Emergency & Critical Care",
     icon: Bandage,
+    image: "/extras/IMG-20260619-WA0108.jpg",
     desc: "Equipped to handle urgent clinical needs including minor surgeries, trauma stabilization, and critical care coordination.",
     specialties: [
       { name: "Emergency Medicine", desc: "Rapid clinical triaging, stabilization, and immediate medical intervention." },
@@ -91,6 +96,7 @@ const DEPARTMENTS = [
     id: "pulmonology",
     name: "Pulmonology & Respiratory Care",
     icon: Wind,
+    image: "/images/pulmonology.png",
     desc: "Diagnosis and therapy for acute and chronic respiratory disorders, allergies, and infectious lung diseases.",
     specialties: [
       { name: "Asthma & Bronchitis Care", desc: "Preventative inhaler management, nebulization, and lung function guidance." },
@@ -104,6 +110,7 @@ const DEPARTMENTS = [
     id: "neurology",
     name: "Neurology & Pain Management",
     icon: Brain,
+    image: "/images/neurology.png",
     desc: "Comprehensive diagnostic support and management of neurological disorders, chronic pain, and mobility issues.",
     specialties: [
       { name: "Epilepsy & Seizures", desc: "Anti-epileptic medication therapy adjustments and seizure frequency control." },
@@ -116,6 +123,7 @@ const DEPARTMENTS = [
     id: "diagnostics",
     name: "Diagnostics & Lab Services",
     icon: Microscope,
+    image: "/extras/IMG-20260626-WA0016.jpg",
     desc: "Complete diagnostic investigations supported by our high-end in-house biochemistry analyzers and lab technicians.",
     specialties: [
       { name: "Clinical Pathology Tests", desc: "Complete blood counts (CBC), urine analyses, and general screenings." },
@@ -198,7 +206,7 @@ function SpecialtiesPage() {
               Our Medical Specialties
             </h1>
             <p className="mt-4 text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              Harsha Clinic offers world-class healthcare with specialized consultations, in-house diagnostics, 
+              Harsha Clinics offers world-class healthcare with specialized consultations, in-house diagnostics, 
               and family wellness checkups across {totalSpecialtiesCount}+ services.
             </p>
 
@@ -279,6 +287,17 @@ function SpecialtiesPage() {
                       </div>
                     </div>
 
+                    {/* Large Premium Banner Image */}
+                    {dept.image && (
+                      <div className="mt-6 aspect-[16/6] md:aspect-[21/7] w-full overflow-hidden rounded-2xl border border-violet/10 shadow-soft bg-slate-100">
+                        <img
+                          src={dept.image}
+                          alt={dept.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+                        />
+                      </div>
+                    )}
+
                     {/* Specialties Grid */}
                     <div className="relative grid sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
                       {dept.matchedSpecialties.map((spec, index) => (
@@ -318,7 +337,7 @@ function SpecialtiesPage() {
                 Need Medical Assistance?
               </h2>
               <p className="mt-4 text-muted-foreground text-sm sm:text-base leading-relaxed">
-                Connect with our senior physicians on duty at Harsha Clinic. Save time by booking your 
+                Connect with our senior physicians on duty at Harsha Clinics. Save time by booking your 
                 appointment slot online and routing your request directly to WhatsApp.
               </p>
               

@@ -125,7 +125,7 @@ function AdminPage() {
             <span className="grid h-10 w-10 place-items-center rounded-xl gradient-orange shadow-soft">
               <HeartPulse className="h-5 w-5 text-white" />
             </span>
-            <span className="font-display font-extrabold text-xl gradient-text">Harsha Clinic</span>
+            <span className="font-display font-extrabold text-xl gradient-text">Harsha Clinics</span>
           </Link>
           <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground">
             Admin Portal
@@ -198,7 +198,7 @@ function AdminPage() {
                 <HeartPulse className="h-5 w-5 text-white" />
               </span>
               <span className="font-display font-extrabold text-lg gradient-text">
-                Harsha Clinic
+                Harsha Clinics
               </span>
             </Link>
             <span className="hidden sm:inline px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-violet/8 text-violet-deep border border-violet/20">

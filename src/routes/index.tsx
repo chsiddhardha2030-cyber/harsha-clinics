@@ -117,7 +117,7 @@ const TESTIMONIALS = [
   {
     name: "Anil Reddy",
     role: "Patient",
-    text: "Walked in for an emergency at night and was attended to immediately. Professional, calm and thorough. Highly recommend Harsha Clinic.",
+    text: "Walked in for an emergency at night and was attended to immediately. Professional, calm and thorough. Highly recommend Harsha Clinics.",
     avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
@@ -141,7 +141,7 @@ const TESTIMONIALS = [
   {
     name: "Mohammed Aslam",
     role: "Patient",
-    text: "Critical care consultation here saved my father's recovery time. Forever grateful to the team at Harsha Clinic.",
+    text: "Critical care consultation here saved my father's recovery time. Forever grateful to the team at Harsha Clinics.",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
   },
 ];
@@ -597,7 +597,7 @@ function About() {
           <div className="relative w-[82%] aspect-[4/3] rounded-3xl overflow-hidden glass-strong border border-white/40 shadow-xl transition-all duration-500 group-hover/about-images:scale-[1.01] group-hover/about-images:shadow-glow z-10">
             <img
               src="/Madhapur%20Branch/IMG-20260619-WA0095.jpg"
-              alt="Harsha Clinic Madhapur Wait Area"
+              alt="Harsha Clinics Madhapur Wait Area"
               className="w-full h-full object-cover select-none"
               loading="lazy"
             />
@@ -1552,7 +1552,7 @@ function Testimonials() {
       id="testimonials"
       eyebrow="Patient stories"
       title="Trusted by families across Madhapur"
-      subtitle="Real words from real patients who've experienced care at Harsha Clinic."
+      subtitle="Real words from real patients who've experienced care at Harsha Clinics."
     >
       <div className="relative">
         <div className="overflow-hidden -mx-2" ref={emblaRef}>
@@ -1859,10 +1859,10 @@ export function Footer() {
     {
       title: "Services",
       links: [
-        { href: "/specialties", label: "Specialties" },
-        { href: "/facilities", label: "Facilities" },
-        { href: "/#book", label: "Emergency Care" },
-        { href: "/#book", label: "Lab Tests" },
+        { href: "/#specialties", label: "Specialties" },
+        { href: "/#lab-tests", label: "Lab Tests" },
+        { href: "/#ambulance", label: "Ambulance Support" },
+        { href: "/#gallery", label: "Clinic Gallery" },
       ],
     },
     {
@@ -1886,12 +1886,12 @@ export function Footer() {
               <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-violet/10 bg-white p-0.5 shadow-soft transition-all duration-300 group-hover:scale-105">
                 <img
                   src="/Logo/Logo.jpg"
-                  alt="Harsha Clinic Logo"
+                  alt="Harsha Clinics Logo"
                   className="h-full w-full object-contain rounded-lg"
                 />
               </div>
               <span className="font-display font-extrabold text-lg gradient-text tracking-tight">
-                Harsha Clinic
+                Harsha Clinics
               </span>
             </a>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
@@ -1939,7 +1939,7 @@ export function Footer() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Harsha Clinic. All rights reserved.
+            © {new Date().getFullYear()} Harsha Clinics. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Crafted with care for the families of Hyderabad.
@@ -2042,8 +2042,8 @@ function ClinicGallery() {
   return (
     <Section
       id="gallery"
-      eyebrow="Our Facilities"
-      title="Take a look inside our premium clinics"
+      eyebrow="Clinic Gallery"
+      title="Explore Our Clinics"
       subtitle="Step inside our clean, well-equipped branches located in Madhapur and TNGO's Colony, Gachibowli."
     >
       {/* Category Filters */}
@@ -2207,6 +2207,217 @@ function MobileSticky() {
   );
 }
 
+function LabTests() {
+  const commonTests = [
+    {
+      name: "Complete Blood Count (CBC)",
+      desc: "Evaluates overall health and detects a wide range of disorders, including anemia and infection.",
+      time: "Reports in 6 Hours",
+      price: "₹349",
+      icon: Droplet,
+    },
+    {
+      name: "HbA1c & Blood Sugar Checkup",
+      desc: "Three-month average blood glucose levels to monitor or screen for diabetes mellitus.",
+      time: "Reports in 4 Hours",
+      price: "₹299",
+      icon: Activity,
+    },
+    {
+      name: "Lipid Profile (Cholesterol)",
+      desc: "Measures good and bad cholesterol levels to assess overall cardiovascular risk.",
+      time: "Reports in 8 Hours",
+      price: "₹499",
+      icon: HeartPulse,
+    },
+    {
+      name: "Kidney Function Test (KFT)",
+      desc: "Urea, creatinine, and electrolyte parameters to evaluate renal filtration and health.",
+      time: "Reports in 8 Hours",
+      price: "₹599",
+      icon: FlaskConical,
+    },
+    {
+      name: "Liver Function Test (LFT)",
+      desc: "Enzymes, bilirubin, and proteins to diagnose or monitor liver damage or infection.",
+      time: "Reports in 8 Hours",
+      price: "₹599",
+      icon: Microscope,
+    },
+    {
+      name: "Thyroid Profile (T3, T4, TSH)",
+      desc: "Comprehensive check of thyroid hormone levels to identify hypo or hyperthyroidism.",
+      time: "Reports in 8 Hours",
+      price: "₹449",
+      icon: TestTube,
+    },
+  ];
+
+  return (
+    <Section
+      id="lab-tests"
+      eyebrow="Diagnostics & Labs"
+      title="Diagnostic & Laboratory Services"
+      subtitle="Accurate reporting, state-of-the-art biochemistry analyzers, and hygienic sample collection by expert technicians."
+    >
+      <div className="grid lg:grid-cols-12 gap-8 items-center">
+        {/* Left Side: Text and Tests Grid */}
+        <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="grid sm:grid-cols-2 gap-4">
+            {commonTests.map((test) => {
+              const Icon = test.icon;
+              return (
+                <div
+                  key={test.name}
+                  className="group p-5 rounded-2xl glass-strong border border-violet/10 hover:border-violet/20 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between text-left"
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep group-hover:bg-gradient-orange group-hover:text-white transition-all">
+                        <Icon className="h-4.5 w-4.5" />
+                      </div>
+                      <h4 className="font-display font-bold text-foreground text-sm sm:text-base leading-snug">
+                        {test.name}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      {test.desc}
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-[11px] font-semibold">
+                    <span className="text-violet flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {test.time}
+                    </span>
+                    <span className="text-violet-deep font-bold text-sm bg-violet/5 px-2.5 py-0.5 rounded-lg">
+                      {test.price}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+            <a
+              href="#book"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
+            >
+              <Calendar className="h-4 w-4" />
+              Book Lab Test
+            </a>
+            <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-green-500" />
+              Free home sample collection across Madhapur & Gachibowli.
+            </span>
+          </div>
+        </div>
+
+        {/* Right Side: Big Image & Highlights */}
+        <div className="lg:col-span-5 relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-violet/20 to-orange-start/15 rounded-3xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <div className="relative rounded-3xl overflow-hidden border border-violet/15 shadow-soft hover:shadow-glow transition-all duration-300">
+            <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
+              <img
+                src="/extras/IMG-20260626-WA0016.jpg"
+                alt="Diagnostics and Laboratory Services"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-5 left-5 right-5 text-white text-left">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10 mb-2">
+                  In-House Lab
+                </span>
+                <p className="text-xs text-white/90 leading-relaxed">
+                  State-of-the-art biochemistry analyzers ensure reliable, NABL-standard diagnostic confirmation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function Ambulance() {
+  const highlights = [
+    "24x7 Availability with dedicated helpline",
+    "Oxygen-equipped Cardiac Life Support",
+    "FCCM-certified emergency medical paramedical staff",
+    "Direct priority admission to Gachibowli & Madhapur ICUs",
+    "Fully air-conditioned medical transport vehicle",
+  ];
+
+  return (
+    <Section
+      id="ambulance"
+      eyebrow="Emergency Support"
+      title="24×7 Ambulance Service"
+      subtitle="When seconds count, count on our emergency medical team. Prompt dispatch and advanced life-support ambulances are ready around the clock."
+    >
+      <div className="grid lg:grid-cols-12 gap-8 items-center">
+        {/* Left Side: Image */}
+        <div className="lg:col-span-5 order-last lg:order-first relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-start/15 rounded-3xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <div className="relative rounded-3xl overflow-hidden border border-red-500/10 shadow-soft hover:shadow-glow transition-all duration-300">
+            <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
+              <img
+                src="/images/ambulance.png"
+                alt="24/7 Ambulance Service at Harsha Clinics"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-5 left-5 right-5 text-white text-left">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-red-600/80 backdrop-blur-sm border border-white/10 mb-2">
+                  Emergency Support
+                </span>
+                <p className="text-xs text-white/90 leading-relaxed">
+                  Fully equipped with patient monitors, medical gas cylinders, and trauma stabilization kits.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Features and Contact */}
+        <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="space-y-4">
+            <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground">
+              Critical Care & Emergency Highlights
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Our ambulance services are staffed with emergency care technicians and fully prepared for cardiac, respiratory, and pediatric emergencies. We ensure continuous patient monitoring from pickup to clinical admission.
+            </p>
+          </div>
+
+          <ul className="grid sm:grid-cols-2 gap-3.5">
+            {highlights.map((item) => (
+              <li key={item} className="flex gap-2.5 items-start text-xs sm:text-sm text-foreground/90 font-medium">
+                <CheckCircle2 className="h-4.5 w-4.5 text-red-500 shrink-0 mt-0.5" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
+            <a
+              href="tel:+918247815584"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-650 hover:bg-red-700 shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
+            >
+              <Phone className="h-4 w-4 animate-bounce" />
+              Call Ambulance: +91 82478 15584
+            </a>
+            <span className="text-xs text-muted-foreground font-semibold">
+              Emergency Dispatch: +91 82478 15584
+            </span>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 function Home() {
   const { doctors, branches } = useDoctorAvailability();
   const [selectedDoctor, setSelectedDoctor] = useState("");
@@ -2217,6 +2428,7 @@ function Home() {
       <Nav />
       <main>
         <Hero />
+        <About />
         <Doctors
           doctors={doctors}
           onSelectDoctorAndBranch={(doctor, branch) => {
@@ -2224,8 +2436,9 @@ function Home() {
             setSelectedBranch(branch);
           }}
         />
-        <About />
         <Specialties />
+        <LabTests />
+        <Ambulance />
         <ClinicGallery />
         <BookingForm
           doctors={doctors}
