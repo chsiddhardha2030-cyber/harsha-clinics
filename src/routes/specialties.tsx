@@ -123,7 +123,7 @@ const DEPARTMENTS = [
     id: "diagnostics",
     name: "Diagnostics & Lab Services",
     icon: Microscope,
-    image: "/extras/IMG-20260626-WA0016.jpg",
+    image: "/extras/Facilities/IMG-20260626-WA0001.jpg",
     desc: "Complete diagnostic investigations supported by our high-end in-house biochemistry analyzers and lab technicians.",
     specialties: [
       { name: "Clinical Pathology Tests", desc: "Complete blood counts (CBC), urine analyses, and general screenings." },
@@ -274,8 +274,18 @@ function SpecialtiesPage() {
                     
                     {/* Header */}
                     <div className="relative flex flex-col md:flex-row md:items-center gap-5 pb-6 border-b border-border">
-                      <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-orange text-white shadow-soft shrink-0">
-                        <Icon className="h-7 w-7" />
+                      <div className="h-16 w-16 md:h-20 md:w-20 rounded-full overflow-hidden shrink-0 border-2 border-violet/15 bg-white shadow-soft flex items-center justify-center">
+                        {dept.image ? (
+                          <img
+                            src={dept.image}
+                            alt={dept.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="grid h-full w-full place-items-center bg-gradient-orange text-white">
+                            <Icon className="h-8 w-8 md:h-10 md:w-10" />
+                          </div>
+                        )}
                       </div>
                       <div>
                         <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight leading-tight text-left">
@@ -287,23 +297,12 @@ function SpecialtiesPage() {
                       </div>
                     </div>
 
-                    {/* Large Premium Banner Image */}
-                    {dept.image && (
-                      <div className="mt-6 aspect-[16/6] md:aspect-[21/7] w-full overflow-hidden rounded-2xl border border-violet/10 shadow-soft bg-slate-100">
-                        <img
-                          src={dept.image}
-                          alt={dept.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
-                        />
-                      </div>
-                    )}
-
                     {/* Specialties Grid */}
                     <div className="relative grid sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
                       {dept.matchedSpecialties.map((spec, index) => (
                         <div
                           key={spec.name}
-                          className="flex gap-4.5 p-4 rounded-2xl bg-white/40 border border-violet/5 hover:bg-white hover:shadow-soft hover:border-violet/10 hover:-translate-y-0.5 transition-all duration-300 text-left"
+                          className="flex gap-4.5 p-4 rounded-2xl bg-white/40 border border-violet/5 hover:bg-white hover:shadow-soft hover:border-violet/10 hover:-translate-y-0.5 transition-all duration-300 text-left items-start"
                         >
                           <div className="h-2 w-2 rounded-full bg-violet shrink-0 mt-2.5" />
                           <div>

@@ -981,38 +981,13 @@ const FEATURED_SPECIALTIES = [
   {
     title: "Diagnostics & Labs",
     desc: "Prompt and accurate clinical testing using state-of-the-art laboratory devices to ensure rapid confirmation and reliable results.",
-    image: "/extras/IMG-20260626-WA0016.jpg",
+    image: "/extras/Facilities/IMG-20260626-WA0001.jpg",
     icon: Microscope,
     anchor: "/specialties#diagnostics",
   },
 ];
 
 function Specialties() {
-  const [visibleCount, setVisibleCount] = useState(() => {
-    if (typeof window !== "undefined") {
-      const w = window.innerWidth;
-      if (w < 640) return 3;
-      if (w < 768) return 4;
-    }
-    return 6;
-  });
-
-  useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth;
-      if (w < 640) {
-        setVisibleCount(3);
-      } else if (w < 768) {
-        setVisibleCount(4);
-      } else {
-        setVisibleCount(6);
-      }
-    };
-    
-    window.addEventListener("resize", handleResize, { passive: true });
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   return (
     <Section
       id="specialties"
@@ -1021,15 +996,15 @@ function Specialties() {
       subtitle="From everyday concerns to complex conditions — we treat a broad range of medical needs with precision and warmth."
     >
       {/* Desktop/Tablet Grid */}
-      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        {FEATURED_SPECIALTIES.slice(0, visibleCount).map((spec, i) => {
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+        {FEATURED_SPECIALTIES.slice(0, 4).map((spec, i) => {
           const Icon = spec.icon;
           return (
             <div
               key={spec.title}
               className="group glass-strong rounded-[24px] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft hover:shadow-glow border border-violet/10 hover:border-violet/20"
             >
-              {/* Image Container - occupies 50-60% of the card on typical ratios, let's use aspect-[16/10] */}
+              {/* Image Container */}
               <div className="aspect-[16/10] w-full overflow-hidden relative bg-slate-100">
                 <img
                   src={spec.image}
@@ -1042,17 +1017,17 @@ function Specialties() {
                   <Icon className="h-5 w-5" />
                 </div>
               </div>
-              <div className="p-6 flex flex-col flex-grow text-left">
-                <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-2 group-hover:gradient-text transition-colors">
+              <div className="p-5 flex flex-col flex-grow text-left">
+                <h3 className="font-display text-base sm:text-lg font-bold text-foreground mb-2 group-hover:gradient-text transition-colors">
                   {spec.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
                   {spec.desc}
                 </p>
                 <Link
                   to="/specialties"
                   hash={spec.anchor.split("#")[1]}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors mt-auto"
                 >
                   <span>Learn More</span>
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
@@ -2039,6 +2014,29 @@ function ClinicGallery() {
     setLightboxIndex(next);
   };
 
+  // Setup Embla Carousel for unified responsive layout
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit();
+    setScrollSnaps(emblaApi.scrollSnapList());
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect, filteredItems.length]);
+
   return (
     <Section
       id="gallery"
@@ -2068,67 +2066,105 @@ function ClinicGallery() {
         ))}
       </div>
 
-      {/* Desktop/Tablet Grid */}
-      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {filteredItems.map((img, i) => (
-          <div
-            key={img.src}
-            onClick={() => setLightboxIndex(i)}
-            className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft hover:shadow-glow hover:-translate-y-1 cursor-pointer transition-all duration-300 flex flex-col h-full"
-          >
-            <div className="aspect-[4/3] overflow-hidden relative bg-slate-100">
-              <img
-                src={img.src}
-                alt={img.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/20 to-transparent opacity-90 pointer-events-none" />
+      {/* Unified Carousel Container */}
+      <div className="w-full relative px-0 sm:px-12" key={filter}>
+        {/* Carousel Viewport */}
+        <div className="overflow-hidden px-1" ref={emblaRef}>
+          <div className="flex items-stretch touch-pan-y -ml-4">
+            {filteredItems.map((img, i) => (
+              <div
+                key={img.src}
+                className="shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4 flex flex-col"
+              >
+                <div
+                  onClick={() => setLightboxIndex(i)}
+                  className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft hover:shadow-glow hover:-translate-y-1 cursor-pointer transition-all duration-300 flex flex-col h-full aspect-[4/3] w-full"
+                >
+                  <div className="w-full h-full overflow-hidden relative bg-slate-100">
+                    <img
+                      src={img.src}
+                      alt={img.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/20 to-transparent opacity-90 pointer-events-none" />
 
-              {/* Branch Tag */}
-              <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10">
-                {img.branch}
+                    {/* Branch Tag */}
+                    <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10">
+                      {img.branch}
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 inset-x-0 p-5 text-white">
+                    <h3 className="font-display text-base font-extrabold leading-tight text-left">
+                      {img.title}
+                    </h3>
+                    <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">
+                      {img.desc}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="absolute bottom-0 inset-x-0 p-5 text-white">
-              <h3 className="font-display text-base font-extrabold leading-tight text-left">
-                {img.title}
-              </h3>
-              <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">{img.desc}</p>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Floating side navigation buttons for tablet and desktop */}
+        <button
+          type="button"
+          onClick={() => emblaApi?.scrollPrev()}
+          className="hidden sm:grid absolute -left-2 lg:-left-4 top-1/2 -translate-y-1/2 h-11 w-11 place-items-center rounded-full glass-strong text-violet-deep hover:gradient-orange hover:text-white transition-all shadow-md shrink-0 z-10 border border-violet/10 bg-white/95"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => emblaApi?.scrollNext()}
+          className="hidden sm:grid absolute -right-2 lg:-right-4 top-1/2 -translate-y-1/2 h-11 w-11 place-items-center rounded-full glass-strong text-violet-deep hover:gradient-orange hover:text-white transition-all shadow-md shrink-0 z-10 border border-violet/10 bg-white/95"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
 
-      {/* Mobile Carousel */}
-      <MobileCarousel key={filter}>
-        {filteredItems.map((img, i) => (
-          <div
-            key={img.src}
-            onClick={() => setLightboxIndex(i)}
-            className="group relative rounded-3xl overflow-hidden glass-strong border border-border/60 shadow-soft cursor-pointer flex flex-col h-full"
-          >
-            <div className="aspect-[4/3] overflow-hidden relative bg-slate-100">
-              <img
-                src={img.src}
-                alt={img.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/20 to-transparent opacity-90 pointer-events-none" />
+      {/* Pagination Dots (All viewports) and Arrows (Mobile only) */}
+      <div className="mt-8 flex items-center justify-center gap-4">
+        {/* Left Arrow (Mobile only) */}
+        <button
+          type="button"
+          onClick={() => emblaApi?.scrollPrev()}
+          aria-label="Previous slide"
+          className="grid sm:hidden h-9 w-9 place-items-center rounded-full glass-strong text-violet-deep hover:gradient-orange hover:text-white transition-all shadow-sm shrink-0 border border-violet/10 bg-white"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
 
-              {/* Branch Tag */}
-              <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider text-white bg-slate-900/60 backdrop-blur-sm border border-white/10">
-                {img.branch}
-              </div>
-            </div>
-            <div className="absolute bottom-0 inset-x-0 p-5 text-white">
-              <h3 className="font-display text-base font-extrabold leading-tight text-left">
-                {img.title}
-              </h3>
-              <p className="text-[11px] text-white/80 mt-1 leading-relaxed text-left">{img.desc}</p>
-            </div>
-          </div>
-        ))}
-      </MobileCarousel>
+        {/* Pagination dots */}
+        <div className="flex items-center gap-2 flex-wrap justify-center">
+          {scrollSnaps.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => emblaApi?.scrollTo(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                selectedIndex === idx ? "w-6 gradient-orange" : "w-1.5 bg-violet/30 hover:bg-violet/50"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Right Arrow (Mobile only) */}
+        <button
+          type="button"
+          onClick={() => emblaApi?.scrollNext()}
+          aria-label="Next slide"
+          className="grid sm:hidden h-9 w-9 place-items-center rounded-full glass-strong text-violet-deep hover:gradient-orange hover:text-white transition-all shadow-sm shrink-0 border border-violet/10 bg-white"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
 
       {/* Lightbox Modal */}
       {lightboxIndex !== null && filteredItems[lightboxIndex] && (
@@ -2208,49 +2244,11 @@ function MobileSticky() {
 }
 
 function LabTests() {
-  const commonTests = [
-    {
-      name: "Complete Blood Count (CBC)",
-      desc: "Evaluates overall health and detects a wide range of disorders, including anemia and infection.",
-      time: "Reports in 6 Hours",
-      price: "₹349",
-      icon: Droplet,
-    },
-    {
-      name: "HbA1c & Blood Sugar Checkup",
-      desc: "Three-month average blood glucose levels to monitor or screen for diabetes mellitus.",
-      time: "Reports in 4 Hours",
-      price: "₹299",
-      icon: Activity,
-    },
-    {
-      name: "Lipid Profile (Cholesterol)",
-      desc: "Measures good and bad cholesterol levels to assess overall cardiovascular risk.",
-      time: "Reports in 8 Hours",
-      price: "₹499",
-      icon: HeartPulse,
-    },
-    {
-      name: "Kidney Function Test (KFT)",
-      desc: "Urea, creatinine, and electrolyte parameters to evaluate renal filtration and health.",
-      time: "Reports in 8 Hours",
-      price: "₹599",
-      icon: FlaskConical,
-    },
-    {
-      name: "Liver Function Test (LFT)",
-      desc: "Enzymes, bilirubin, and proteins to diagnose or monitor liver damage or infection.",
-      time: "Reports in 8 Hours",
-      price: "₹599",
-      icon: Microscope,
-    },
-    {
-      name: "Thyroid Profile (T3, T4, TSH)",
-      desc: "Comprehensive check of thyroid hormone levels to identify hypo or hyperthyroidism.",
-      time: "Reports in 8 Hours",
-      price: "₹449",
-      icon: TestTube,
-    },
+  const highlights = [
+    { title: "NABL-Standard Quality", desc: "Accurate and reliable diagnostics confirmation.", icon: ShieldCheck },
+    { title: "Expert Technicians", desc: "Hygienic and professional sample collection.", icon: Users },
+    { title: "Biochemistry Analyzers", desc: "State-of-the-art diagnostic equipment.", icon: Microscope },
+    { title: "Home Collection", desc: "Free home sample collection in Madhapur & Gachibowli.", icon: MapPin },
   ];
 
   return (
@@ -2258,40 +2256,33 @@ function LabTests() {
       id="lab-tests"
       eyebrow="Diagnostics & Labs"
       title="Diagnostic & Laboratory Services"
-      subtitle="Accurate reporting, state-of-the-art biochemistry analyzers, and hygienic sample collection by expert technicians."
+      subtitle="Complete, accurate, and prompt laboratory diagnostics right in your neighborhood."
     >
-      <div className="grid lg:grid-cols-12 gap-8 items-center">
-        {/* Left Side: Text and Tests Grid */}
+      <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        {/* Left Side: Description, Highlights Grid, and CTA */}
         <div className="lg:col-span-7 space-y-6 text-left">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            Harsha Clinics is equipped with an advanced in-house diagnostic laboratory. We leverage modern biochemistry analyzers and NABL-standard protocols to ensure rapid and accurate testing, helping our doctors provide prompt clinical decisions and treatment plans.
+          </p>
+
           <div className="grid sm:grid-cols-2 gap-4">
-            {commonTests.map((test) => {
-              const Icon = test.icon;
+            {highlights.map((h, idx) => {
+              const Icon = h.icon;
               return (
                 <div
-                  key={test.name}
-                  className="group p-5 rounded-2xl glass-strong border border-violet/10 hover:border-violet/20 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between text-left"
+                  key={idx}
+                  className="flex gap-4 p-4 rounded-2xl glass-strong border border-violet/10 hover:border-violet/20 hover:-translate-y-0.5 transition-all duration-300 group"
                 >
-                  <div>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep group-hover:bg-gradient-orange group-hover:text-white transition-all">
-                        <Icon className="h-4.5 w-4.5" />
-                      </div>
-                      <h4 className="font-display font-bold text-foreground text-sm sm:text-base leading-snug">
-                        {test.name}
-                      </h4>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                      {test.desc}
-                    </p>
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet/8 text-violet-deep group-hover:gradient-orange group-hover:text-white transition-all duration-300">
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-[11px] font-semibold">
-                    <span className="text-violet flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {test.time}
-                    </span>
-                    <span className="text-violet-deep font-bold text-sm bg-violet/5 px-2.5 py-0.5 rounded-lg">
-                      {test.price}
-                    </span>
+                  <div>
+                    <h4 className="font-display font-bold text-foreground text-sm sm:text-base">
+                      {h.title}
+                    </h4>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                      {h.desc}
+                    </p>
                   </div>
                 </div>
               );
@@ -2306,20 +2297,20 @@ function LabTests() {
               <Calendar className="h-4 w-4" />
               Book Lab Test
             </a>
-            <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
               <ShieldCheck className="h-4 w-4 text-green-500" />
-              Free home sample collection across Madhapur & Gachibowli.
+              Home sample collection available.
             </span>
           </div>
         </div>
 
-        {/* Right Side: Big Image & Highlights */}
+        {/* Right Side: Existing Lab Image with beautiful glass card & glow */}
         <div className="lg:col-span-5 relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-violet/20 to-orange-start/15 rounded-3xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none" />
           <div className="relative rounded-3xl overflow-hidden border border-violet/15 shadow-soft hover:shadow-glow transition-all duration-300">
             <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
               <img
-                src="/extras/IMG-20260626-WA0016.jpg"
+                src="/extras/Facilities/IMG-20260626-WA0001.jpg"
                 alt="Diagnostics and Laboratory Services"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -2403,7 +2394,7 @@ function Ambulance() {
           <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
             <a
               href="tel:+918247815584"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-650 hover:bg-red-700 shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 shadow-[0_8px_24px_rgba(220,38,38,0.35)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.45)] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Phone className="h-4 w-4 animate-bounce" />
               Call Ambulance: +91 82478 15584
@@ -2428,7 +2419,6 @@ function Home() {
       <Nav />
       <main>
         <Hero />
-        <About />
         <Doctors
           doctors={doctors}
           onSelectDoctorAndBranch={(doctor, branch) => {
@@ -2436,6 +2426,7 @@ function Home() {
             setSelectedBranch(branch);
           }}
         />
+        <About />
         <Specialties />
         <LabTests />
         <Ambulance />
