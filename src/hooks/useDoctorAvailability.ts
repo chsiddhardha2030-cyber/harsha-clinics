@@ -30,7 +30,7 @@ export interface DoctorSchedule {
 const FALLBACK_DOCTORS: DoctorAvailability[] = [
   {
     id: 1,
-    name: "Dr. Ravi Kumar",
+    name: "Dr. D. Ravi Kumar",
     available: true,
     currentBranch: "Madhapur",
   },
@@ -134,7 +134,7 @@ export function useDoctorAvailability() {
           doctorsData.map((d: any) => {
             let normalizedName = d.name || "";
             if (normalizedName.toLowerCase().includes("ravi")) {
-              normalizedName = "Dr. Ravi Kumar";
+              normalizedName = "Dr. D. Ravi Kumar";
             } else if (normalizedName.toLowerCase().includes("pushpalatha")) {
               normalizedName = "Dr. P. Pushpalatha";
             }

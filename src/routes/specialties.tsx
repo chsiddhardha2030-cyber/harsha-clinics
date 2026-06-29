@@ -206,7 +206,7 @@ function SpecialtiesPage() {
               Our Medical Specialties
             </h1>
             <p className="mt-4 text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              Harsha Clinics offers world-class healthcare with specialized consultations, in-house diagnostics, 
+              Harsha Clinics, Pharmacy & Diagnostics offers world-class healthcare with specialized consultations, in-house diagnostics, 
               and family wellness checkups across {totalSpecialtiesCount}+ services.
             </p>
 
@@ -336,7 +336,7 @@ function SpecialtiesPage() {
                 Need Medical Assistance?
               </h2>
               <p className="mt-4 text-muted-foreground text-sm sm:text-base leading-relaxed">
-                Connect with our senior physicians on duty at Harsha Clinics. Save time by booking your 
+                Connect with our senior physicians on duty at Harsha Clinics, Pharmacy & Diagnostics. Save time by booking your 
                 appointment slot online and routing your request directly to WhatsApp.
               </p>
               

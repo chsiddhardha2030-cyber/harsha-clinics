@@ -112,7 +112,7 @@ const TESTIMONIALS = [
   {
     name: "Priya Sharma",
     role: "Patient",
-    text: "Dr. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
+    text: "Dr. D. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
@@ -452,11 +452,11 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
                 ))}
               </div>
               <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
-                Advanced Healthcare. <span className="gradient-text">Compassionate Care.</span>
+                Advanced Healthcare.{" "}
+                <span className="gradient-text">Compassionate Care.</span>
               </h1>
               <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground leading-relaxed">
-                Expert General Physician, Emergency Care &amp; Family Healthcare in Madhapur,
-                Hyderabad.
+                Your trusted neighborhood healthcare provider in Hyderabad, offering expert consultations, a fully stocked pharmacy, and advanced diagnostic services under one roof.
               </p>
               <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
@@ -578,82 +578,20 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
 function About() {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const chips = [
-    { icon: Award, label: "20+ Years Experience" },
-    { icon: MapPin, label: "Two Branches" },
-    { icon: Users, label: "Qualified Doctors" },
-    { icon: Microscope, label: "Modern Facilities" },
-  ];
-
-  const details = [
-    {
-      title: "Our Clinic Profile",
-      icon: Award,
-      text: "Serving the local community for over two decades, Harsha Clinics is a leading provider of comprehensive primary care and diagnostics in Hyderabad.",
-    },
-    {
-      title: "Experienced Medical Team",
-      icon: Users,
-      text: "Our clinics are staffed by qualified, board-certified senior physicians and consultants specializing in general medicine, intensive care, and family health.",
-    },
-    {
-      title: "Two Strategic Branches",
-      icon: MapPin,
-      text: "Conveniently located at Siddi Vinayak Nagar in Madhapur and TNGO's Colony in Gachibowli, making quality healthcare easily accessible in your neighborhood.",
-    },
-    {
-      title: "Modern Infrastructure",
-      icon: Microscope,
-      text: "Equipped with diagnostic labs, standard day-care beds, ECG testing, nebulization units, and a fully stocked pharmacy to manage treatments efficiently.",
-    },
-    {
-      title: "Patient-First Philosophy",
-      icon: HeartPulse,
-      text: "We prioritize patient trust and comfort. We focus on active listening, clear explanations of health conditions, and respecting your recovery goals.",
-    },
-    {
-      title: "Daily Operational Hours",
-      icon: Clock,
-      text: "Open daily from 10:00 AM to 10:00 PM, providing reliable family care and consultations that seamlessly fit your family's schedule.",
-    },
-  ];
-
   return (
     <Section id="about">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-        {/* Left Column: Overlapping Real Clinic Images */}
-        <div className="lg:col-span-6 relative flex items-center justify-center min-h-[300px] sm:min-h-[440px] lg:min-h-[480px] w-full max-w-[540px] mx-auto lg:mx-0 select-none group/about-images">
-          {/* Background Ambient Glow */}
-          <div className="absolute w-[70%] h-[70%] rounded-full bg-violet/5 blur-3xl pointer-events-none -z-10 group-hover/about-images:bg-violet/10 transition-all duration-700" />
-          
-          {/* Main Large Clinic Image */}
-          <div className="relative w-[82%] aspect-[4/3] rounded-3xl overflow-hidden glass-strong border border-white/40 shadow-xl transition-all duration-500 group-hover/about-images:scale-[1.01] group-hover/about-images:shadow-glow z-10">
-            <img
-              src="/Madhapur%20Branch/IMG-20260619-WA0095.jpg"
-              alt="Harsha Clinics Madhapur Wait Area"
-              className="w-full h-full object-cover select-none"
-              loading="lazy"
-            />
-          </div>
-
-          {/* Overlapping Image 1 - Top-Right */}
-          <div className="absolute top-0 right-[-8px] sm:right-[-16px] w-[42%] aspect-[4/3] rounded-2xl overflow-hidden border-4 border-background shadow-lg transition-all duration-500 z-20 group-hover/about-images:-translate-y-3 group-hover/about-images:translate-x-3 group-hover/about-images:rotate-1 group-hover/about-images:scale-105">
-            <img
-              src="/TNGO%20Colony%20Branch/IMG-20260619-WA0079.jpg"
-              alt="TNGO's Colony Branch Lounge"
-              className="w-full h-full object-cover select-none"
-              loading="lazy"
-            />
-          </div>
-
-          {/* Overlapping Image 2 - Bottom-Left */}
-          <div className="absolute bottom-0 left-[-8px] sm:left-[-16px] w-[42%] aspect-[4/3] rounded-2xl overflow-hidden border-4 border-background shadow-lg transition-all duration-500 z-20 group-hover/about-images:translate-y-3 group-hover/about-images:-translate-x-3 group-hover/about-images:-rotate-1 group-hover/about-images:scale-105">
-            <img
-              src="/Madhapur%20Branch/IMG-20260619-WA0091.jpg"
-              alt="Doctor Consultation Cabin"
-              className="w-full h-full object-cover select-none"
-              loading="lazy"
-            />
+        {/* Left Column: Premium Poster Image inside a Glassmorphism Frame */}
+        <div className="lg:col-span-6 flex items-center justify-center w-full max-w-[420px] mx-auto lg:mx-0 select-none">
+          <div className="w-full relative glass-strong border border-white/20 p-2 sm:p-2.5 rounded-[32px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/5">
+            <div className="overflow-hidden rounded-[24px]">
+              <img
+                src="/extras/IMG_20260618_172533.jpg"
+                alt="Harsha Clinics, Pharmacy &amp; Diagnostics Poster"
+                className="w-full h-auto aspect-[1080/1548] object-contain rounded-[24px]"
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
 
@@ -665,39 +603,34 @@ function About() {
           </div>
 
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight text-foreground mb-4">
-            Serving Hyderabad with <span className="gradient-text">Trusted Healthcare</span>
+            Harsha Clinics, Pharmacy &amp; Diagnostics
           </h2>
 
-          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
-            Founded with a vision to deliver reliable primary healthcare and clinical expertise, Harsha Clinics provides comprehensive medical services for families across Hyderabad. Led by senior physicians, our clinics focus on diagnostics, preventive health, and acute treatment under one roof.
-          </p>
-
-          {/* Premium Highlight Chips Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            {chips.map((c, i) => {
-              const Icon = c.icon;
-              return (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 p-3.5 rounded-2xl glass-strong border border-violet/10 hover:border-violet/20 shadow-soft hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
-                >
-                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-violet/8 text-violet-deep group-hover:gradient-orange group-hover:text-white transition-all duration-300">
-                    <Icon className="h-4.5 w-4.5" />
-                  </div>
-                  <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">
-                    {c.label}
-                  </span>
-                </div>
-              );
-            })}
+          {/* Tagline highlighted quote block */}
+          <div className="relative glass-strong border border-violet/10 rounded-2xl p-4 sm:p-5 mb-5 shadow-soft overflow-hidden">
+            <div className="absolute -top-6 -right-6 h-12 w-12 rounded-full bg-violet/5 blur-xl" />
+            <div className="relative flex gap-3 items-start">
+              <Quote className="h-5 w-5 text-orange-start shrink-0 mt-1 transform rotate-180" />
+              <p className="font-display font-bold italic text-base sm:text-lg text-violet-deep leading-relaxed">
+                "Happiness is the Highest Form of Health"
+              </p>
+            </div>
           </div>
 
-          {/* Premium Learn More Button */}
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-4 max-w-xl">
+            Harsha Clinics, Pharmacy &amp; Diagnostics is a comprehensive healthcare center dedicated to providing affordable, accessible, and quality medical care. We offer expert consultations, diagnostic services, pharmacy support, preventive healthcare, and emergency medical management under one roof.
+          </p>
+
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
+            With a patient-centric approach, we strive to deliver timely and effective healthcare solutions to individuals and families across Hyderabad.
+          </p>
+
+          {/* Accordion trigger button */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all w-fit cursor-pointer mb-2 animate-hover"
           >
-            <span>{isExpanded ? "Show Less" : "Learn More"}</span>
+            <span>{isExpanded ? "Show Less" : "Our Vision & Mission"}</span>
             {isExpanded ? (
               <Minus className="h-4 w-4 shrink-0 transition-transform duration-300" />
             ) : (
@@ -714,28 +647,62 @@ function About() {
         }`}
       >
         <div className="overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 pb-2">
-            {details.map((d, i) => {
-              const Icon = d.icon;
-              return (
-                <div
-                  key={i}
-                  className="p-5 rounded-[24px] glass border border-violet/10 hover:border-violet/20 hover:shadow-soft transition-all duration-300 text-left"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep">
-                      <Icon className="h-4.5 w-4.5" />
-                    </div>
-                    <h3 className="font-display text-base font-bold text-foreground">
-                      {d.title}
-                    </h3>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                    {d.text}
-                  </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 pb-2">
+            {/* Vision Card */}
+            <div className="p-5 sm:p-6 rounded-[24px] glass-strong border border-violet/10 hover:border-violet/20 hover:shadow-soft transition-all duration-300 text-left bg-white/5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet/8 text-violet-deep">
+                  <Sparkles className="h-5 w-5 text-orange-start" />
                 </div>
-              );
-            })}
+                <h3 className="font-display text-lg font-bold text-foreground">
+                  Our Vision
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                To become the most trusted neighborhood healthcare provider by delivering compassionate, evidence-based, and affordable medical services.
+              </p>
+            </div>
+
+            {/* Mission Card */}
+            <div className="p-5 sm:p-6 rounded-[24px] glass-strong border border-violet/10 hover:border-violet/20 hover:shadow-soft transition-all duration-300 text-left bg-white/5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet/8 text-violet-deep">
+                  <CheckCircle2 className="h-5 w-5 text-orange-start" />
+                </div>
+                <h3 className="font-display text-lg font-bold text-foreground">
+                  Our Mission
+                </h3>
+              </div>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-deep mt-0.5">•</span>
+                  <span>Provide quality healthcare accessible to all.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-deep mt-0.5">•</span>
+                  <span>Promote preventive and wellness-focused healthcare.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-deep mt-0.5">•</span>
+                  <span>Deliver timely diagnosis and treatment.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-deep mt-0.5">•</span>
+                  <span>Ensure patient satisfaction through ethical medical practice.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Full-width Closing Statement Banner */}
+          <div className="mt-6 p-5 sm:p-6 rounded-[24px] glass-strong border border-violet/15 text-center relative overflow-hidden bg-gradient-to-r from-violet/5 via-orange-start/3 to-transparent">
+            <div className="absolute inset-0 bg-grid-white/[0.02] pointer-events-none" />
+            <p className="text-base sm:text-lg font-bold text-foreground leading-relaxed">
+              Providing Trusted Healthcare for Families Since Day One.
+            </p>
+            <p className="text-violet-deep font-display font-extrabold text-lg sm:text-xl mt-1 tracking-wide">
+              "Your Health, Our Commitment."
+            </p>
           </div>
         </div>
       </div>
@@ -884,14 +851,14 @@ function Doctors({
     >
       <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
         <DoctorCard
-          name="Dr. Ravi Kumar"
+          name="Dr. D. Ravi Kumar"
           qualifications="MBBS, DEM, FCCM"
           roles={["General Physician & Surgeon", "Emergency Physician", "Consultant Critical Care"]}
           reg="TSMC/FMR/03090"
           image="/doctors/Doctor%20photo.jpg"
           availability={drRaviAvail}
           onBook={() =>
-            onSelectDoctorAndBranch("Dr. Ravi Kumar", mapBranchName(drRaviAvail?.currentBranch))
+            onSelectDoctorAndBranch("Dr. D. Ravi Kumar", mapBranchName(drRaviAvail?.currentBranch))
           }
         />
         <DoctorCard
@@ -1576,7 +1543,7 @@ ${symptoms}`;
                 <option value="" disabled>
                   Select Doctor
                 </option>
-                <option value="Dr. Ravi Kumar">Dr. Ravi Kumar</option>
+                <option value="Dr. D. Ravi Kumar">Dr. D. Ravi Kumar</option>
                 <option value="Dr. P. Pushpalatha">Dr. P. Pushpalatha</option>
               </select>,
             )}
@@ -1830,7 +1797,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
 
   const branchesData = [
     {
-      name: "Harsha Clinics | Top Clinic in Madhapur",
+      name: "Harsha Clinics, Pharmacy & Diagnostics | Top Clinic in Madhapur",
       address:
         "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
       phone: "+91 8247815584",
@@ -1843,7 +1810,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       image: "/Madhapur%20Branch/IMG-20260619-WA0089.jpg",
     },
     {
-      name: "Harsha Clinics | Best Clinic in TNGO's Colony",
+      name: "Harsha Clinics, Pharmacy & Diagnostics | Best Clinic in TNGO's Colony",
       address:
         "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
       phone: "+91 8247815584",
@@ -2037,7 +2004,7 @@ export function Footer() {
                 />
               </div>
               <span className="font-display font-extrabold text-lg gradient-text tracking-tight">
-                Harsha Clinics
+                Harsha Clinics, Pharmacy &amp; Diagnostics
               </span>
             </a>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
@@ -2085,7 +2052,7 @@ export function Footer() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Harsha Clinics. All rights reserved.
+            © {new Date().getFullYear()} Harsha Clinics, Pharmacy &amp; Diagnostics. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Crafted with care for the families of Hyderabad.

@@ -44,7 +44,7 @@ export function Nav() {
                 className="h-full w-full object-contain rounded-lg"
               />
             </div>
-            <span className="font-display font-extrabold text-lg sm:text-xl gradient-text tracking-tight">
+            <span className="font-display font-extrabold text-base sm:text-lg lg:text-xl gradient-text tracking-tight">
               Harsha Clinics
             </span>
           </a>

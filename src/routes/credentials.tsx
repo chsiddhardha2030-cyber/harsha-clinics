@@ -268,7 +268,7 @@ export function CredentialsPage() {
             Credentials & <span className="gradient-text">Certifications</span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Harsha Clinics operates under stringent medical standards and official state registrations. Browse our verified physician qualifications and branch operational licenses.
+            Harsha Clinics, Pharmacy & Diagnostics operates under stringent medical standards and official state registrations. Browse our verified physician qualifications and branch operational licenses.
           </p>
 
           {/* Back Link */}
@@ -288,7 +288,7 @@ export function CredentialsPage() {
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {[
               { id: "all", label: "All Credentials" },
-              { id: "ravi", label: "Dr. Ravi Kumar" },
+              { id: "ravi", label: "Dr. D. Ravi Kumar" },
               { id: "madhapur", label: "Madhapur Branch" },
               { id: "tngo", label: "TNGO Branch" },
             ].map((tab) => (
@@ -327,7 +327,7 @@ export function CredentialsPage() {
               </div>
               <div>
                 <h2 className="font-display text-2xl font-extrabold text-foreground">
-                  Dr. Ravi Kumar
+                  Dr. D. Ravi Kumar
                 </h2>
                 <p className="text-xs text-muted-foreground">
                   Doctor qualifications, medical registrations, and specialist certifications
