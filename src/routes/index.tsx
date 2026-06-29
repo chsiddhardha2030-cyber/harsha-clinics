@@ -586,7 +586,7 @@ function About() {
           <div className="w-full relative glass-strong border border-white/20 p-2 sm:p-2.5 rounded-[32px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/5">
             <div className="overflow-hidden rounded-[24px]">
               <img
-                src="/extras/IMG_20260618_172533.jpg"
+                src="/extras/IMG-20260619-WA0120.jpg"
                 alt="Harsha Clinics, Pharmacy &amp; Diagnostics Poster"
                 className="w-full h-auto aspect-[1080/1548] object-contain rounded-[24px]"
                 loading="lazy"
@@ -642,9 +642,8 @@ function About() {
 
       {/* Expandable Section with smooth grid accordion height animation */}
       <div
-        className={`grid transition-all duration-500 ease-in-out ${
-          isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
-        }`}
+        className={`grid transition-all duration-500 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
+          }`}
       >
         <div className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 pb-2">
@@ -925,8 +924,8 @@ function ExpandableGrid<
               style={
                 isNew
                   ? {
-                      animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
-                    }
+                    animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
+                  }
                   : undefined
               }
             >
@@ -1091,7 +1090,7 @@ function Specialties() {
           );
         })}
       </MobileCarousel>
-      
+
       {/* Centered Button to View All Specialties */}
       <div className="mt-8 sm:mt-12 flex justify-center">
         <Link
@@ -1418,8 +1417,8 @@ function BookingForm({
     const branchDisplayName = matchedBranchObj
       ? matchedBranchObj.name
       : matchingSchedule.branch_name.toLowerCase().includes("madhapur")
-      ? "Madhapur"
-      : "TNGO Colony";
+        ? "Madhapur"
+        : "TNGO Colony";
 
     if (matchedBranchObj && matchedBranchObj.isOpen === false) {
       toast.error(
@@ -1709,9 +1708,8 @@ function Testimonials() {
                 key={i}
                 onClick={() => emblaApi?.scrollTo(i)}
                 aria-label={`Go to testimonial ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${
-                  selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
-                }`}
+                className={`h-2 rounded-full transition-all ${selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
+                  }`}
               />
             ))}
           </div>
@@ -1743,9 +1741,8 @@ function FAQ() {
           return (
             <div
               key={i}
-              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${
-                isOpen ? "shadow-soft" : ""
-              }`}
+              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${isOpen ? "shadow-soft" : ""
+                }`}
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
@@ -1755,19 +1752,17 @@ function FAQ() {
                   {f.q}
                 </span>
                 <span
-                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
-                    isOpen
+                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${isOpen
                       ? "gradient-orange text-white rotate-180"
                       : "bg-violet/10 text-violet-deep"
-                  }`}
+                    }`}
                 >
                   {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                 </span>
               </button>
               <div
-                className={`grid transition-all duration-300 ease-out ${
-                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                }`}
+                className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  }`}
               >
                 <div className="overflow-hidden">
                   <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -2193,11 +2188,10 @@ function ClinicGallery() {
           <button
             key={tab.id}
             onClick={() => setFilter(tab.id as "all" | "madhapur" | "tngo" | "facilities")}
-            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
-              filter === tab.id
+            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${filter === tab.id
                 ? "bg-violet-deep text-white shadow-soft"
                 : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
-            }`}
+              }`}
           >
             {tab.label}
           </button>
@@ -2286,9 +2280,8 @@ function ClinicGallery() {
               type="button"
               onClick={() => emblaApi?.scrollTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                selectedIndex === idx ? "w-6 gradient-orange" : "w-1.5 bg-violet/30 hover:bg-violet/50"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${selectedIndex === idx ? "w-6 gradient-orange" : "w-1.5 bg-violet/30 hover:bg-violet/50"
+                }`}
             />
           ))}
         </div>
