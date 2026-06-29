@@ -390,7 +390,7 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-background min-h-[85vh] flex items-center pt-28 pb-16 md:pt-28 md:pb-20 lg:pt-24 lg:pb-16"
+      className="relative overflow-hidden bg-background min-h-[85vh] flex items-center pt-20 pb-12 md:pt-20 md:pb-16 lg:pt-16 lg:pb-14"
       onMouseEnter={() => {
         if (!isMobile) setIsHovered(true);
       }}
@@ -1044,9 +1044,11 @@ function Specialties() {
         {FEATURED_SPECIALTIES.slice(0, 4).map((spec, i) => {
           const Icon = spec.icon;
           return (
-            <div
+            <Link
+              to="/specialties"
+              hash={spec.anchor.split("#")[1]}
               key={spec.title}
-              className="group glass-strong rounded-[24px] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft hover:shadow-glow border border-violet/10 hover:border-violet/20"
+              className="group glass-strong rounded-[24px] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft hover:shadow-glow border border-violet/10 hover:border-violet/20 cursor-pointer block text-left"
             >
               {/* Image Container */}
               <div className="aspect-[16/10] w-full overflow-hidden relative bg-slate-100">
@@ -1068,16 +1070,14 @@ function Specialties() {
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
                   {spec.desc}
                 </p>
-                <Link
-                  to="/specialties"
-                  hash={spec.anchor.split("#")[1]}
+                <div
                   className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors mt-auto"
                 >
                   <span>Learn More</span>
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
@@ -1087,9 +1087,11 @@ function Specialties() {
         {FEATURED_SPECIALTIES.map((spec, i) => {
           const Icon = spec.icon;
           return (
-            <div
+            <Link
+              to="/specialties"
+              hash={spec.anchor.split("#")[1]}
               key={spec.title}
-              className="group glass-strong rounded-[24px] overflow-hidden flex flex-col h-full shadow-soft border border-violet/10"
+              className="group glass-strong rounded-[24px] overflow-hidden flex flex-col h-full shadow-soft border border-violet/10 cursor-pointer block text-left"
             >
               {/* Image Container */}
               <div className="aspect-[16/10] w-full overflow-hidden relative bg-slate-100">
@@ -1111,16 +1113,14 @@ function Specialties() {
                 <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
                   {spec.desc}
                 </p>
-                <Link
-                  to="/specialties"
-                  hash={spec.anchor.split("#")[1]}
+                <div
                   className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors"
                 >
                   <span>Learn More</span>
                   <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </MobileCarousel>
@@ -1134,6 +1134,71 @@ function Specialties() {
           View All 35+ Specialties
           <ArrowRight className="h-4 w-4" />
         </Link>
+      </div>
+    </Section>
+  );
+}
+
+function AwardsAndRecognition() {
+  return (
+    <Section id="awards">
+      <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        {/* Left Side: Award Image Card */}
+        <div className="lg:col-span-5 relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-start/20 rounded-3xl blur-xl opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <div className="relative glass-strong rounded-[28px] p-4 sm:p-6 border border-amber-500/20 shadow-soft hover:shadow-glow transition-all duration-300 flex items-center justify-center bg-white/40 backdrop-blur-md">
+            <div className="w-full aspect-[4/3] max-h-[360px] flex items-center justify-center overflow-hidden rounded-2xl">
+              <img
+                src="/Awards/IMG_20260626_084430.jpg"
+                alt="Dr. A.P.J. Abdul Kalam Health & Medical Excellence Best Doctor Award 2024"
+                className="w-full h-full object-contain max-h-[340px] drop-shadow-md"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Content */}
+        <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 border border-amber-500/20">
+            <Award className="h-4 w-4 text-amber-500 shrink-0" />
+            <span>🏆 Awards &amp; Recognition</span>
+          </div>
+
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-foreground">
+            Recognized for <span className="gradient-text">Medical Excellence</span>
+          </h2>
+
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            We are honored to share that <strong className="text-foreground font-semibold">Dr. D. Ravi Kumar</strong> was conferred with the prestigious <strong className="text-foreground font-semibold">Dr. A.P.J. Abdul Kalam Health &amp; Medical Excellence Best Doctor Award – 2024</strong>. This accolade recognizes exceptional dedication, clinical expertise, and pioneering contributions to patient care, emergency medicine, and critical care across Hyderabad.
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+            <div className="p-3.5 rounded-2xl glass border border-violet/10">
+              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Award Title</div>
+              <div className="text-xs sm:text-sm font-bold text-foreground mt-1">Best Doctor Award</div>
+            </div>
+            <div className="p-3.5 rounded-2xl glass border border-violet/10">
+              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Award Year</div>
+              <div className="text-xs sm:text-sm font-bold text-violet-deep mt-1">2024</div>
+            </div>
+            <div className="p-3.5 rounded-2xl glass border border-violet/10 col-span-2 sm:col-span-1">
+              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Category</div>
+              <div className="text-xs sm:text-sm font-bold text-foreground mt-1">Healthcare &amp; Critical Care</div>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <Link
+              to="/credentials"
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
+            >
+              <Award className="h-4 w-4 shrink-0" />
+              <span>View Credentials &amp; Certifications</span>
+              <ArrowRight className="h-4 w-4 shrink-0" />
+            </Link>
+          </div>
+        </div>
       </div>
     </Section>
   );
@@ -2365,7 +2430,7 @@ function LabTests() {
       subtitle="Complete, accurate, and prompt laboratory diagnostics right in your neighborhood."
     >
       <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        {/* Left Side: Description, Highlights Grid, and CTA */}
+        {/* Left Side: Description, Highlights Grid, and Call Now CTA */}
         <div className="lg:col-span-7 space-y-6 text-left">
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
             Harsha Clinics is equipped with an advanced in-house diagnostic laboratory. We leverage modern biochemistry analyzers and NABL-standard protocols to ensure rapid and accurate testing, helping our doctors provide prompt clinical decisions and treatment plans.
@@ -2395,22 +2460,27 @@ function LabTests() {
             })}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
-            <a
-              href="#book"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
-            >
-              <Calendar className="h-4 w-4" />
-              Book Lab Test
-            </a>
-            <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
-              <ShieldCheck className="h-4 w-4 text-green-500" />
-              Home sample collection available.
-            </span>
+          <div className="pt-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <a
+                href="tel:+918309403610"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
+              >
+                <Phone className="h-4 w-4 animate-pulse" />
+                <span>Call Now for Lab Booking</span>
+              </a>
+              <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+                <ShieldCheck className="h-4 w-4 text-green-500 shrink-0" />
+                Home sample collection available.
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2 font-medium">
+              Speak directly with our reception to schedule your laboratory tests.
+            </p>
           </div>
         </div>
 
-        {/* Right Side: Existing Lab Image with beautiful glass card & glow */}
+        {/* Right Side: Lab Image Card */}
         <div className="lg:col-span-5 relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-violet/20 to-orange-start/15 rounded-3xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none" />
           <div className="relative rounded-3xl overflow-hidden border border-violet/15 shadow-soft hover:shadow-glow transition-all duration-300">
@@ -2534,6 +2604,7 @@ function Home() {
         />
         <About />
         <Specialties />
+        <AwardsAndRecognition />
         <LabTests />
         <Ambulance />
         <ClinicGallery />
