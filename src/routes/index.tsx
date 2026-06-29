@@ -49,6 +49,7 @@ import {
   useDoctorAvailability,
   DoctorAvailability,
   BranchStatus,
+  DoctorSchedule,
 } from "@/hooks/useDoctorAvailability";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileCarousel } from "@/components/ui/mobile-carousel";
@@ -112,7 +113,7 @@ const TESTIMONIALS = [
     name: "Priya Sharma",
     role: "Patient",
     text: "Dr. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
-    avatar: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Anil Reddy",
@@ -309,10 +310,24 @@ function extractDominantColors(imageUrl: string): Promise<string[]> {
   });
 }
 
-function Hero() {
+function Hero({ branches }: { branches: BranchStatus[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useIsMobile();
+
+  const madhapurBranch = branches.find((b) => b.name.toLowerCase().includes("madhapur")) || {
+    name: "Madhapur",
+    isOpen: true,
+    openingTime: "10:00 AM",
+    closingTime: "10:00 PM",
+  };
+  const tngoBranch = branches.find((b) => b.name.toLowerCase().includes("tngo")) || {
+    name: "TNGO Colony",
+    isOpen: true,
+    openingTime: "10:00 AM",
+    closingTime: "10:00 PM",
+  };
+  const branchList = [madhapurBranch, tngoBranch];
 
   // Color state containing blended colors for each slide
   const [slideColors, setSlideColors] = useState<{ [key: string]: [string, string, string] }>(
@@ -414,9 +429,27 @@ function Hero() {
           {/* Left Content Area */}
           <div className="lg:col-span-5 flex items-center order-2 lg:order-1 pt-4 pb-8 lg:py-12">
             <div className="animate-fade-up text-left max-w-xl mx-auto lg:mx-0 w-full">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold text-violet-deep glass mb-4 sm:mb-6">
-                <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                Open today • 10:00 AM – 10:00 PM
+              <div className="flex flex-wrap items-center gap-2.5 mb-4 sm:mb-6">
+                {branchList.map((b) => (
+                  <div
+                    key={b.name}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold text-violet-deep glass"
+                  >
+                    {b.isOpen ? (
+                      <>
+                        <span>🟢</span>
+                        <span>
+                          {b.name}: Open today • {b.openingTime} - {b.closingTime}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span>🔴</span>
+                        <span>{b.name}: Closed Today</span>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
               <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
                 Advanced Healthcare. <span className="gradient-text">Compassionate Care.</span>
@@ -876,6 +909,17 @@ function Doctors({
           }
         />
       </div>
+
+      <div className="mt-8 text-center flex justify-center">
+        <Link
+          to="/credentials"
+          className="inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold text-violet-deep bg-violet/8 border border-violet/20 hover:bg-violet/15 hover:shadow-soft transition-all hover:-translate-y-0.5"
+        >
+          <Award className="h-4 w-4 text-orange-start shrink-0" />
+          <span>View All Certifications & Verified Credentials</span>
+          <ArrowRight className="h-4 w-4 shrink-0" />
+        </Link>
+      </div>
     </Section>
   );
 }
@@ -1146,9 +1190,60 @@ const TIME_SLOTS = [
   "10:00 PM",
 ];
 
+function formatSqlTime(timeStr: string): string {
+  if (!timeStr) return "";
+  const parts = timeStr.split(":");
+  let hours = parseInt(parts[0], 10);
+  const minutes = parts[1] || "00";
+  if (isNaN(hours)) return timeStr;
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  const formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
+  return `${formattedHours}:${minutes} ${ampm}`;
+}
+
+function timeToMinutes(t: string): number {
+  if (!t) return 0;
+  const clean = t.trim().toUpperCase();
+  let hours = 0;
+  let minutes = 0;
+
+  if (clean.includes("AM") || clean.includes("PM")) {
+    const isPM = clean.includes("PM");
+    const isAM = clean.includes("AM");
+    const timePart = clean.replace("AM", "").replace("PM", "").trim();
+    const parts = timePart.split(":");
+    hours = parseInt(parts[0], 10) || 0;
+    minutes = parseInt(parts[1], 10) || 0;
+    if (isPM && hours < 12) hours += 12;
+    if (isAM && hours === 12) hours = 0;
+  } else {
+    const parts = clean.split(":");
+    hours = parseInt(parts[0], 10) || 0;
+    minutes = parseInt(parts[1], 10) || 0;
+  }
+  return hours * 60 + minutes;
+}
+
+function formatBranchDisplayName(bName: string): string {
+  if (!bName) return "Madhapur Branch";
+  let name = bName.trim();
+  if (name.toLowerCase().includes("tngo")) {
+    name = "TNGO Colony";
+  } else if (name.toLowerCase().includes("madhapur")) {
+    name = "Madhapur";
+  }
+  if (!name.toLowerCase().endsWith("branch")) {
+    name = `${name} Branch`;
+  }
+  return name;
+}
+
 function BookingForm({
   doctors,
   branches,
+  schedules,
   selectedDoctor,
   selectedBranch,
   setSelectedDoctor,
@@ -1156,6 +1251,7 @@ function BookingForm({
 }: {
   doctors: DoctorAvailability[];
   branches: BranchStatus[];
+  schedules: DoctorSchedule[];
   selectedDoctor: string;
   selectedBranch: string;
   setSelectedDoctor: (doctor: string) => void;
@@ -1163,62 +1259,52 @@ function BookingForm({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
-  const [preferredTime, setPreferredTime] = useState("");
+  const [preferredTime, setPreferredTime] = useState("10:00");
   const isMobile = useIsMobile();
 
-  // On mobile devices, default Preferred Time should always be 9:00 AM
   useEffect(() => {
-    if (isMobile) {
-      setPreferredTime("9:00 AM");
-    } else {
-      setPreferredTime("");
-    }
+    setPreferredTime("10:00");
   }, [isMobile]);
 
-  // Find availability of the selected doctor to trigger automatic branch assignment
-  const currentDoctorAvailability = doctors.find((d) => d.name === selectedDoctor);
+  const selectedDocObj = doctors.find((d) => d.name === selectedDoctor);
+  const docId = selectedDocObj ? selectedDocObj.id : (selectedDoctor.includes("Ravi") ? 1 : 2);
+
+  const availableSchedules = schedules.filter(
+    (s) => s.doctor_id === docId && s.is_available
+  );
+
+  const availableBranches = availableSchedules.map((s) =>
+    s.branch_name.toLowerCase().includes("tngo") ? "TNGO's Colony" : "Madhapur"
+  );
+
+  const showBranchSelect = availableBranches.length >= 2;
 
   useEffect(() => {
-    if (
-      currentDoctorAvailability &&
-      currentDoctorAvailability.available &&
-      currentDoctorAvailability.currentBranch
-    ) {
-      const assignedBranch = currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
-        ? "TNGO's Colony"
-        : "Madhapur";
-      setSelectedBranch(assignedBranch);
+    if (selectedDoctor && availableBranches.length === 1) {
+      if (selectedBranch !== availableBranches[0]) {
+        setSelectedBranch(availableBranches[0]);
+      }
+    } else if (selectedDoctor && availableBranches.length >= 2) {
+      if (selectedBranch && !(availableBranches as string[]).includes(selectedBranch)) {
+        setSelectedBranch(availableBranches[0]);
+      }
     }
-  }, [selectedDoctor, currentDoctorAvailability, setSelectedBranch]);
+  }, [selectedDoctor, availableBranches, selectedBranch, setSelectedBranch]);
 
-  // Handle branch Open/Closed statuses
-  const madhapurOpen =
-    branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
+  const currentSchedule = availableSchedules.find((s) => {
+    const bName = s.branch_name.toLowerCase();
+    if (selectedBranch.toLowerCase().includes("madhapur") && bName.includes("madhapur")) return true;
+    if (selectedBranch.toLowerCase().includes("tngo") && bName.includes("tngo")) return true;
+    return false;
+  });
+
+  const madhapurOpen = branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
   const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
-
-  const disableMadhapur =
-    !madhapurOpen ||
-    !!(
-      currentDoctorAvailability &&
-      currentDoctorAvailability.available &&
-      currentDoctorAvailability.currentBranch &&
-      !currentDoctorAvailability.currentBranch.toLowerCase().includes("madhapur")
-    );
-
-  const disableTngos =
-    !tngosOpen ||
-    !!(
-      currentDoctorAvailability &&
-      currentDoctorAvailability.available &&
-      currentDoctorAvailability.currentBranch &&
-      !currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
-    );
 
   const selectedBranchClosed =
     (selectedBranch === "Madhapur" && !madhapurOpen) ||
     (selectedBranch === "TNGO's Colony" && !tngosOpen);
 
-  // Helper to format date: 2026-06-22 -> 22-06-2026 (22nd June 2026)
   const formatAppointmentDate = (dateStr: string): string => {
     if (!dateStr) return "";
     const parts = dateStr.split("-");
@@ -1264,28 +1350,53 @@ function BookingForm({
     const age = String(fd.get("age") || "").trim();
     const gender = String(fd.get("gender") || "").trim();
     const doctor = String(fd.get("doctor") || "").trim();
-    const branch = String(fd.get("branch") || "").trim();
     const date = String(fd.get("date") || "").trim();
     const time = String(fd.get("time") || "").trim();
     const symptoms = String(fd.get("symptoms") || "").trim();
 
-    if (!name || !phone || !age || !gender || !doctor || !branch || !date || !time || !symptoms) {
+    if (!name || !phone || !age || !gender || !doctor || !date || !time || !symptoms) {
       toast.error("Please fill in all the required fields.");
       return;
     }
 
-    if (selectedBranchClosed) {
+    // 1. Verify selected Preferred Time falls within a matching doctor_schedule where is_available = true
+    const userMins = timeToMinutes(time);
+    const matchingSchedule = availableSchedules.find((sched) => {
+      const startMins = timeToMinutes(sched.start_time);
+      const endMins = timeToMinutes(sched.end_time);
+      return userMins >= startMins && userMins <= endMins;
+    });
+
+    if (!matchingSchedule) {
       toast.error(
-        `The ${selectedBranch} branch is closed today. Appointments cannot be requested.`,
+        `${doctor} is unavailable at the selected time. Please choose one of the consultation timings shown above.`
       );
       return;
     }
 
-    if (currentDoctorAvailability && !currentDoctorAvailability.available) {
-      toast.error(`${selectedDoctor} is not available today.`);
+    // 2. Find corresponding branch and verify is_open = true
+    const matchedBranchObj = branches.find((b) => {
+      const bName = b.name.toLowerCase();
+      const sName = matchingSchedule.branch_name.toLowerCase();
+      if (bName.includes("madhapur") && sName.includes("madhapur")) return true;
+      if (bName.includes("tngo") && sName.includes("tngo")) return true;
+      return bName === sName;
+    });
+
+    const branchDisplayName = matchedBranchObj
+      ? matchedBranchObj.name
+      : matchingSchedule.branch_name.toLowerCase().includes("madhapur")
+      ? "Madhapur"
+      : "TNGO Colony";
+
+    if (matchedBranchObj && matchedBranchObj.isOpen === false) {
+      toast.error(
+        `The ${branchDisplayName} Branch is closed today. Please choose another available consultation time.`
+      );
       return;
     }
 
+    const whatsappNum = (matchedBranchObj?.whatsapp_number || "918247815584").replace(/\D/g, "");
     const formattedDate = formatAppointmentDate(date);
 
     const message = `New Appointment Request
@@ -1295,18 +1406,18 @@ Phone Number: ${phone}
 Age: ${age}
 Gender: ${gender}
 Doctor: ${doctor}
-Branch: ${branch}
+Branch: ${branchDisplayName}
 
 Preferred Date:
 ${formattedDate}
 
 Preferred Time:
-${time}
+${formatSqlTime(time)}
 
 Symptoms:
 ${symptoms}`;
 
-    const url = `https://wa.me/918247815584?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${whatsappNum}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
 
     setSubmitting(true);
@@ -1317,7 +1428,7 @@ ${symptoms}`;
       e.currentTarget.reset?.();
       setSelectedDoctor("");
       setSelectedBranch("");
-      setPreferredTime(isMobile ? "9:00 AM" : "");
+      setPreferredTime("10:00");
     }, 800);
   };
 
@@ -1404,47 +1515,41 @@ ${symptoms}`;
                 <option value="Dr. P. Pushpalatha">Dr. P. Pushpalatha</option>
               </select>,
             )}
-            {field(
-              "Branch",
-              <select
-                name="branch"
-                className={inputCls}
-                value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
-                disabled={
-                  !!(
-                    currentDoctorAvailability &&
-                    currentDoctorAvailability.available &&
-                    currentDoctorAvailability.currentBranch
-                  )
-                }
-              >
-                <option value="" disabled>
-                  Select Branch
-                </option>
-                <option value="Madhapur" disabled={disableMadhapur}>
-                  Madhapur {!madhapurOpen && " (Closed Today)"}
-                </option>
-                <option value="TNGO's Colony" disabled={disableTngos}>
-                  TNGO's Colony {!tngosOpen && " (Closed Today)"}
-                </option>
-              </select>,
+
+            {/* Hidden Branch input for form submission */}
+            <input type="hidden" name="branch" value={selectedBranch} />
+
+            {/* Doctor Availability Schedule Card */}
+            {selectedDoctor && availableSchedules.length > 0 && (
+              <div className="sm:col-span-2 p-4 sm:p-5 rounded-2xl bg-violet/8 border border-violet/20 space-y-3 animate-fade-up">
+                <div className="text-sm font-bold text-foreground">
+                  {selectedDoctor} is available today at:
+                </div>
+                <div className="space-y-3 pt-1">
+                  {availableSchedules.map((sched, idx) => {
+                    const branchText = formatBranchDisplayName(sched.branch_name);
+                    const timeText = `${formatSqlTime(sched.start_time)} – ${formatSqlTime(sched.end_time)}`;
+                    return (
+                      <div key={idx} className="space-y-1 text-sm">
+                        <div className="font-semibold text-foreground flex items-center gap-1.5">
+                          <span>📍</span>
+                          <span>{branchText}</span>
+                        </div>
+                        <div className="text-muted-foreground flex items-center gap-1.5 pl-6">
+                          <span>🕒</span>
+                          <span>{timeText}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
-            {/* Notice for doctor branch assignment constraints */}
-            {currentDoctorAvailability && (
-              <div className="sm:col-span-2 p-3.5 rounded-xl bg-violet/8 border border-violet/20 text-xs sm:text-sm text-violet-deep font-semibold animate-fade-up">
-                {currentDoctorAvailability.available && currentDoctorAvailability.currentBranch ? (
-                  <span>
-                    📢 {selectedDoctor} is available today only at the{" "}
-                    {currentDoctorAvailability.currentBranch.toLowerCase().includes("tngo")
-                      ? "TNGO's Colony"
-                      : "Madhapur"}{" "}
-                    Branch.
-                  </span>
-                ) : (
-                  <span>⚠️ {selectedDoctor} is not available today.</span>
-                )}
+            {/* Notice if doctor is not available today at any branch */}
+            {selectedDoctor && availableBranches.length === 0 && (
+              <div className="sm:col-span-2 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs sm:text-sm text-red-600 font-semibold animate-fade-up">
+                ⚠️ {selectedDoctor} is not available today.
               </div>
             )}
 
@@ -1459,21 +1564,14 @@ ${symptoms}`;
             {field("Preferred Date", <input name="date" type="date" className={inputCls} />)}
             {field(
               "Preferred Time",
-              <select
+              <input
+                type="time"
                 name="time"
                 className={inputCls}
                 value={preferredTime}
                 onChange={(e) => setPreferredTime(e.target.value)}
-              >
-                <option value="" disabled>
-                  Select Time
-                </option>
-                {TIME_SLOTS.map((slot) => (
-                  <option key={slot} value={slot}>
-                    {slot}
-                  </option>
-                ))}
-              </select>,
+                required
+              />,
             )}
           </div>
           {field(
@@ -1654,9 +1752,16 @@ function FAQ() {
 }
 
 function Contact({ branches }: { branches: BranchStatus[] }) {
-  const madhapurOpen =
-    branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
-  const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
+  const madhapurBranch = branches.find((b) => b.name.toLowerCase().includes("madhapur")) || {
+    isOpen: true,
+    openingTime: "10:00 AM",
+    closingTime: "10:00 PM",
+  };
+  const tngoBranch = branches.find((b) => b.name.toLowerCase().includes("tngo")) || {
+    isOpen: true,
+    openingTime: "10:00 AM",
+    closingTime: "10:00 PM",
+  };
 
   const branchesData = [
     {
@@ -1665,8 +1770,11 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
         "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
       phone: "+91 8247815584",
       whatsapp: "918247815584",
-      directionsUrl: "#", // User to insert directions URL later
-      isOpen: madhapurOpen,
+      directionsUrl: "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+Madhapur+Hyderabad",
+      mapEmbedUrl: "https://maps.google.com/maps?q=Harsha+Clinics+Madhapur+Ayyappa+Society+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
+      isOpen: madhapurBranch.isOpen !== false,
+      openingTime: madhapurBranch.openingTime || "10:00 AM",
+      closingTime: madhapurBranch.closingTime || "10:00 PM",
       image: "/Madhapur%20Branch/IMG-20260619-WA0089.jpg",
     },
     {
@@ -1675,8 +1783,11 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
         "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
       phone: "+91 8247815584",
       whatsapp: "918247815584",
-      directionsUrl: "#", // User to insert directions URL later
-      isOpen: tngosOpen,
+      directionsUrl: "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad",
+      mapEmbedUrl: "https://maps.google.com/maps?q=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
+      isOpen: tngoBranch.isOpen !== false,
+      openingTime: tngoBranch.openingTime || "10:00 AM",
+      closingTime: tngoBranch.closingTime || "10:00 PM",
       image: "/TNGO%20Colony%20Branch/IMG-20260619-WA0079.jpg",
     },
   ];
@@ -1701,7 +1812,12 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-violet-deep bg-violet/8">
                   Branch {i + 1}
                 </span>
-                {!b.isOpen && (
+                {b.isOpen ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-green-500/10 text-green-600 border border-green-500/20">
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                    Open Now
+                  </span>
+                ) : (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 border border-red-500/20 animate-pulse">
                     Closed Today
                   </span>
@@ -1751,32 +1867,28 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                     Hours
                   </div>
                   <p className="text-sm text-foreground/80 mt-0.5">
-                    {b.isOpen ? "Open daily • 10:00 AM – 10:00 PM" : "Closed Today"}
+                    {b.isOpen
+                      ? `Open daily • ${b.openingTime} – ${b.closingTime}`
+                      : "Closed Today"}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="relative pt-6 mt-6 border-t border-border space-y-4">
-              {/* Representative Branch Image */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border shadow-inner bg-slate-100 group/branch-img">
-                <img
-                  src={b.image}
-                  alt={b.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover/branch-img:scale-105"
+              {/* Embedded Interactive Google Map */}
+              <div className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-border shadow-soft bg-slate-100 relative">
+                <iframe
+                  title={`Google Maps embed for ${b.name}`}
+                  src={b.mapEmbedUrl}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/40 to-transparent pointer-events-none" />
-              </div>
-
-              {/* Map Placeholder container for future embed */}
-              <div className="aspect-[16/9] w-full bg-violet/5 border border-dashed border-violet/25 rounded-2xl flex flex-col items-center justify-center p-4 text-center">
-                <MapPin className="h-6 w-6 text-violet-deep mb-2 animate-bounce" />
-                <span className="text-xs font-semibold text-foreground/80">
-                  Interactive Map View Ready
-                </span>
-                <span className="text-[10px] text-muted-foreground mt-1 max-w-[200px]">
-                  Exact Google Maps embed will be inserted here.
-                </span>
               </div>
 
               <div className="grid grid-cols-3 gap-2 pt-2">
@@ -1798,13 +1910,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                 </a>
                 <a
                   href={b.directionsUrl}
-                  onClick={(e) => {
-                    if (b.directionsUrl === "#") {
-                      e.preventDefault();
-                      toast.info("Google Directions URL will be configured soon.");
-                    }
-                  }}
-                  target={b.directionsUrl !== "#" ? "_blank" : undefined}
+                  target="_blank"
                   rel="noreferrer"
                   className="inline-flex flex-col items-center justify-center gap-1.5 px-2 py-3 rounded-2xl gradient-orange text-white hover:shadow-glow transition-all font-semibold"
                 >
@@ -2410,7 +2516,7 @@ function Ambulance() {
 }
 
 function Home() {
-  const { doctors, branches } = useDoctorAvailability();
+  const { doctors, branches, schedules } = useDoctorAvailability();
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
 
@@ -2418,7 +2524,7 @@ function Home() {
     <div className="min-h-screen">
       <Nav />
       <main>
-        <Hero />
+        <Hero branches={branches} />
         <Doctors
           doctors={doctors}
           onSelectDoctorAndBranch={(doctor, branch) => {
@@ -2434,6 +2540,7 @@ function Home() {
         <BookingForm
           doctors={doctors}
           branches={branches}
+          schedules={schedules}
           selectedDoctor={selectedDoctor}
           selectedBranch={selectedBranch}
           setSelectedDoctor={setSelectedDoctor}

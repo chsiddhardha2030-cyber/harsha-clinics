@@ -12,6 +12,18 @@ export interface BranchStatus {
   id: number;
   name: string;
   isOpen: boolean;
+  openingTime: string;
+  closingTime: string;
+  whatsapp_number?: string;
+}
+
+export interface DoctorSchedule {
+  id?: number;
+  doctor_id: number;
+  branch_name: string;
+  is_available: boolean;
+  start_time: string;
+  end_time: string;
 }
 
 // Fallback initial data (to prevent app crash when offline)
@@ -31,13 +43,30 @@ const FALLBACK_DOCTORS: DoctorAvailability[] = [
 ];
 
 const FALLBACK_BRANCHES: BranchStatus[] = [
-  { id: 1, name: "Madhapur", isOpen: true },
-  { id: 2, name: "TNGO Colony", isOpen: true },
+  { id: 1, name: "Madhapur", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918247815584" },
+  { id: 2, name: "TNGO Colony", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918247815584" },
 ];
+
+const FALLBACK_SCHEDULES: DoctorSchedule[] = [
+  { doctor_id: 1, branch_name: "Madhapur", is_available: true, start_time: "09:00:00", end_time: "12:00:00" },
+  { doctor_id: 1, branch_name: "TNGO Colony", is_available: false, start_time: "14:00:00", end_time: "17:00:00" },
+  { doctor_id: 2, branch_name: "Madhapur", is_available: false, start_time: "09:00:00", end_time: "12:00:00" },
+  { doctor_id: 2, branch_name: "TNGO Colony", is_available: true, start_time: "10:00:00", end_time: "13:00:00" },
+];
+
+const isMatchingBranch = (b1: string, b2: string) => {
+  if (!b1 || !b2) return false;
+  const n1 = b1.toLowerCase();
+  const n2 = b2.toLowerCase();
+  if (n1.includes("madhapur") && n2.includes("madhapur")) return true;
+  if (n1.includes("tngo") && n2.includes("tngo")) return true;
+  return n1 === n2;
+};
 
 export function useDoctorAvailability() {
   const [doctors, setDoctors] = useState<DoctorAvailability[]>(FALLBACK_DOCTORS);
   const [branches, setBranches] = useState<BranchStatus[]>(FALLBACK_BRANCHES);
+  const [schedules, setSchedules] = useState<DoctorSchedule[]>(FALLBACK_SCHEDULES);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [usingFallback, setUsingFallback] = useState(false);
@@ -77,7 +106,27 @@ export function useDoctorAvailability() {
         throw doctorsError;
       }
 
-      console.log("Supabase fetch successful:", { doctorsData, branchesData });
+      const { data: scheduleData, error: scheduleError } = await supabase
+        .from("doctor_schedule")
+        .select("*");
+
+      if (scheduleError) {
+        console.warn("Could not fetch doctor_schedule (table might not exist yet or empty):", scheduleError);
+      } else if (scheduleData && scheduleData.length > 0) {
+        console.log(`Found ${scheduleData.length} schedules in Supabase.`);
+        setSchedules(
+          scheduleData.map((s: any) => ({
+            id: s.id ? Number(s.id) : undefined,
+            doctor_id: Number(s.doctor_id),
+            branch_name: s.branch_name,
+            is_available: Boolean(s.is_available),
+            start_time: s.start_time || "09:00:00",
+            end_time: s.end_time || "12:00:00",
+          }))
+        );
+      }
+
+      console.log("Supabase fetch successful:", { doctorsData, branchesData, scheduleData });
 
       if (doctorsData && doctorsData.length > 0) {
         console.log(`Found ${doctorsData.length} doctors in Supabase.`);
@@ -149,6 +198,9 @@ export function useDoctorAvailability() {
               id: Number(b.id),
               name: normalizedBranchName,
               isOpen: Boolean(b.is_open),
+              openingTime: b.opening_time && String(b.opening_time).trim() !== "" ? b.opening_time : "10:00 AM",
+              closingTime: b.closing_time && String(b.closing_time).trim() !== "" ? b.closing_time : "10:00 PM",
+              whatsapp_number: b.whatsapp_number || b.whatsapp || "918247815584",
             };
           }),
         );
@@ -166,6 +218,8 @@ export function useDoctorAvailability() {
               id: b.id,
               name: b.name,
               is_open: b.isOpen,
+              opening_time: b.openingTime,
+              closing_time: b.closingTime,
             })),
           )
           .then(({ error: seedErr }) => {
@@ -192,6 +246,45 @@ export function useDoctorAvailability() {
 
   useEffect(() => {
     fetchLiveAvailability();
+
+    if (!isSupabaseConfigured()) return;
+
+    const channelBranches = supabase
+      .channel("realtime_branches_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "branches",
+        },
+        () => {
+          console.log("Realtime update received for branches table. Refreshing live data...");
+          fetchLiveAvailability();
+        }
+      )
+      .subscribe();
+
+    const channelSchedule = supabase
+      .channel("realtime_schedule_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "doctor_schedule",
+        },
+        () => {
+          console.log("Realtime update received for doctor_schedule table. Refreshing live data...");
+          fetchLiveAvailability();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channelBranches);
+      supabase.removeChannel(channelSchedule);
+    };
   }, []);
 
   const updateDoctorAvailability = async (
@@ -222,9 +315,92 @@ export function useDoctorAvailability() {
     }
   };
 
-  const updateBranchStatus = async (branchId: number, isOpen: boolean) => {
+  const updateDoctorSchedule = async (
+    doctorId: number,
+    branchName: string,
+    isAvailable: boolean,
+    startTime: string,
+    endTime: string,
+  ) => {
     // Optimistic local update
-    setBranches((prev) => prev.map((b) => (b.id === branchId ? { ...b, isOpen } : b)));
+    setSchedules((prev) => {
+      const idx = prev.findIndex(
+        (s) => s.doctor_id === doctorId && isMatchingBranch(s.branch_name, branchName)
+      );
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = {
+          ...updated[idx],
+          is_available: isAvailable,
+          start_time: startTime,
+          end_time: endTime,
+        };
+        return updated;
+      } else {
+        return [
+          ...prev,
+          {
+            doctor_id: doctorId,
+            branch_name: branchName,
+            is_available: isAvailable,
+            start_time: startTime,
+            end_time: endTime,
+          },
+        ];
+      }
+    });
+
+    if (isSupabaseConfigured() && !usingFallback) {
+      try {
+        const { data: existingRows } = await supabase
+          .from("doctor_schedule")
+          .select("*")
+          .eq("doctor_id", doctorId);
+
+        const matchingRow = existingRows?.find((r: any) =>
+          isMatchingBranch(r.branch_name, branchName)
+        );
+
+        if (matchingRow) {
+          const { error: updateErr } = await supabase
+            .from("doctor_schedule")
+            .update({
+              is_available: isAvailable,
+              start_time: startTime,
+              end_time: endTime,
+            })
+            .eq("doctor_id", doctorId)
+            .eq("branch_name", matchingRow.branch_name);
+          if (updateErr) throw updateErr;
+        } else {
+          const { error: insertErr } = await supabase
+            .from("doctor_schedule")
+            .insert({
+              doctor_id: doctorId,
+              branch_name: branchName,
+              is_available: isAvailable,
+              start_time: startTime,
+              end_time: endTime,
+            });
+          if (insertErr) throw insertErr;
+        }
+      } catch (err: any) {
+        console.error("Failed to sync doctor schedule changes to Supabase:", err);
+        throw err;
+      }
+    }
+  };
+
+  const updateBranchStatus = async (
+    branchId: number,
+    isOpen: boolean,
+    openingTime: string,
+    closingTime: string,
+  ) => {
+    // Optimistic local update
+    setBranches((prev) =>
+      prev.map((b) => (b.id === branchId ? { ...b, isOpen, openingTime, closingTime } : b)),
+    );
 
     if (isSupabaseConfigured() && !usingFallback) {
       try {
@@ -232,6 +408,8 @@ export function useDoctorAvailability() {
           .from("branches")
           .update({
             is_open: isOpen,
+            opening_time: openingTime,
+            closing_time: closingTime,
           })
           .eq("id", branchId);
 
@@ -246,11 +424,14 @@ export function useDoctorAvailability() {
   return {
     doctors,
     branches,
+    schedules,
     loading,
     error,
     usingFallback,
     updateDoctorAvailability,
+    updateDoctorSchedule,
     updateBranchStatus,
     refresh: fetchLiveAvailability,
   };
 }
+

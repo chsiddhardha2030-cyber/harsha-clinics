@@ -5,6 +5,44 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Lock, Save, LogOut, HeartPulse, User, CheckCircle, RefreshCw } from "lucide-react";
 
+function formatTo12Hr(timeStr: string): string {
+  if (!timeStr) return "10:00 AM";
+  if (timeStr.includes("AM") || timeStr.includes("PM")) return timeStr;
+  const parts = timeStr.split(":");
+  let h = parseInt(parts[0], 10);
+  const m = parts[1] || "00";
+  if (isNaN(h)) return timeStr;
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if (h === 0) h = 12;
+  const formattedH = h < 10 ? `0${h}` : `${h}`;
+  return `${formattedH}:${m} ${ampm}`;
+}
+
+function parseTo24Hr(time12: string): string {
+  if (!time12) return "10:00:00";
+  const clean = time12.trim().toUpperCase();
+  if (!clean.includes("AM") && !clean.includes("PM")) {
+    const parts = clean.split(":");
+    const h = parseInt(parts[0], 10) || 0;
+    const m = parseInt(parts[1], 10) || 0;
+    const formattedH = h < 10 ? `0${h}` : `${h}`;
+    const formattedM = m < 10 ? `0${m}` : `${m}`;
+    return `${formattedH}:${formattedM}:00`;
+  }
+  const isPM = clean.includes("PM");
+  const isAM = clean.includes("AM");
+  const timePart = clean.replace("AM", "").replace("PM", "").trim();
+  const parts = timePart.split(":");
+  let h = parseInt(parts[0], 10) || 0;
+  const m = parseInt(parts[1], 10) || 0;
+  if (isPM && h < 12) h += 12;
+  if (isAM && h === 12) h = 0;
+  const formattedH = h < 10 ? `0${h}` : `${h}`;
+  const formattedM = m < 10 ? `0${m}` : `${m}`;
+  return `${formattedH}:${formattedM}:00`;
+}
+
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
@@ -13,16 +51,17 @@ function AdminPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [savingDoctorId, setSavingDoctorId] = useState<number | null>(null);
+  const [savingScheduleKey, setSavingScheduleKey] = useState<string | null>(null);
   const [savingBranchId, setSavingBranchId] = useState<number | null>(null);
 
   const {
     doctors,
     branches,
+    schedules,
     loading,
     error,
     usingFallback,
-    updateDoctorAvailability,
+    updateDoctorSchedule,
     updateBranchStatus,
     refresh,
   } = useDoctorAvailability();
@@ -30,15 +69,18 @@ function AdminPage() {
   // Add console.log statements for debugging admin state
   console.log("AdminPage state - doctors:", doctors);
   console.log("AdminPage state - branches:", branches);
+  console.log("AdminPage state - schedules:", schedules);
   console.log("AdminPage state - loading:", loading);
   console.log("AdminPage state - error:", error);
   console.log("AdminPage state - usingFallback:", usingFallback);
 
-  // Local state for edits
-  const [doctorEdits, setDoctorEdits] = useState<
-    Record<number, { available: boolean; currentBranch: string }>
+  // Local state for schedule edits: key is `${doctorId}_${branchName}`
+  const [scheduleEdits, setScheduleEdits] = useState<
+    Record<string, { isAvailable: boolean; startTime: string; endTime: string }>
   >({});
-  const [branchEdits, setBranchEdits] = useState<Record<number, { isOpen: boolean }>>({});
+  const [branchEdits, setBranchEdits] = useState<
+    Record<number, { isOpen: boolean; openingTime: string; closingTime: string }>
+  >({});
 
   // Check simple session local storage
   useEffect(() => {
@@ -50,21 +92,36 @@ function AdminPage() {
 
   // Sync edits state when data loads
   useEffect(() => {
-    const initialDocEdits: typeof doctorEdits = {};
+    const initialScheduleEdits: typeof scheduleEdits = {};
+    const branchesList = ["Madhapur", "TNGO Colony"];
+
     doctors.forEach((d) => {
-      initialDocEdits[d.id] = {
-        available: d.available,
-        currentBranch: d.currentBranch,
-      };
+      branchesList.forEach((bName) => {
+        const key = `${d.id}_${bName}`;
+        const existingSched = schedules.find(
+          (s) =>
+            s.doctor_id === d.id &&
+            (s.branch_name.toLowerCase().includes(bName.toLowerCase().slice(0, 4)))
+        );
+        initialScheduleEdits[key] = {
+          isAvailable: existingSched ? existingSched.is_available : true,
+          startTime: existingSched ? formatTo12Hr(existingSched.start_time) : "10:00 AM",
+          endTime: existingSched ? formatTo12Hr(existingSched.end_time) : "01:00 PM",
+        };
+      });
     });
-    setDoctorEdits(initialDocEdits);
+    setScheduleEdits(initialScheduleEdits);
 
     const initialBranchEdits: typeof branchEdits = {};
     branches.forEach((b) => {
-      initialBranchEdits[b.id] = { isOpen: b.isOpen };
+      initialBranchEdits[b.id] = {
+        isOpen: b.isOpen,
+        openingTime: b.openingTime || "10:00 AM",
+        closingTime: b.closingTime || "10:00 PM",
+      };
     });
     setBranchEdits(initialBranchEdits);
-  }, [doctors, branches]);
+  }, [doctors, branches, schedules]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,18 +140,25 @@ function AdminPage() {
     toast.info("Logged out successfully");
   };
 
-  const saveDoctorChanges = async (id: number) => {
-    const edit = doctorEdits[id];
+  const saveScheduleChanges = async (doctorId: number, branchName: string) => {
+    const key = `${doctorId}_${branchName}`;
+    const edit = scheduleEdits[key];
     if (!edit) return;
 
-    setSavingDoctorId(id);
+    setSavingScheduleKey(key);
     try {
-      await updateDoctorAvailability(id, edit.available, edit.currentBranch);
-      toast.success("Doctor status updated successfully");
+      await updateDoctorSchedule(
+        doctorId,
+        branchName,
+        edit.isAvailable,
+        parseTo24Hr(edit.startTime),
+        parseTo24Hr(edit.endTime)
+      );
+      toast.success(`${branchName} schedule updated successfully`);
     } catch (err: any) {
-      toast.error(err.message || "Failed to update doctor");
+      toast.error(err.message || "Failed to update schedule");
     } finally {
-      setSavingDoctorId(null);
+      setSavingScheduleKey(null);
     }
   };
 
@@ -104,8 +168,8 @@ function AdminPage() {
 
     setSavingBranchId(id);
     try {
-      await updateBranchStatus(id, edit.isOpen);
-      toast.success("Branch status updated successfully");
+      await updateBranchStatus(id, edit.isOpen, edit.openingTime, edit.closingTime);
+      toast.success("Branch details updated successfully");
     } catch (err: any) {
       toast.error(err.message || "Failed to update branch");
     } finally {
@@ -244,7 +308,7 @@ function AdminPage() {
                 Doctors Management
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed mb-6">
-                Assign clinical branches and toggle active availability for staff members.
+                Configure branch availability and consultation hours for each doctor.
               </p>
 
               {loading ? (
@@ -254,80 +318,122 @@ function AdminPage() {
               ) : (
                 <div className="space-y-6">
                   {doctors.map((d) => {
-                    const edit = doctorEdits[d.id] || {
-                      available: d.available,
-                      currentBranch: d.currentBranch,
-                    };
+                    const branchList = ["Madhapur", "TNGO Colony"];
 
                     return (
                       <div
                         key={d.id}
                         className="p-5 rounded-2xl bg-violet/5 border border-border/60 space-y-4"
                       >
-                        <div className="flex items-center justify-between">
-                          <span className="font-display font-bold text-foreground text-sm sm:text-base">
+                        <div className="flex items-center justify-between border-b border-border/40 pb-3">
+                          <span className="font-display font-bold text-foreground text-base">
                             {d.name}
                           </span>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              d.available
-                                ? "bg-green-500/10 text-green-600"
-                                : "bg-red-500/10 text-red-600"
-                            }`}
-                          >
-                            {d.available ? "Active" : "Inactive"}
-                          </span>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                              Assigned Branch
-                            </label>
-                            <select
-                              value={edit.currentBranch}
-                              onChange={(e) =>
-                                setDoctorEdits((prev) => ({
-                                  ...prev,
-                                  [d.id]: { ...edit, currentBranch: e.target.value },
-                                }))
-                              }
-                              className="mt-1.5 w-full h-10 px-3 rounded-lg bg-white border border-border outline-none transition text-xs"
-                            >
-                              <option value="Madhapur">Madhapur</option>
-                              <option value="TNGO Colony">TNGO Colony</option>
-                            </select>
-                          </div>
+                        <div className="space-y-4">
+                          {branchList.map((bName) => {
+                            const key = `${d.id}_${bName}`;
+                            const edit = scheduleEdits[key] || {
+                              isAvailable: true,
+                              startTime: "09:00",
+                              endTime: "12:00",
+                            };
+                            const isSaving = savingScheduleKey === key;
 
-                          <div>
-                            <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                              Availability
-                            </label>
-                            <select
-                              value={edit.available ? "true" : "false"}
-                              onChange={(e) =>
-                                setDoctorEdits((prev) => ({
-                                  ...prev,
-                                  [d.id]: { ...edit, available: e.target.value === "true" },
-                                }))
-                              }
-                              className="mt-1.5 w-full h-10 px-3 rounded-lg bg-white border border-border outline-none transition text-xs"
-                            >
-                              <option value="true">Available</option>
-                              <option value="false">Unavailable</option>
-                            </select>
-                          </div>
-                        </div>
+                            return (
+                              <div
+                                key={bName}
+                                className="p-4 rounded-xl bg-white/80 border border-border/60 space-y-3 shadow-sm"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-semibold text-xs text-violet-deep uppercase tracking-wider">
+                                    {bName} Branch
+                                  </span>
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                      edit.isAvailable
+                                        ? "bg-green-500/10 text-green-600"
+                                        : "bg-red-500/10 text-red-600"
+                                    }`}
+                                  >
+                                    {edit.isAvailable ? "Available" : "Unavailable"}
+                                  </span>
+                                </div>
 
-                        <div className="pt-2 flex justify-end">
-                          <button
-                            onClick={() => saveDoctorChanges(d.id)}
-                            disabled={savingDoctorId === d.id}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white gradient-orange hover:shadow-glow disabled:opacity-75"
-                          >
-                            <Save className="h-3.5 w-3.5" />
-                            <span>{savingDoctorId === d.id ? "Saving..." : "Save Doctor"}</span>
-                          </button>
+                                <div className="grid sm:grid-cols-3 gap-3">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                                      Availability
+                                    </label>
+                                    <select
+                                      value={edit.isAvailable ? "true" : "false"}
+                                      onChange={(e) =>
+                                        setScheduleEdits((prev) => ({
+                                          ...prev,
+                                          [key]: {
+                                            ...edit,
+                                            isAvailable: e.target.value === "true",
+                                          },
+                                        }))
+                                      }
+                                      className="mt-1 w-full h-9 px-2.5 rounded-lg bg-white border border-border outline-none transition text-xs"
+                                    >
+                                      <option value="true">Available</option>
+                                      <option value="false">Unavailable</option>
+                                    </select>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                                      Start Time
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={edit.startTime}
+                                      onChange={(e) =>
+                                        setScheduleEdits((prev) => ({
+                                          ...prev,
+                                          [key]: { ...edit, startTime: e.target.value },
+                                        }))
+                                      }
+                                      placeholder="10:00 AM"
+                                      className="mt-1 w-full h-9 px-2.5 rounded-lg bg-white border border-border outline-none transition text-xs font-medium focus:border-violet focus:ring-2 focus:ring-violet/20"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                                      End Time
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={edit.endTime}
+                                      onChange={(e) =>
+                                        setScheduleEdits((prev) => ({
+                                          ...prev,
+                                          [key]: { ...edit, endTime: e.target.value },
+                                        }))
+                                      }
+                                      placeholder="01:00 PM"
+                                      className="mt-1 w-full h-9 px-2.5 rounded-lg bg-white border border-border outline-none transition text-xs font-medium focus:border-violet focus:ring-2 focus:ring-violet/20"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="pt-1 flex justify-end">
+                                  <button
+                                    onClick={() => saveScheduleChanges(d.id, bName)}
+                                    disabled={isSaving}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white gradient-orange hover:shadow-glow disabled:opacity-75"
+                                  >
+                                    <Save className="h-3 w-3" />
+                                    <span>{isSaving ? "Saving..." : "Save Schedule"}</span>
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     );
@@ -354,7 +460,11 @@ function AdminPage() {
               ) : (
                 <div className="space-y-6">
                   {branches.map((b) => {
-                    const edit = branchEdits[b.id] || { isOpen: b.isOpen };
+                    const edit = branchEdits[b.id] || {
+                      isOpen: b.isOpen,
+                      openingTime: b.openingTime || "10:00 AM",
+                      closingTime: b.closingTime || "10:00 PM",
+                    };
 
                     return (
                       <div
@@ -393,6 +503,44 @@ function AdminPage() {
                             <option value="true">Open</option>
                             <option value="false">Closed</option>
                           </select>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                              Opening Time
+                            </label>
+                            <input
+                              type="text"
+                              value={edit.openingTime}
+                              onChange={(e) =>
+                                setBranchEdits((prev) => ({
+                                  ...prev,
+                                  [b.id]: { ...edit, openingTime: e.target.value },
+                                }))
+                              }
+                              placeholder="10:00 AM"
+                              className="mt-1.5 w-full h-10 px-3 rounded-lg bg-white border border-border outline-none transition text-xs text-foreground focus:border-violet focus:ring-2 focus:ring-violet/20"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                              Closing Time
+                            </label>
+                            <input
+                              type="text"
+                              value={edit.closingTime}
+                              onChange={(e) =>
+                                setBranchEdits((prev) => ({
+                                  ...prev,
+                                  [b.id]: { ...edit, closingTime: e.target.value },
+                                }))
+                              }
+                              placeholder="10:00 PM"
+                              className="mt-1.5 w-full h-10 px-3 rounded-lg bg-white border border-border outline-none transition text-xs text-foreground focus:border-violet focus:ring-2 focus:ring-violet/20"
+                            />
+                          </div>
                         </div>
 
                         <div className="pt-2 flex justify-end">
