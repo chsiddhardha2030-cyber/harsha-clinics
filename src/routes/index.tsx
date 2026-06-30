@@ -2427,7 +2427,7 @@ function LabTests() {
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
               >
                 <Phone className="h-4 w-4 animate-pulse" />
-                <span>Call Now for Lab Booking</span>
+                <span>Call: +91 8309403610</span>
               </a>
               <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="h-4 w-4 text-green-500 shrink-0" />
@@ -2533,10 +2533,10 @@ function Ambulance() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 shadow-[0_8px_24px_rgba(220,38,38,0.35)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.45)] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Phone className="h-4 w-4 animate-bounce" />
-              Call Ambulance: +91 82478 15584
+              Call Ambulance: +91 8309403610
             </a>
             <span className="text-xs text-muted-foreground font-semibold">
-              Emergency Dispatch: +91 82478 15584
+              Emergency Dispatch: +91 8309403610
             </span>
           </div>
         </div>
