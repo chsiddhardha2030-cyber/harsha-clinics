@@ -582,13 +582,14 @@ function About() {
     <Section id="about">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
         {/* Left Column: Premium Poster Image inside a Glassmorphism Frame */}
-        <div className="lg:col-span-6 flex items-center justify-center w-full max-w-[420px] mx-auto lg:mx-0 select-none">
-          <div className="w-full relative glass-strong border border-white/20 p-2 sm:p-2.5 rounded-[32px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/5">
-            <div className="overflow-hidden rounded-[24px]">
+        <div className="lg:col-span-6 flex items-center justify-center w-full max-w-[450px] mx-auto lg:mx-0 select-none group relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-violet/20 to-orange-start/15 rounded-[28px] blur-xl opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <div className="w-full relative glass-strong border border-white/30 p-3 sm:p-4 rounded-[28px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/90">
+            <div className="overflow-hidden rounded-[16px] shadow-inner bg-slate-50/50 flex items-center justify-center">
               <img
                 src="/extras/IMG-20260619-WA0120.jpg"
                 alt="Harsha Clinics, Pharmacy &amp; Diagnostics Poster"
-                className="w-full h-auto aspect-[1080/1548] object-contain rounded-[24px]"
+                className="w-full h-auto object-cover rounded-[16px] transition-transform duration-500 group-hover:scale-102"
                 loading="lazy"
               />
             </div>
@@ -1110,14 +1111,14 @@ function AwardsAndRecognition() {
     <Section id="awards">
       <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Side: Award Image Card */}
-        <div className="lg:col-span-5 relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-start/20 rounded-3xl blur-xl opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
-          <div className="relative glass-strong rounded-[28px] p-4 sm:p-6 border border-amber-500/20 shadow-soft hover:shadow-glow transition-all duration-300 flex items-center justify-center bg-white/40 backdrop-blur-md">
-            <div className="w-full aspect-[4/3] max-h-[360px] flex items-center justify-center overflow-hidden rounded-2xl">
+        <div className="lg:col-span-5 flex items-center justify-center w-full max-w-[450px] mx-auto lg:mx-0 select-none group relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-start/20 rounded-[28px] blur-xl opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <div className="w-full relative glass-strong border border-white/30 p-3 sm:p-4 rounded-[28px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/90">
+            <div className="overflow-hidden rounded-[16px] shadow-inner bg-slate-50/50 flex items-center justify-center">
               <img
                 src="/Awards/IMG_20260626_084430.jpg"
                 alt="Dr. A.P.J. Abdul Kalam Health & Medical Excellence Best Doctor Award 2024"
-                className="w-full h-full object-contain max-h-[340px] drop-shadow-md"
+                className="w-full h-auto object-cover rounded-[16px] transition-transform duration-500 group-hover:scale-102"
                 loading="lazy"
               />
             </div>
