@@ -456,7 +456,7 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
                 <span className="gradient-text">Compassionate Care.</span>
               </h1>
               <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground leading-relaxed">
-                Your all-in-one healthcare destination, brings together expert clinical care, a fully stocked pharmacy, and advanced diagnostics under one roof.
+                Your all-in-one healthcare destination for expert clinical care, pharmacy services, and advanced diagnostics.
               </p>
               <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
@@ -467,7 +467,7 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
                   Book Appointment
                 </a>
                 <a
-                  href="tel:+918247815584"
+                  href="tel:+918309403610"
                   className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-violet-deep glass-strong hover:-translate-y-0.5 transition-all"
                 >
                   <Phone className="h-4 w-4" />
@@ -956,14 +956,14 @@ const FEATURED_SPECIALTIES = [
   {
     title: "Family Medicine",
     desc: "Compassionate primary healthcare including complete diagnostic checkups, wellness advice, and preventive care for family members of all ages.",
-    image: "/extras/IMG-20260619-WA0109.jpg",
+    image: "/extras/IMG-20260619-WA0120.jpg",
     icon: Stethoscope,
     anchor: "/specialties#family-medicine",
   },
   {
     title: "Cardiology",
     desc: "Specialized cardiac assessments, ECG tests, blood pressure checkups, and expert management for complex cardiovascular conditions.",
-    image: "/extras/IMG-20260619-WA0120.jpg",
+    image: "/extras/IMG-20260619-WA0109.jpg",
     icon: HeartPulse,
     anchor: "/specialties#cardiology",
   },
@@ -1427,7 +1427,7 @@ function BookingForm({
       return;
     }
 
-    const whatsappNum = (matchedBranchObj?.whatsapp_number || "918247815584").replace(/\D/g, "");
+    const whatsappNum = (matchedBranchObj?.whatsapp_number || "918309403610").replace(/\D/g, "");
     const formattedDate = formatAppointmentDate(date);
 
     const message = `New Appointment Request
@@ -1795,8 +1795,8 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       name: "Harsha Clinics, Pharmacy & Diagnostics | Top Clinic in Madhapur",
       address:
         "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
-      phone: "+91 8247815584",
-      whatsapp: "918247815584",
+      phone: "+91 8309403610",
+      whatsapp: "918309403610",
       directionsUrl: "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+Madhapur+Hyderabad",
       mapEmbedUrl: "https://maps.google.com/maps?q=Harsha+Clinics+Madhapur+Ayyappa+Society+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
       isOpen: madhapurBranch.isOpen !== false,
@@ -1808,8 +1808,8 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       name: "Harsha Clinics, Pharmacy & Diagnostics | Best Clinic in TNGO's Colony",
       address:
         "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
-      phone: "+91 8247815584",
-      whatsapp: "918247815584",
+      phone: "+91 8309403610",
+      whatsapp: "918309403610",
       directionsUrl: "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad",
       mapEmbedUrl: "https://maps.google.com/maps?q=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
       isOpen: tngoBranch.isOpen !== false,
@@ -1976,8 +1976,8 @@ export function Footer() {
     {
       title: "Contact",
       links: [
-        { href: "tel:+918247815584", label: "Call clinic" },
-        { href: "https://wa.me/918247815584", label: "WhatsApp" },
+        { href: "tel:+918309403610", label: "Call clinic" },
+        { href: "https://wa.me/918309403610", label: "WhatsApp" },
         { href: "/#contact", label: "Get directions" },
         { href: "mailto:hello@harshaclinic.in", label: "Email us" },
       ],
@@ -2008,7 +2008,7 @@ export function Footer() {
             </p>
             <div className="mt-5 flex items-center gap-2">
               <a
-                href="https://wa.me/918247815584"
+                href="https://wa.me/918309403610"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -2529,7 +2529,7 @@ function Ambulance() {
 
           <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
             <a
-              href="tel:+918247815584"
+              href="tel:+918309403610"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 shadow-[0_8px_24px_rgba(220,38,38,0.35)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.45)] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Phone className="h-4 w-4 animate-bounce" />

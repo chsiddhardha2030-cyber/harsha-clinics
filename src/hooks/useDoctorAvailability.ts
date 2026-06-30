@@ -43,8 +43,8 @@ const FALLBACK_DOCTORS: DoctorAvailability[] = [
 ];
 
 const FALLBACK_BRANCHES: BranchStatus[] = [
-  { id: 1, name: "Madhapur", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918247815584" },
-  { id: 2, name: "TNGO Colony", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918247815584" },
+  { id: 1, name: "Madhapur", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918309403610" },
+  { id: 2, name: "TNGO Colony", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918309403610" },
 ];
 
 const FALLBACK_SCHEDULES: DoctorSchedule[] = [
@@ -200,7 +200,7 @@ export function useDoctorAvailability() {
               isOpen: Boolean(b.is_open),
               openingTime: b.opening_time && String(b.opening_time).trim() !== "" ? b.opening_time : "10:00 AM",
               closingTime: b.closing_time && String(b.closing_time).trim() !== "" ? b.closing_time : "10:00 PM",
-              whatsapp_number: b.whatsapp_number || b.whatsapp || "918247815584",
+              whatsapp_number: b.whatsapp_number || b.whatsapp || "918309403610",
             };
           }),
         );

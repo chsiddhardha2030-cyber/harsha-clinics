@@ -351,7 +351,7 @@ function SpecialtiesPage() {
                 </Link>
                 
                 <a
-                  href="tel:+918247815584"
+                  href="tel:+918309403610"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl text-sm font-bold text-violet-deep glass-strong hover:bg-violet/12 hover:-translate-y-0.5 transition-all"
                 >
                   <Phone className="h-4 w-4" />
