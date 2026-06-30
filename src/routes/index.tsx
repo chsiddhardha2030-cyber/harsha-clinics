@@ -2365,10 +2365,36 @@ function ClinicGallery() {
 }
 
 function MobileSticky() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const hero = document.getElementById("home");
+      if (hero) {
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        // Show after the user scrolls past the hero section (e.g., hero bottom is above/close to the viewport top)
+        setIsVisible(heroBottom < 80);
+      } else {
+        setIsVisible(window.scrollY > 400);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <a
       href="#appointment-form"
-      className="sm:hidden fixed bottom-5 left-5 z-40 inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold text-white gradient-orange shadow-glow"
+      style={{
+        bottom: "calc(6.5rem + env(safe-area-inset-bottom))",
+      }}
+      className={`sm:hidden fixed right-6 z-40 inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold text-white gradient-orange shadow-glow transition-all duration-300 transform ${
+        isVisible
+          ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+          : "opacity-0 translate-y-4 scale-95 pointer-events-none"
+      }`}
     >
       <Calendar className="h-4 w-4" />
       Book Now

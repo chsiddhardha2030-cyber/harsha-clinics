@@ -1,9 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, createRootRouteWithContext, useRouter } from "@tanstack/react-router";
+import { Outlet, Link, createRootRouteWithContext, useRouter, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "sonner";
+import { useScrollManager } from "../hooks/useScrollManager";
 
 function NotFoundComponent() {
   return (
@@ -73,10 +74,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useScrollManager();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <div key={pathname} className={pathname === "/" ? "" : "animate-slide-down-fade"}>
+        <Outlet />
+      </div>
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

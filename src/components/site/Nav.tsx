@@ -24,6 +24,30 @@ export function Nav() {
     return () => window.removeEventListener("scroll", on);
   }, []);
 
+  // Close menu on Escape key press
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
+  // Prevent background scrolling when menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
@@ -32,7 +56,7 @@ export function Nav() {
     >
       <div className="mx-auto max-w-7xl px-4">
         <div
-          className={`glass-strong rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between transition-all ${
+          className={`relative z-50 glass-strong rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between transition-all ${
             scrolled ? "shadow-soft" : ""
           }`}
         >
@@ -70,6 +94,8 @@ export function Nav() {
             </a>
             <button
               aria-label="Menu"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
               className="lg:hidden grid place-items-center h-10 w-10 rounded-xl bg-violet/8 text-violet-deep"
             >
@@ -79,20 +105,33 @@ export function Nav() {
         </div>
 
         {open && (
-          <div className="lg:hidden mt-2 glass-strong rounded-2xl p-3 animate-fade-up">
-            <div className="flex flex-col">
-              {links.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="px-3 py-3 rounded-lg text-sm font-medium hover:bg-violet/8"
-                >
-                  {l.label}
-                </a>
-              ))}
+          <>
+            {/* Clickable Backdrop */}
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 lg:hidden animate-fade-in"
+              onClick={() => setOpen(false)}
+            />
+            {/* Drawer Menu */}
+            <div
+              id="mobile-menu"
+              role="region"
+              aria-label="Mobile Navigation"
+              className="relative z-50 lg:hidden mt-2 glass-strong rounded-2xl p-3 animate-fade-up"
+            >
+              <div className="flex flex-col">
+                {links.map((l) => (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-3 rounded-lg text-sm font-medium hover:bg-violet/8"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </header>
