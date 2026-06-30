@@ -46,7 +46,7 @@ const DEPARTMENTS = [
     id: "cardiology",
     name: "Cardiology & Heart Care",
     icon: HeartPulse,
-    image: "/extras/IMG-20260619-WA0120.jpg",
+    image: "/extras/IMG-20260626-WA0044.jpg",
     desc: "Professional cardiovascular care to evaluate heart health, manage chronic cardiac conditions, and screen for coronary diseases.",
     specialties: [
       { name: "Heart Diseases Care", desc: "Outpatient management of coronary issues, angina, and ischemic conditions." },
@@ -59,7 +59,7 @@ const DEPARTMENTS = [
     id: "nephrology",
     name: "Nephrology & Kidney Care",
     icon: Droplet,
-    image: "/extras/IMG-20260626-WA0014.jpg",
+    image: "/extras/IMG-20260626-WA0023.jpg",
     desc: "Dedicated clinical support to evaluate kidney functions, prevent disease progression, and coordinate ongoing care.",
     specialties: [
       { name: "Kidney Diseases Management", desc: "Outpatient treatment of chronic kidney disease (CKD) and nephrotic syndromes." },
@@ -83,7 +83,7 @@ const DEPARTMENTS = [
     id: "emergency-medicine",
     name: "Emergency & Critical Care",
     icon: Bandage,
-    image: "/extras/IMG-20260619-WA0108.jpg",
+    image: "/extras/IMG-20260619-WA0117.jpg",
     desc: "Equipped to handle urgent clinical needs including minor surgeries, trauma stabilization, and critical care coordination.",
     specialties: [
       { name: "Emergency Medicine", desc: "Rapid clinical triaging, stabilization, and immediate medical intervention." },
