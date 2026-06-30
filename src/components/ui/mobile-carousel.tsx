@@ -43,9 +43,7 @@ export function MobileCarousel({ children, className }: MobileCarouselProps) {
         <div className="flex items-stretch touch-pan-y">
           {children.map((child, idx) => (
             <div key={idx} className="shrink-0 grow-0 basis-full px-2 flex flex-col">
-              <div className="h-full flex flex-col">
-                {child}
-              </div>
+              <div className="h-full flex flex-col">{child}</div>
             </div>
           ))}
         </div>
@@ -70,7 +68,9 @@ export function MobileCarousel({ children, className }: MobileCarouselProps) {
               onClick={() => emblaApi?.scrollTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                selectedIndex === idx ? "w-6 gradient-orange" : "w-1.5 bg-violet/30 hover:bg-violet/50"
+                selectedIndex === idx
+                  ? "w-6 gradient-orange"
+                  : "w-1.5 bg-violet/30 hover:bg-violet/50"
               }`}
             />
           ))}

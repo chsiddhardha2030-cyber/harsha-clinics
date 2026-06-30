@@ -43,15 +43,53 @@ const FALLBACK_DOCTORS: DoctorAvailability[] = [
 ];
 
 const FALLBACK_BRANCHES: BranchStatus[] = [
-  { id: 1, name: "Madhapur", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918309403610" },
-  { id: 2, name: "TNGO Colony", isOpen: true, openingTime: "10:00 AM", closingTime: "10:00 PM", whatsapp_number: "918309403610" },
+  {
+    id: 1,
+    name: "Madhapur",
+    isOpen: true,
+    openingTime: "10:00 AM",
+    closingTime: "10:00 PM",
+    whatsapp_number: "918309403610",
+  },
+  {
+    id: 2,
+    name: "TNGO Colony",
+    isOpen: true,
+    openingTime: "10:00 AM",
+    closingTime: "10:00 PM",
+    whatsapp_number: "918309403610",
+  },
 ];
 
 const FALLBACK_SCHEDULES: DoctorSchedule[] = [
-  { doctor_id: 1, branch_name: "Madhapur", is_available: true, start_time: "09:00:00", end_time: "12:00:00" },
-  { doctor_id: 1, branch_name: "TNGO Colony", is_available: false, start_time: "14:00:00", end_time: "17:00:00" },
-  { doctor_id: 2, branch_name: "Madhapur", is_available: false, start_time: "09:00:00", end_time: "12:00:00" },
-  { doctor_id: 2, branch_name: "TNGO Colony", is_available: true, start_time: "10:00:00", end_time: "13:00:00" },
+  {
+    doctor_id: 1,
+    branch_name: "Madhapur",
+    is_available: true,
+    start_time: "09:00:00",
+    end_time: "12:00:00",
+  },
+  {
+    doctor_id: 1,
+    branch_name: "TNGO Colony",
+    is_available: false,
+    start_time: "14:00:00",
+    end_time: "17:00:00",
+  },
+  {
+    doctor_id: 2,
+    branch_name: "Madhapur",
+    is_available: false,
+    start_time: "09:00:00",
+    end_time: "12:00:00",
+  },
+  {
+    doctor_id: 2,
+    branch_name: "TNGO Colony",
+    is_available: true,
+    start_time: "10:00:00",
+    end_time: "13:00:00",
+  },
 ];
 
 const isMatchingBranch = (b1: string, b2: string) => {
@@ -111,7 +149,10 @@ export function useDoctorAvailability() {
         .select("*");
 
       if (scheduleError) {
-        console.warn("Could not fetch doctor_schedule (table might not exist yet or empty):", scheduleError);
+        console.warn(
+          "Could not fetch doctor_schedule (table might not exist yet or empty):",
+          scheduleError,
+        );
       } else if (scheduleData && scheduleData.length > 0) {
         console.log(`Found ${scheduleData.length} schedules in Supabase.`);
         setSchedules(
@@ -122,7 +163,7 @@ export function useDoctorAvailability() {
             is_available: Boolean(s.is_available),
             start_time: s.start_time || "09:00:00",
             end_time: s.end_time || "12:00:00",
-          }))
+          })),
         );
       }
 
@@ -198,8 +239,14 @@ export function useDoctorAvailability() {
               id: Number(b.id),
               name: normalizedBranchName,
               isOpen: Boolean(b.is_open),
-              openingTime: b.opening_time && String(b.opening_time).trim() !== "" ? b.opening_time : "10:00 AM",
-              closingTime: b.closing_time && String(b.closing_time).trim() !== "" ? b.closing_time : "10:00 PM",
+              openingTime:
+                b.opening_time && String(b.opening_time).trim() !== ""
+                  ? b.opening_time
+                  : "10:00 AM",
+              closingTime:
+                b.closing_time && String(b.closing_time).trim() !== ""
+                  ? b.closing_time
+                  : "10:00 PM",
               whatsapp_number: b.whatsapp_number || b.whatsapp || "918309403610",
             };
           }),
@@ -261,7 +308,7 @@ export function useDoctorAvailability() {
         () => {
           console.log("Realtime update received for branches table. Refreshing live data...");
           fetchLiveAvailability();
-        }
+        },
       )
       .subscribe();
 
@@ -275,9 +322,11 @@ export function useDoctorAvailability() {
           table: "doctor_schedule",
         },
         () => {
-          console.log("Realtime update received for doctor_schedule table. Refreshing live data...");
+          console.log(
+            "Realtime update received for doctor_schedule table. Refreshing live data...",
+          );
           fetchLiveAvailability();
-        }
+        },
       )
       .subscribe();
 
@@ -325,7 +374,7 @@ export function useDoctorAvailability() {
     // Optimistic local update
     setSchedules((prev) => {
       const idx = prev.findIndex(
-        (s) => s.doctor_id === doctorId && isMatchingBranch(s.branch_name, branchName)
+        (s) => s.doctor_id === doctorId && isMatchingBranch(s.branch_name, branchName),
       );
       if (idx >= 0) {
         const updated = [...prev];
@@ -358,7 +407,7 @@ export function useDoctorAvailability() {
           .eq("doctor_id", doctorId);
 
         const matchingRow = existingRows?.find((r: any) =>
-          isMatchingBranch(r.branch_name, branchName)
+          isMatchingBranch(r.branch_name, branchName),
         );
 
         if (matchingRow) {
@@ -373,15 +422,13 @@ export function useDoctorAvailability() {
             .eq("branch_name", matchingRow.branch_name);
           if (updateErr) throw updateErr;
         } else {
-          const { error: insertErr } = await supabase
-            .from("doctor_schedule")
-            .insert({
-              doctor_id: doctorId,
-              branch_name: branchName,
-              is_available: isAvailable,
-              start_time: startTime,
-              end_time: endTime,
-            });
+          const { error: insertErr } = await supabase.from("doctor_schedule").insert({
+            doctor_id: doctorId,
+            branch_name: branchName,
+            is_available: isAvailable,
+            start_time: startTime,
+            end_time: endTime,
+          });
           if (insertErr) throw insertErr;
         }
       } catch (err: any) {
@@ -434,4 +481,3 @@ export function useDoctorAvailability() {
     refresh: fetchLiveAvailability,
   };
 }
-

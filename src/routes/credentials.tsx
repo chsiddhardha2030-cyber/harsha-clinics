@@ -92,16 +92,11 @@ function parseCertificateMetadata(filePath: string): CertificateItem {
     badgeText = "Municipal License";
   } else {
     // Fallback pretty title derivation
-    title = cleanName
-      .replace(/[-_]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+    title = cleanName.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim();
   }
 
   // Final public static URL for browser navigation
-  const publicUrl = filePath.startsWith("/public")
-    ? filePath.replace("/public", "")
-    : filePath;
+  const publicUrl = filePath.startsWith("/public") ? filePath.replace("/public", "") : filePath;
 
   return {
     id: filePath,
@@ -138,11 +133,11 @@ export function CredentialsPage() {
         "/public/Certificates/Dr. Ravi Kumar/cert of renewal of registration (Telangana State Medical Council).pdf",
         "/public/Certificates/Dr. Ravi Kumar/Advanced-Certificate-in-Critical-Care-Me.pdf",
         "/public/Certificates/Branches/Madhapur/Fire Extinguisher Certificate.pdf",
-        "/public/Certificates/Branches/Madhapur/Registration of Certificate of Clinical Establishment.jpeg",
+        "/public/Certificates/Branches/Madhapur/Registration of Certificate of Clinical Establishment.pdf",
         "/public/Certificates/Branches/Madhapur/Service-3833.1140663.1000044831.pdf",
-        "/public/Certificates/Branches/TNGO/Fire & Extinguisher Certificate.jpeg",
+        "/public/Certificates/Branches/TNGO/Fire & Extinguisher Certificate.pdf",
         "/public/Certificates/Branches/TNGO/ISO Certificate.pdf",
-        "/public/Certificates/Branches/TNGO/Registration of Certificate of Clinical Establishment.jpeg",
+        "/public/Certificates/Branches/TNGO/Registration of Certificate of Clinical Establishment (1).pdf",
         "/public/Certificates/Branches/TNGO/Service-3833.1149724.1000070630.pdf",
       ];
     }
@@ -152,17 +147,17 @@ export function CredentialsPage() {
 
   const drRaviCertificates = useMemo(
     () => certificateFiles.filter((c) => c.category === "ravi"),
-    [certificateFiles]
+    [certificateFiles],
   );
 
   const madhapurCertificates = useMemo(
     () => certificateFiles.filter((c) => c.category === "madhapur"),
-    [certificateFiles]
+    [certificateFiles],
   );
 
   const tngoCertificates = useMemo(
     () => certificateFiles.filter((c) => c.category === "tngo"),
-    [certificateFiles]
+    [certificateFiles],
   );
 
   const filterCertificates = (items: CertificateItem[]) => {
@@ -171,7 +166,7 @@ export function CredentialsPage() {
       (item) =>
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.issuingAuthority.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.filename.toLowerCase().includes(searchQuery.toLowerCase())
+        item.filename.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   };
 
@@ -268,7 +263,9 @@ export function CredentialsPage() {
             Credentials & <span className="gradient-text">Certifications</span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Harsha Clinics, Pharmacy & Diagnostics operates under stringent medical standards and official state registrations. Browse our verified physician qualifications and branch operational licenses.
+            Harsha Clinics, Pharmacy & Diagnostics operates under stringent medical standards and
+            official state registrations. Browse our verified physician qualifications and branch
+            operational licenses.
           </p>
 
           {/* Back Link */}
@@ -294,7 +291,7 @@ export function CredentialsPage() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as "all" | "ravi" | "madhapur" | "tngo")}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                   activeTab === tab.id
                     ? "gradient-orange text-white shadow-soft"
@@ -359,7 +356,8 @@ export function CredentialsPage() {
                   Madhapur Branch
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  Clinical establishment permits, trade licenses, and safety certifications for Madhapur
+                  Clinical establishment permits, trade licenses, and safety certifications for
+                  Madhapur
                 </p>
               </div>
             </div>
@@ -388,7 +386,8 @@ export function CredentialsPage() {
                   TNGO Branch
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  ISO quality certifications, clinical licenses, and municipal approvals for TNGO's Colony
+                  ISO quality certifications, clinical licenses, and municipal approvals for TNGO's
+                  Colony
                 </p>
               </div>
             </div>

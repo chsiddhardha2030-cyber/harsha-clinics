@@ -101,7 +101,7 @@ function AdminPage() {
         const existingSched = schedules.find(
           (s) =>
             s.doctor_id === d.id &&
-            (s.branch_name.toLowerCase().includes(bName.toLowerCase().slice(0, 4)))
+            s.branch_name.toLowerCase().includes(bName.toLowerCase().slice(0, 4)),
         );
         initialScheduleEdits[key] = {
           isAvailable: existingSched ? existingSched.is_available : true,
@@ -152,7 +152,7 @@ function AdminPage() {
         branchName,
         edit.isAvailable,
         parseTo24Hr(edit.startTime),
-        parseTo24Hr(edit.endTime)
+        parseTo24Hr(edit.endTime),
       );
       toast.success(`${branchName} schedule updated successfully`);
     } catch (err: any) {
@@ -189,7 +189,9 @@ function AdminPage() {
             <span className="grid h-10 w-10 place-items-center rounded-xl gradient-orange shadow-soft">
               <HeartPulse className="h-5 w-5 text-white" />
             </span>
-            <span className="font-display font-extrabold text-xl gradient-text">Harsha Clinics, Pharmacy &amp; Diagnostics</span>
+            <span className="font-display font-extrabold text-xl gradient-text">
+              Harsha Clinics, Pharmacy &amp; Diagnostics
+            </span>
           </Link>
           <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground">
             Admin Portal

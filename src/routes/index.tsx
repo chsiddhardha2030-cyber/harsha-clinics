@@ -113,37 +113,43 @@ const TESTIMONIALS = [
     name: "Priya Sharma",
     role: "Patient",
     text: "Dr. D. Ravi Kumar diagnosed my condition quickly and the treatment plan worked wonderfully. The clinic feels modern and the staff is incredibly kind.",
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Anil Reddy",
     role: "Patient",
     text: "Walked in for an emergency at night and was attended to immediately. Professional, calm and thorough. Highly recommend Harsha Clinics.",
-    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Lakshmi Rao",
     role: "Patient",
     text: "Dr. Pushpalatha is so warm and patient. She listened carefully and explained everything. Best family physician in Madhapur.",
-    avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Rahul Verma",
     role: "Patient",
     text: "In-house pharmacy and lab is a game changer — got everything done in one visit. Clean, quick and very affordable.",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Sneha Iyer",
     role: "Patient",
     text: "Booked online, got a reminder, walked in on time. Felt like a 5-star healthcare experience right in our neighbourhood.",
-    avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
     name: "Mohammed Aslam",
     role: "Patient",
     text: "Critical care consultation here saved my father's recovery time. Forever grateful to the team at Harsha Clinics.",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
   },
 ];
 
@@ -452,11 +458,11 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
                 ))}
               </div>
               <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] text-foreground">
-                Advanced Healthcare.{" "}
-                <span className="gradient-text">Compassionate Care.</span>
+                Advanced Healthcare. <span className="gradient-text">Compassionate Care.</span>
               </h1>
               <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground leading-relaxed">
-                Your all-in-one healthcare destination for expert clinical care, pharmacy services, and advanced diagnostics.
+                Your all-in-one healthcare destination for expert clinical care, pharmacy services,
+                and advanced diagnostics.
               </p>
               <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
@@ -619,11 +625,15 @@ function About() {
           </div>
 
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-4 max-w-xl">
-            Harsha Clinics, Pharmacy &amp; Diagnostics is a comprehensive healthcare center dedicated to providing affordable, accessible, and quality medical care. We offer expert consultations, diagnostic services, pharmacy support, preventive healthcare, and emergency medical management under one roof.
+            Harsha Clinics, Pharmacy &amp; Diagnostics is a comprehensive healthcare center
+            dedicated to providing affordable, accessible, and quality medical care. We offer expert
+            consultations, diagnostic services, pharmacy support, preventive healthcare, and
+            emergency medical management under one roof.
           </p>
 
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
-            With a patient-centric approach, we strive to deliver timely and effective healthcare solutions to individuals and families across Hyderabad.
+            With a patient-centric approach, we strive to deliver timely and effective healthcare
+            solutions to individuals and families across Hyderabad.
           </p>
 
           {/* Accordion trigger button */}
@@ -643,8 +653,9 @@ function About() {
 
       {/* Expandable Section with smooth grid accordion height animation */}
       <div
-        className={`grid transition-all duration-500 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
-          }`}
+        className={`grid transition-all duration-500 ease-in-out ${
+          isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
+        }`}
       >
         <div className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 pb-2">
@@ -654,12 +665,11 @@ function About() {
                 <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet/8 text-violet-deep">
                   <Sparkles className="h-5 w-5 text-orange-start" />
                 </div>
-                <h3 className="font-display text-lg font-bold text-foreground">
-                  Our Vision
-                </h3>
+                <h3 className="font-display text-lg font-bold text-foreground">Our Vision</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                To become the most trusted neighborhood healthcare provider by delivering compassionate, evidence-based, and affordable medical services.
+                To become the most trusted neighborhood healthcare provider by delivering
+                compassionate, evidence-based, and affordable medical services.
               </p>
             </div>
 
@@ -669,9 +679,7 @@ function About() {
                 <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet/8 text-violet-deep">
                   <CheckCircle2 className="h-5 w-5 text-orange-start" />
                 </div>
-                <h3 className="font-display text-lg font-bold text-foreground">
-                  Our Mission
-                </h3>
+                <h3 className="font-display text-lg font-bold text-foreground">Our Mission</h3>
               </div>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
@@ -925,8 +933,8 @@ function ExpandableGrid<
               style={
                 isNew
                   ? {
-                    animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
-                  }
+                      animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
+                    }
                   : undefined
               }
             >
@@ -1037,9 +1045,7 @@ function Specialties() {
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
                   {spec.desc}
                 </p>
-                <div
-                  className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors mt-auto"
-                >
+                <div className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors mt-auto">
                   <span>Learn More</span>
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
@@ -1080,9 +1086,7 @@ function Specialties() {
                 <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4 line-clamp-3">
                   {spec.desc}
                 </p>
-                <div
-                  className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors"
-                >
+                <div className="inline-flex items-center gap-1 text-xs font-bold text-violet hover:text-violet-deep transition-colors">
                   <span>Learn More</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </div>
@@ -1137,21 +1141,38 @@ function AwardsAndRecognition() {
           </h2>
 
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            We are honored to share that <strong className="text-foreground font-semibold">Dr. D. Ravi Kumar</strong> was conferred with the prestigious <strong className="text-foreground font-semibold">Dr. A.P.J. Abdul Kalam Health &amp; Medical Excellence Best Doctor Award – 2024</strong>. This accolade recognizes exceptional dedication, clinical expertise, and pioneering contributions to patient care, emergency medicine, and critical care across Hyderabad.
+            We are honored to share that{" "}
+            <strong className="text-foreground font-semibold">Dr. D. Ravi Kumar</strong> was
+            conferred with the prestigious{" "}
+            <strong className="text-foreground font-semibold">
+              Dr. A.P.J. Abdul Kalam Health &amp; Medical Excellence Best Doctor Award – 2024
+            </strong>
+            . This accolade recognizes exceptional dedication, clinical expertise, and pioneering
+            contributions to patient care, emergency medicine, and critical care across Hyderabad.
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
             <div className="p-3.5 rounded-2xl glass border border-violet/10">
-              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Award Title</div>
-              <div className="text-xs sm:text-sm font-bold text-foreground mt-1">Best Doctor Award</div>
+              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                Award Title
+              </div>
+              <div className="text-xs sm:text-sm font-bold text-foreground mt-1">
+                Best Doctor Award
+              </div>
             </div>
             <div className="p-3.5 rounded-2xl glass border border-violet/10">
-              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Award Year</div>
+              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                Award Year
+              </div>
               <div className="text-xs sm:text-sm font-bold text-violet-deep mt-1">2024</div>
             </div>
             <div className="p-3.5 rounded-2xl glass border border-violet/10 col-span-2 sm:col-span-1">
-              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Category</div>
-              <div className="text-xs sm:text-sm font-bold text-foreground mt-1">Healthcare &amp; Critical Care</div>
+              <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                Category
+              </div>
+              <div className="text-xs sm:text-sm font-bold text-foreground mt-1">
+                Healthcare &amp; Critical Care
+              </div>
             </div>
           </div>
 
@@ -1297,8 +1318,8 @@ function BookingForm({
   const todayStr = (() => {
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   })();
 
@@ -1307,14 +1328,12 @@ function BookingForm({
   }, [isMobile]);
 
   const selectedDocObj = doctors.find((d) => d.name === selectedDoctor);
-  const docId = selectedDocObj ? selectedDocObj.id : (selectedDoctor.includes("Ravi") ? 1 : 2);
+  const docId = selectedDocObj ? selectedDocObj.id : selectedDoctor.includes("Ravi") ? 1 : 2;
 
-  const availableSchedules = schedules.filter(
-    (s) => s.doctor_id === docId && s.is_available
-  );
+  const availableSchedules = schedules.filter((s) => s.doctor_id === docId && s.is_available);
 
   const availableBranches = availableSchedules.map((s) =>
-    s.branch_name.toLowerCase().includes("tngo") ? "TNGO's Colony" : "Madhapur"
+    s.branch_name.toLowerCase().includes("tngo") ? "TNGO's Colony" : "Madhapur",
   );
 
   const showBranchSelect = availableBranches.length >= 2;
@@ -1333,12 +1352,14 @@ function BookingForm({
 
   const currentSchedule = availableSchedules.find((s) => {
     const bName = s.branch_name.toLowerCase();
-    if (selectedBranch.toLowerCase().includes("madhapur") && bName.includes("madhapur")) return true;
+    if (selectedBranch.toLowerCase().includes("madhapur") && bName.includes("madhapur"))
+      return true;
     if (selectedBranch.toLowerCase().includes("tngo") && bName.includes("tngo")) return true;
     return false;
   });
 
-  const madhapurOpen = branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
+  const madhapurOpen =
+    branches.find((b) => b.name.toLowerCase().includes("madhapur"))?.isOpen !== false;
   const tngosOpen = branches.find((b) => b.name.toLowerCase().includes("tngo"))?.isOpen !== false;
 
   const selectedBranchClosed =
@@ -1414,7 +1435,7 @@ function BookingForm({
 
     if (!matchingSchedule) {
       toast.error(
-        `${doctor} is unavailable at the selected time. Please choose one of the consultation timings shown above.`
+        `${doctor} is unavailable at the selected time. Please choose one of the consultation timings shown above.`,
       );
       return;
     }
@@ -1436,7 +1457,7 @@ function BookingForm({
 
     if (matchedBranchObj && matchedBranchObj.isOpen === false) {
       toast.error(
-        `The ${branchDisplayName} Branch is closed today. Please choose another available consultation time.`
+        `The ${branchDisplayName} Branch is closed today. Please choose another available consultation time.`,
       );
       return;
     }
@@ -1607,7 +1628,10 @@ ${symptoms}`;
               </div>
             )}
 
-            {field("Preferred Date", <input name="date" type="date" min={todayStr} className={inputCls} />)}
+            {field(
+              "Preferred Date",
+              <input name="date" type="date" min={todayStr} className={inputCls} />,
+            )}
             {field(
               "Preferred Time",
               <input
@@ -1741,8 +1765,9 @@ function Testimonials() {
                   if (autoplay) autoplay.reset();
                 }}
                 aria-label={`Go to testimonial ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
-                  }`}
+                className={`h-2 rounded-full transition-all ${
+                  selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
+                }`}
               />
             ))}
           </div>
@@ -1774,8 +1799,9 @@ function FAQ() {
           return (
             <div
               key={i}
-              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${isOpen ? "shadow-soft" : ""
-                }`}
+              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${
+                isOpen ? "shadow-soft" : ""
+              }`}
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
@@ -1785,17 +1811,19 @@ function FAQ() {
                   {f.q}
                 </span>
                 <span
-                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${isOpen
-                    ? "gradient-orange text-white rotate-180"
-                    : "bg-violet/10 text-violet-deep"
-                    }`}
+                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
+                    isOpen
+                      ? "gradient-orange text-white rotate-180"
+                      : "bg-violet/10 text-violet-deep"
+                  }`}
                 >
                   {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                 </span>
               </button>
               <div
-                className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
+                className={`grid transition-all duration-300 ease-out ${
+                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                }`}
               >
                 <div className="overflow-hidden">
                   <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -1830,8 +1858,10 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
         "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
       phone: "+91 8309403610",
       whatsapp: "918309403610",
-      directionsUrl: "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+Madhapur+Hyderabad",
-      mapEmbedUrl: "https://maps.google.com/maps?q=Harsha+Clinics+Madhapur+Ayyappa+Society+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
+      directionsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+Madhapur+Hyderabad",
+      mapEmbedUrl:
+        "https://maps.google.com/maps?q=Harsha+Clinics+Madhapur+Ayyappa+Society+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
       isOpen: madhapurBranch.isOpen !== false,
       openingTime: madhapurBranch.openingTime || "10:00 AM",
       closingTime: madhapurBranch.closingTime || "10:00 PM",
@@ -1843,8 +1873,10 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
         "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
       phone: "+91 8309403610",
       whatsapp: "918309403610",
-      directionsUrl: "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad",
-      mapEmbedUrl: "https://maps.google.com/maps?q=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
+      directionsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad",
+      mapEmbedUrl:
+        "https://maps.google.com/maps?q=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
       isOpen: tngoBranch.isOpen !== false,
       openingTime: tngoBranch.openingTime || "10:00 AM",
       closingTime: tngoBranch.closingTime || "10:00 PM",
@@ -1912,9 +1944,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                     Hours
                   </div>
                   <p className="text-sm text-foreground/80 mt-0.5">
-                    {b.isOpen
-                      ? `Open daily • ${b.openingTime} – ${b.closingTime}`
-                      : "Closed Today"}
+                    {b.isOpen ? `Open daily • ${b.openingTime} – ${b.closingTime}` : "Closed Today"}
                   </p>
                 </div>
               </div>
@@ -2065,7 +2095,8 @@ export function Footer() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Harsha Clinics, Pharmacy &amp; Diagnostics. All rights reserved.
+            © {new Date().getFullYear()} Harsha Clinics, Pharmacy &amp; Diagnostics. All rights
+            reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Crafted with care for the families of Hyderabad.
@@ -2075,7 +2106,6 @@ export function Footer() {
     </footer>
   );
 }
-
 
 const GALLERY_ITEMS = [
   {
@@ -2206,10 +2236,11 @@ function ClinicGallery() {
           <button
             key={tab.id}
             onClick={() => setFilter(tab.id as "all" | "madhapur" | "tngo" | "facilities")}
-            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${filter === tab.id
-              ? "bg-violet-deep text-white shadow-soft"
-              : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
-              }`}
+            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+              filter === tab.id
+                ? "bg-violet-deep text-white shadow-soft"
+                : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
+            }`}
           >
             {tab.label}
           </button>
@@ -2298,8 +2329,11 @@ function ClinicGallery() {
               type="button"
               onClick={() => emblaApi?.scrollTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${selectedIndex === idx ? "w-6 gradient-orange" : "w-1.5 bg-violet/30 hover:bg-violet/50"
-                }`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                selectedIndex === idx
+                  ? "w-6 gradient-orange"
+                  : "w-1.5 bg-violet/30 hover:bg-violet/50"
+              }`}
             />
           ))}
         </div>
@@ -2384,10 +2418,26 @@ function ClinicGallery() {
 
 function LabTests() {
   const highlights = [
-    { title: "NABL-Standard Quality", desc: "Accurate and reliable diagnostics confirmation.", icon: ShieldCheck },
-    { title: "Expert Technicians", desc: "Hygienic and professional sample collection.", icon: Users },
-    { title: "Biochemistry Analyzers", desc: "State-of-the-art diagnostic equipment.", icon: Microscope },
-    { title: "Home Collection", desc: "Free home sample collection in Madhapur & Gachibowli.", icon: MapPin },
+    {
+      title: "NABL-Standard Quality",
+      desc: "Accurate and reliable diagnostics confirmation.",
+      icon: ShieldCheck,
+    },
+    {
+      title: "Expert Technicians",
+      desc: "Hygienic and professional sample collection.",
+      icon: Users,
+    },
+    {
+      title: "Biochemistry Analyzers",
+      desc: "State-of-the-art diagnostic equipment.",
+      icon: Microscope,
+    },
+    {
+      title: "Home Collection",
+      desc: "Free home sample collection in Madhapur & Gachibowli.",
+      icon: MapPin,
+    },
   ];
 
   return (
@@ -2401,7 +2451,9 @@ function LabTests() {
         {/* Left Side: Description, Highlights Grid, and Call Now CTA */}
         <div className="lg:col-span-7 space-y-6 text-left">
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Harsha Clinics is equipped with an advanced in-house diagnostic laboratory. We leverage modern biochemistry analyzers and NABL-standard protocols to ensure rapid and accurate testing, helping our doctors provide prompt clinical decisions and treatment plans.
+            Harsha Clinics is equipped with an advanced in-house diagnostic laboratory. We leverage
+            modern biochemistry analyzers and NABL-standard protocols to ensure rapid and accurate
+            testing, helping our doctors provide prompt clinical decisions and treatment plans.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-4">
@@ -2419,9 +2471,7 @@ function LabTests() {
                     <h4 className="font-display font-bold text-foreground text-sm sm:text-base">
                       {h.title}
                     </h4>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      {h.desc}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{h.desc}</p>
                   </div>
                 </div>
               );
@@ -2464,7 +2514,8 @@ function LabTests() {
                   In-House Lab
                 </span>
                 <p className="text-xs text-white/90 leading-relaxed">
-                  State-of-the-art biochemistry analyzers ensure reliable, NABL-standard diagnostic confirmation.
+                  State-of-the-art biochemistry analyzers ensure reliable, NABL-standard diagnostic
+                  confirmation.
                 </p>
               </div>
             </div>
@@ -2508,7 +2559,8 @@ function Ambulance() {
                   Emergency Support
                 </span>
                 <p className="text-xs text-white/90 leading-relaxed">
-                  Fully equipped with patient monitors, medical gas cylinders, and trauma stabilization kits.
+                  Fully equipped with patient monitors, medical gas cylinders, and trauma
+                  stabilization kits.
                 </p>
               </div>
             </div>
@@ -2522,13 +2574,18 @@ function Ambulance() {
               Critical Care & Emergency Highlights
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Our ambulance services are staffed with emergency care technicians and fully prepared for cardiac, respiratory, and pediatric emergencies. We ensure continuous patient monitoring from pickup to clinical admission.
+              Our ambulance services are staffed with emergency care technicians and fully prepared
+              for cardiac, respiratory, and pediatric emergencies. We ensure continuous patient
+              monitoring from pickup to clinical admission.
             </p>
           </div>
 
           <ul className="grid sm:grid-cols-2 gap-3.5">
             {highlights.map((item) => (
-              <li key={item} className="flex gap-2.5 items-start text-xs sm:text-sm text-foreground/90 font-medium">
+              <li
+                key={item}
+                className="flex gap-2.5 items-start text-xs sm:text-sm text-foreground/90 font-medium"
+              >
                 <CheckCircle2 className="h-4.5 w-4.5 text-red-500 shrink-0 mt-0.5" />
                 <span>{item}</span>
               </li>
@@ -2565,7 +2622,7 @@ function Home() {
         if (navEntries.length > 0) {
           return (navEntries[0] as PerformanceNavigationTiming).type === "reload";
         }
-      } catch (e) { }
+      } catch (e) {}
       return false;
     })();
 

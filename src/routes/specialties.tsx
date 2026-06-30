@@ -33,14 +33,35 @@ const DEPARTMENTS = [
     image: "/images/family_medicine.png",
     desc: "Comprehensive health services for patients of all ages. We focus on prevention, diagnosis, and treatment of everyday health conditions.",
     specialties: [
-      { name: "Family Physician Consultation", desc: "Routine health checks and general diagnostic consulting for the whole family." },
-      { name: "Pediatric & Geriatric Care", desc: "Specialized clinical attention tailored for children and elderly family members." },
-      { name: "General Health Checkups", desc: "Comprehensive screening packages to assess key health parameters." },
-      { name: "Infectious Diseases", desc: "Treatment for viral and bacterial infections including Dengue, Malaria, Typhoid, and Chikungunya." },
-      { name: "Covid-19 Care", desc: "Testing consultation, supportive treatment, and post-covid recovery monitoring." },
-      { name: "Allergies Management", desc: "Identifying and mitigating common environmental and food-related allergies." },
-      { name: "Obesity & Weight Management", desc: "Medical support, diet plans, and lifestyle adjustments to control obesity." },
-    ]
+      {
+        name: "Family Physician Consultation",
+        desc: "Routine health checks and general diagnostic consulting for the whole family.",
+      },
+      {
+        name: "Pediatric & Geriatric Care",
+        desc: "Specialized clinical attention tailored for children and elderly family members.",
+      },
+      {
+        name: "General Health Checkups",
+        desc: "Comprehensive screening packages to assess key health parameters.",
+      },
+      {
+        name: "Infectious Diseases",
+        desc: "Treatment for viral and bacterial infections including Dengue, Malaria, Typhoid, and Chikungunya.",
+      },
+      {
+        name: "Covid-19 Care",
+        desc: "Testing consultation, supportive treatment, and post-covid recovery monitoring.",
+      },
+      {
+        name: "Allergies Management",
+        desc: "Identifying and mitigating common environmental and food-related allergies.",
+      },
+      {
+        name: "Obesity & Weight Management",
+        desc: "Medical support, diet plans, and lifestyle adjustments to control obesity.",
+      },
+    ],
   },
   {
     id: "cardiology",
@@ -49,11 +70,23 @@ const DEPARTMENTS = [
     image: "/images/cardiology.png",
     desc: "Professional cardiovascular care to evaluate heart health, manage chronic cardiac conditions, and screen for coronary diseases.",
     specialties: [
-      { name: "Heart Diseases Care", desc: "Outpatient management of coronary issues, angina, and ischemic conditions." },
-      { name: "Hypertension (High BP) Control", desc: "Continuous monitoring, medication adjustment, and lifestyle therapy for high blood pressure." },
-      { name: "High Cholesterol & Lipids", desc: "Dietary guidance and pharmaceutical treatment for high cholesterol and triglycerides." },
-      { name: "ECG Testing & Reporting", desc: "In-house electrocardiogram scans with prompt diagnostic reviews." },
-    ]
+      {
+        name: "Heart Diseases Care",
+        desc: "Outpatient management of coronary issues, angina, and ischemic conditions.",
+      },
+      {
+        name: "Hypertension (High BP) Control",
+        desc: "Continuous monitoring, medication adjustment, and lifestyle therapy for high blood pressure.",
+      },
+      {
+        name: "High Cholesterol & Lipids",
+        desc: "Dietary guidance and pharmaceutical treatment for high cholesterol and triglycerides.",
+      },
+      {
+        name: "ECG Testing & Reporting",
+        desc: "In-house electrocardiogram scans with prompt diagnostic reviews.",
+      },
+    ],
   },
   {
     id: "nephrology",
@@ -62,10 +95,19 @@ const DEPARTMENTS = [
     image: "/images/nephrology.png",
     desc: "Dedicated clinical support to evaluate kidney functions, prevent disease progression, and coordinate ongoing care.",
     specialties: [
-      { name: "Kidney Diseases Management", desc: "Outpatient treatment of chronic kidney disease (CKD) and nephrotic syndromes." },
-      { name: "Electrolyte Imbalances", desc: "Correction of sodium, potassium, and calcium imbalances to restore cellular health." },
-      { name: "Dialysis Patient Coordination", desc: "Post-dialysis checkups, complication management, and scheduling support." },
-    ]
+      {
+        name: "Kidney Diseases Management",
+        desc: "Outpatient treatment of chronic kidney disease (CKD) and nephrotic syndromes.",
+      },
+      {
+        name: "Electrolyte Imbalances",
+        desc: "Correction of sodium, potassium, and calcium imbalances to restore cellular health.",
+      },
+      {
+        name: "Dialysis Patient Coordination",
+        desc: "Post-dialysis checkups, complication management, and scheduling support.",
+      },
+    ],
   },
   {
     id: "diabetes-care",
@@ -74,10 +116,19 @@ const DEPARTMENTS = [
     image: "/images/diabetology.png",
     desc: "Specialized endocrinological care focusing on blood sugar control, thyroid health, and hormonal/metabolic balance.",
     specialties: [
-      { name: "Diabetes Mellitus Care", desc: "Glycated hemoglobin (HbA1c) checks, insulin adjustments, and medication regimes." },
-      { name: "Thyroid Disorders Care", desc: "Clinical management for hypothyroidism, hyperthyroidism, and goiter concerns." },
-      { name: "High Cholesterol & Dyslipidemia", desc: "Targeted strategies to optimize lipid profile and lower cardiovascular risk." },
-    ]
+      {
+        name: "Diabetes Mellitus Care",
+        desc: "Glycated hemoglobin (HbA1c) checks, insulin adjustments, and medication regimes.",
+      },
+      {
+        name: "Thyroid Disorders Care",
+        desc: "Clinical management for hypothyroidism, hyperthyroidism, and goiter concerns.",
+      },
+      {
+        name: "High Cholesterol & Dyslipidemia",
+        desc: "Targeted strategies to optimize lipid profile and lower cardiovascular risk.",
+      },
+    ],
   },
   {
     id: "emergency-medicine",
@@ -86,11 +137,23 @@ const DEPARTMENTS = [
     image: "/images/emergency.png",
     desc: "Equipped to handle urgent clinical needs including minor surgeries, trauma stabilization, and critical care coordination.",
     specialties: [
-      { name: "Emergency Medicine", desc: "Rapid clinical triaging, stabilization, and immediate medical intervention." },
-      { name: "Critical Care (ICU Cases)", desc: "FCCM-certified specialist consults for multi-organ failures and critical illnesses." },
-      { name: "Ventilator Cases Support", desc: "Clinical management and bedside parameters monitoring for patients on ventilator support." },
-      { name: "Minor Suturing & Wound Dressing", desc: "Sterile suturing for lacerations, cut wounds, and surgical dressing services." },
-    ]
+      {
+        name: "Emergency Medicine",
+        desc: "Rapid clinical triaging, stabilization, and immediate medical intervention.",
+      },
+      {
+        name: "Critical Care (ICU Cases)",
+        desc: "FCCM-certified specialist consults for multi-organ failures and critical illnesses.",
+      },
+      {
+        name: "Ventilator Cases Support",
+        desc: "Clinical management and bedside parameters monitoring for patients on ventilator support.",
+      },
+      {
+        name: "Minor Suturing & Wound Dressing",
+        desc: "Sterile suturing for lacerations, cut wounds, and surgical dressing services.",
+      },
+    ],
   },
   {
     id: "pulmonology",
@@ -99,12 +162,27 @@ const DEPARTMENTS = [
     image: "/images/pulmonology.png",
     desc: "Diagnosis and therapy for acute and chronic respiratory disorders, allergies, and infectious lung diseases.",
     specialties: [
-      { name: "Asthma & Bronchitis Care", desc: "Preventative inhaler management, nebulization, and lung function guidance." },
-      { name: "Pneumonia Treatment", desc: "Antibiotic therapy, oxygen stabilization, and supportive lung rehabilitation." },
-      { name: "Lung Diseases & COPD", desc: "Therapeutic care for chronic obstructive pulmonary diseases and chronic cough." },
-      { name: "Tuberculosis (TB) Program", desc: "Standard anti-tubercular treatment regimens and close patient monitoring." },
-      { name: "Nebulization Services", desc: "In-clinic bronchodilator nebulization for acute respiratory relief." },
-    ]
+      {
+        name: "Asthma & Bronchitis Care",
+        desc: "Preventative inhaler management, nebulization, and lung function guidance.",
+      },
+      {
+        name: "Pneumonia Treatment",
+        desc: "Antibiotic therapy, oxygen stabilization, and supportive lung rehabilitation.",
+      },
+      {
+        name: "Lung Diseases & COPD",
+        desc: "Therapeutic care for chronic obstructive pulmonary diseases and chronic cough.",
+      },
+      {
+        name: "Tuberculosis (TB) Program",
+        desc: "Standard anti-tubercular treatment regimens and close patient monitoring.",
+      },
+      {
+        name: "Nebulization Services",
+        desc: "In-clinic bronchodilator nebulization for acute respiratory relief.",
+      },
+    ],
   },
   {
     id: "neurology",
@@ -113,11 +191,23 @@ const DEPARTMENTS = [
     image: "/images/neurology.png",
     desc: "Comprehensive diagnostic support and management of neurological disorders, chronic pain, and mobility issues.",
     specialties: [
-      { name: "Epilepsy & Seizures", desc: "Anti-epileptic medication therapy adjustments and seizure frequency control." },
-      { name: "Paralysis & Stroke Recovery Support", desc: "Post-stroke clinical monitoring, medical stability, and referral for rehabilitation." },
-      { name: "Migraine & Chronic Headaches", desc: "Diagnostic headache assessments, trigger identification, and prophylactic treatment." },
-      { name: "Joint Pain & Arthritis Care", desc: "Medications, joint care plans, and exercise guidance for gout and osteoarthritis." },
-    ]
+      {
+        name: "Epilepsy & Seizures",
+        desc: "Anti-epileptic medication therapy adjustments and seizure frequency control.",
+      },
+      {
+        name: "Paralysis & Stroke Recovery Support",
+        desc: "Post-stroke clinical monitoring, medical stability, and referral for rehabilitation.",
+      },
+      {
+        name: "Migraine & Chronic Headaches",
+        desc: "Diagnostic headache assessments, trigger identification, and prophylactic treatment.",
+      },
+      {
+        name: "Joint Pain & Arthritis Care",
+        desc: "Medications, joint care plans, and exercise guidance for gout and osteoarthritis.",
+      },
+    ],
   },
   {
     id: "diagnostics",
@@ -126,12 +216,24 @@ const DEPARTMENTS = [
     image: "/extras/Facilities/IMG-20260626-WA0001.jpg",
     desc: "Complete diagnostic investigations supported by our high-end in-house biochemistry analyzers and lab technicians.",
     specialties: [
-      { name: "Clinical Pathology Tests", desc: "Complete blood counts (CBC), urine analyses, and general screenings." },
-      { name: "Biochemistry Panel Tests", desc: "Kidney function tests (KFT), liver function tests (LFT), and lipid profile checks." },
-      { name: "Blood Sugar Monitoring", desc: "Fast and accurate blood glucose evaluations (Fasting and Post-Prandial)." },
-      { name: "Lab Blood Collection", desc: "Hygienic and convenient blood draws at either of our branch clinics." },
-    ]
-  }
+      {
+        name: "Clinical Pathology Tests",
+        desc: "Complete blood counts (CBC), urine analyses, and general screenings.",
+      },
+      {
+        name: "Biochemistry Panel Tests",
+        desc: "Kidney function tests (KFT), liver function tests (LFT), and lipid profile checks.",
+      },
+      {
+        name: "Blood Sugar Monitoring",
+        desc: "Fast and accurate blood glucose evaluations (Fasting and Post-Prandial).",
+      },
+      {
+        name: "Lab Blood Collection",
+        desc: "Hygienic and convenient blood draws at either of our branch clinics.",
+      },
+    ],
+  },
 ];
 
 function SpecialtiesPage() {
@@ -190,16 +292,17 @@ function SpecialtiesPage() {
     const matchedSpecialties = dept.specialties.filter(
       (spec) =>
         spec.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        spec.desc.toLowerCase().includes(searchQuery.toLowerCase())
+        spec.desc.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
-    const matchesDeptName = dept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            dept.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDeptName =
+      dept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dept.desc.toLowerCase().includes(searchQuery.toLowerCase());
 
     return {
       ...dept,
       matchedSpecialties: matchesDeptName ? dept.specialties : matchedSpecialties,
-      isMatched: matchesDeptName || matchedSpecialties.length > 0
+      isMatched: matchesDeptName || matchedSpecialties.length > 0,
     };
   }).filter((dept) => dept.isMatched);
 
@@ -208,8 +311,9 @@ function SpecialtiesPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Nav />
-      <main className={`flex-grow pt-28 transition-opacity duration-150 ${isReady ? "opacity-100" : "opacity-0"}`}>
-        
+      <main
+        className={`flex-grow pt-28 transition-opacity duration-150 ${isReady ? "opacity-100" : "opacity-0"}`}
+      >
         {/* Hero Section */}
         <section className="relative overflow-hidden py-16 sm:py-20 text-center">
           {/* Ambient Glows */}
@@ -227,18 +331,19 @@ function SpecialtiesPage() {
               Our Medical Specialties
             </h1>
             <p className="mt-4 text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              Harsha Clinics, Pharmacy & Diagnostics offers world-class healthcare with specialized consultations, in-house diagnostics, 
-              and family wellness checkups across {totalSpecialtiesCount}+ services.
+              Harsha Clinics, Pharmacy & Diagnostics offers world-class healthcare with specialized
+              consultations, in-house diagnostics, and family wellness checkups across{" "}
+              {totalSpecialtiesCount}+ services.
             </p>
 
-            {/* Back to Home Link */}
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+            {/* Return to Homepage Button */}
+            <div className="pt-4">
               <Link
                 to="/"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-violet hover:text-violet-deep transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 active:scale-[0.98] transition-all"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Home
+                <span>Return to Homepage</span>
               </Link>
             </div>
 
@@ -268,8 +373,8 @@ function SpecialtiesPage() {
               </div>
               <h3 className="font-display text-lg font-bold text-foreground">No matches found</h3>
               <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                We couldn't find any specialties matching "{searchQuery}". Try searching for symptoms, 
-                conditions, or general departments.
+                We couldn't find any specialties matching "{searchQuery}". Try searching for
+                symptoms, conditions, or general departments.
               </p>
               <button
                 onClick={() => setSearchQuery("")}
@@ -292,7 +397,7 @@ function SpecialtiesPage() {
                   >
                     {/* Background glows */}
                     <div className="absolute -top-32 -right-32 h-64 w-64 rounded-full bg-violet/5 blur-3xl group-hover:bg-violet/8 transition-all" />
-                    
+
                     {/* Header */}
                     <div className="relative flex flex-col md:flex-row md:items-center gap-5 pb-6 border-b border-border">
                       <div className="h-16 w-16 md:h-20 md:w-20 rounded-full overflow-hidden shrink-0 border-2 border-violet/15 bg-white shadow-soft flex items-center justify-center">
@@ -357,10 +462,11 @@ function SpecialtiesPage() {
                 Need Medical Assistance?
               </h2>
               <p className="mt-4 text-muted-foreground text-sm sm:text-base leading-relaxed">
-                Connect with our senior physicians on duty at Harsha Clinics, Pharmacy & Diagnostics. Save time by booking your 
-                appointment slot online and routing your request directly to WhatsApp.
+                Connect with our senior physicians on duty at Harsha Clinics, Pharmacy &
+                Diagnostics. Save time by booking your appointment slot online and routing your
+                request directly to WhatsApp.
               </p>
-              
+
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   to="/"
@@ -370,7 +476,7 @@ function SpecialtiesPage() {
                   <Calendar className="h-4 w-4" />
                   Book Appointment Now
                 </Link>
-                
+
                 <a
                   href="tel:+918309403610"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl text-sm font-bold text-violet-deep glass-strong hover:bg-violet/12 hover:-translate-y-0.5 transition-all"
@@ -394,7 +500,6 @@ function SpecialtiesPage() {
             </div>
           </div>
         </section>
-
       </main>
       <Footer />
       <FloatingWhatsApp />
