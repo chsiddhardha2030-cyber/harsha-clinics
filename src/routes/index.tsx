@@ -2427,11 +2427,11 @@ function LabTests() {
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
               >
                 <Phone className="h-4 w-4 animate-pulse" />
-                <span>Call: +91 8309403610</span>
+                <span>Call Now</span>
               </a>
               <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="h-4 w-4 text-green-500 shrink-0" />
-                Home sample collection available.
+                Emergency Dispatch: +91 8309403610
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-2 font-medium">
