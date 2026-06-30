@@ -971,7 +971,7 @@ const FEATURED_SPECIALTIES = [
   {
     title: "Nephrology",
     desc: "Dedicated clinical support for kidney diseases, electrolyte imbalance corrections, and coordinated care for outpatient dialysis.",
-    image: "/extras/IMG-20260626-WA0023.jpg",
+    image: "/extras/IMG-20260626-WA1143.jpg",
     icon: Droplet,
     anchor: "/specialties#nephrology",
   },
