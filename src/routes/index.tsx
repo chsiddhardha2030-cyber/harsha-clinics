@@ -2541,7 +2541,7 @@ function Ambulance() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 shadow-[0_8px_24px_rgba(220,38,38,0.35)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.45)] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Phone className="h-4 w-4 animate-bounce" />
-              Call Ambulance: +91 8309403610
+              Call Ambulance
             </a>
             <span className="text-xs text-muted-foreground font-semibold">
               Emergency Dispatch: +91 8309403610
