@@ -44,6 +44,10 @@ export function useScrollManager() {
 
   // 3. Restore scroll position when a page mounts / path changes
   useEffect(() => {
+    if (location.pathname === "/specialties") {
+      // Never restore scroll position for Specialties page
+      return;
+    }
     const key = window.history.state?.key;
     if (!key) return;
 

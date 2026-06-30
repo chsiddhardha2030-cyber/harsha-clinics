@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   HeartPulse,
   Activity,
@@ -46,7 +46,7 @@ const DEPARTMENTS = [
     id: "cardiology",
     name: "Cardiology & Heart Care",
     icon: HeartPulse,
-    image: "/extras/IMG-20260626-WA0044.jpg",
+    image: "/images/cardiology.png",
     desc: "Professional cardiovascular care to evaluate heart health, manage chronic cardiac conditions, and screen for coronary diseases.",
     specialties: [
       { name: "Heart Diseases Care", desc: "Outpatient management of coronary issues, angina, and ischemic conditions." },
@@ -59,7 +59,7 @@ const DEPARTMENTS = [
     id: "nephrology",
     name: "Nephrology & Kidney Care",
     icon: Droplet,
-    image: "/extras/IMG-20260626-WA0023.jpg",
+    image: "/images/nephrology.png",
     desc: "Dedicated clinical support to evaluate kidney functions, prevent disease progression, and coordinate ongoing care.",
     specialties: [
       { name: "Kidney Diseases Management", desc: "Outpatient treatment of chronic kidney disease (CKD) and nephrotic syndromes." },
@@ -71,7 +71,7 @@ const DEPARTMENTS = [
     id: "diabetes-care",
     name: "Diabetology & Endocrinology",
     icon: Activity,
-    image: "/extras/IMG-20260619-WA0107.jpg",
+    image: "/images/diabetology.png",
     desc: "Specialized endocrinological care focusing on blood sugar control, thyroid health, and hormonal/metabolic balance.",
     specialties: [
       { name: "Diabetes Mellitus Care", desc: "Glycated hemoglobin (HbA1c) checks, insulin adjustments, and medication regimes." },
@@ -83,7 +83,7 @@ const DEPARTMENTS = [
     id: "emergency-medicine",
     name: "Emergency & Critical Care",
     icon: Bandage,
-    image: "/extras/IMG-20260619-WA0117.jpg",
+    image: "/images/emergency.png",
     desc: "Equipped to handle urgent clinical needs including minor surgeries, trauma stabilization, and critical care coordination.",
     specialties: [
       { name: "Emergency Medicine", desc: "Rapid clinical triaging, stabilization, and immediate medical intervention." },
@@ -138,7 +138,14 @@ function SpecialtiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const departmentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Deep-linking smooth scroll support for hash URLs on mount or hash change
+  // Ensure every time the user navigates here without a hash, it opens at the absolute top instantly
+  useLayoutEffect(() => {
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
+  // Support direct deep links (e.g. /specialties#cardiology) if accessed directly
   useEffect(() => {
     const handleHashScroll = () => {
       const hash = window.location.hash;
@@ -155,8 +162,6 @@ function SpecialtiesPage() {
             }, 2000);
           }, 200);
         }
-      } else {
-        window.scrollTo(0, 0);
       }
     };
 
