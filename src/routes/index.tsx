@@ -1111,14 +1111,14 @@ function AwardsAndRecognition() {
     <Section id="awards">
       <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Side: Award Image Card */}
-        <div className="lg:col-span-5 flex items-center justify-center w-full max-w-[450px] mx-auto lg:mx-0 select-none group relative">
+        <div className="lg:col-span-5 flex items-center justify-center w-full max-w-[520px] mx-auto lg:mx-0 select-none group relative">
           <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-start/20 rounded-[28px] blur-xl opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
-          <div className="w-full relative glass-strong border border-white/30 p-3 sm:p-4 rounded-[28px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/90">
-            <div className="overflow-hidden rounded-[16px] shadow-inner bg-slate-50/50 flex items-center justify-center">
+          <div className="w-full relative glass-strong border border-white/30 p-1.5 sm:p-2 rounded-[28px] shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-glow bg-white/90">
+            <div className="overflow-hidden rounded-[22px] shadow-inner bg-slate-50/50 flex items-center justify-center">
               <img
                 src="/Awards/IMG_20260626_084430.jpg"
                 alt="Dr. A.P.J. Abdul Kalam Health & Medical Excellence Best Doctor Award 2024"
-                className="w-full h-auto object-cover rounded-[16px] transition-transform duration-500 group-hover:scale-102"
+                className="w-full h-auto object-cover rounded-[22px] transition-transform duration-500 group-hover:scale-102"
                 loading="lazy"
               />
             </div>

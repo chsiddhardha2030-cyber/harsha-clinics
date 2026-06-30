@@ -30,7 +30,7 @@ const DEPARTMENTS = [
     id: "family-medicine",
     name: "Family Medicine & Primary Care",
     icon: Stethoscope,
-    image: "/images/clinic_family_2.webp",
+    image: "/images/family_medicine.png",
     desc: "Comprehensive health services for patients of all ages. We focus on prevention, diagnosis, and treatment of everyday health conditions.",
     specialties: [
       { name: "Family Physician Consultation", desc: "Routine health checks and general diagnostic consulting for the whole family." },
