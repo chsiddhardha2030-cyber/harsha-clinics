@@ -259,7 +259,7 @@ export function CredentialsPage() {
 
       <main className="pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow space-y-12">
         {/* Header Hero Banner */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto animate-fade-up">
+        <div className="text-center space-y-4 max-w-3xl mx-auto animate-slide-down-fade">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-violet-deep bg-violet/8 border border-violet/15">
             <Sparkles className="h-4 w-4 text-orange-start" />
             Official Verifications & Licenses
@@ -272,10 +272,10 @@ export function CredentialsPage() {
           </p>
 
           {/* Back Link */}
-          <div className="pt-2">
+          <div className="pt-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-xs font-bold text-violet-deep hover:text-foreground transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 active:scale-[0.98] transition-all"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Return to Homepage</span>
@@ -320,7 +320,7 @@ export function CredentialsPage() {
 
         {/* Category 1: Dr. Ravi Kumar */}
         {(activeTab === "all" || activeTab === "ravi") && (
-          <section className="space-y-6 animate-fade-up">
+          <section className="space-y-6 animate-slide-down-fade">
             <div className="flex items-center gap-3 border-b border-border pb-4">
               <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/10 text-violet-deep shrink-0">
                 <Stethoscope className="h-5 w-5" />
@@ -349,7 +349,7 @@ export function CredentialsPage() {
 
         {/* Category 2: Madhapur Branch */}
         {(activeTab === "all" || activeTab === "madhapur") && (
-          <section className="space-y-6 animate-fade-up">
+          <section className="space-y-6 animate-slide-down-fade">
             <div className="flex items-center gap-3 border-b border-border pb-4">
               <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/10 text-violet-deep shrink-0">
                 <Building2 className="h-5 w-5" />
@@ -378,7 +378,7 @@ export function CredentialsPage() {
 
         {/* Category 3: TNGO Branch */}
         {(activeTab === "all" || activeTab === "tngo") && (
-          <section className="space-y-6 animate-fade-up">
+          <section className="space-y-6 animate-slide-down-fade">
             <div className="flex items-center gap-3 border-b border-border pb-4">
               <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/10 text-violet-deep shrink-0">
                 <Building2 className="h-5 w-5" />

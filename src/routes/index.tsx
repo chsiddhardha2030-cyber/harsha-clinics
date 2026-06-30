@@ -1294,6 +1294,14 @@ function BookingForm({
   const [preferredTime, setPreferredTime] = useState("10:00");
   const isMobile = useIsMobile();
 
+  const todayStr = (() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  })();
+
   useEffect(() => {
     setPreferredTime("10:00");
   }, [isMobile]);
@@ -1388,6 +1396,11 @@ function BookingForm({
 
     if (!name || !phone || !age || !gender || !doctor || !date || !time || !symptoms) {
       toast.error("Please fill in all the required fields.");
+      return;
+    }
+
+    if (date < todayStr) {
+      toast.error("Please select today's date or a future date.");
       return;
     }
 
@@ -1594,7 +1607,7 @@ ${symptoms}`;
               </div>
             )}
 
-            {field("Preferred Date", <input name="date" type="date" className={inputCls} />)}
+            {field("Preferred Date", <input name="date" type="date" min={todayStr} className={inputCls} />)}
             {field(
               "Preferred Time",
               <input
@@ -1643,15 +1656,28 @@ function Testimonials() {
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setSelected(emblaApi.selectedScrollSnap());
+    const autoplay = (emblaApi.plugins() as any).autoplay;
+    if (autoplay) autoplay.reset();
+  }, [emblaApi]);
+
+  const onInit = useCallback(() => {
+    if (!emblaApi) return;
+    setSnaps(emblaApi.scrollSnapList());
   }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
-    setSnaps(emblaApi.scrollSnapList());
+    onInit();
     onSelect();
     emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onInit);
     emblaApi.on("reInit", onSelect);
-  }, [emblaApi, onSelect]);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onInit);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onInit, onSelect]);
 
   return (
     <Section
@@ -1705,10 +1731,15 @@ function Testimonials() {
             <ChevronLeft className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            {snaps.map((_, i) => (
+            {TESTIMONIALS.map((_, i) => (
               <button
                 key={i}
-                onClick={() => emblaApi?.scrollTo(i)}
+                onClick={() => {
+                  if (!emblaApi) return;
+                  emblaApi.scrollTo(i);
+                  const autoplay = (emblaApi.plugins() as any).autoplay;
+                  if (autoplay) autoplay.reset();
+                }}
                 aria-label={`Go to testimonial ${i + 1}`}
                 className={`h-2 rounded-full transition-all ${selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
                   }`}
@@ -1870,22 +1901,7 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
-                  <Phone className="h-5 w-5" />
-                </span>
-                <div>
-                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                    Phone
-                  </div>
-                  <a
-                    href={`tel:${b.phone.replace(/\s+/g, "")}`}
-                    className="text-sm font-semibold text-foreground/80 hover:text-violet-deep transition-colors mt-0.5 block"
-                  >
-                    {b.phone}
-                  </a>
-                </div>
-              </div>
+              {/* Phone numbers removed */}
 
               <div className="flex items-center gap-4">
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-violet/8 text-violet-deep shrink-0">
@@ -2364,43 +2380,7 @@ function ClinicGallery() {
   );
 }
 
-function MobileSticky() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const hero = document.getElementById("home");
-      if (hero) {
-        const heroBottom = hero.getBoundingClientRect().bottom;
-        // Show after the user scrolls past the hero section (e.g., hero bottom is above/close to the viewport top)
-        setIsVisible(heroBottom < 80);
-      } else {
-        setIsVisible(window.scrollY > 400);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <a
-      href="#appointment-form"
-      style={{
-        bottom: "calc(6.5rem + env(safe-area-inset-bottom))",
-      }}
-      className={`sm:hidden fixed right-6 z-40 inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold text-white gradient-orange shadow-glow transition-all duration-300 transform ${
-        isVisible
-          ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
-          : "opacity-0 translate-y-4 scale-95 pointer-events-none"
-      }`}
-    >
-      <Calendar className="h-4 w-4" />
-      Book Now
-    </a>
-  );
-}
+// MobileSticky component removed
 
 function LabTests() {
   const highlights = [
@@ -2578,6 +2558,26 @@ function Home() {
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
 
+  useEffect(() => {
+    const isReload = (() => {
+      try {
+        const navEntries = performance.getEntriesByType("navigation");
+        if (navEntries.length > 0) {
+          return (navEntries[0] as PerformanceNavigationTiming).type === "reload";
+        }
+      } catch (e) {}
+      return false;
+    })();
+
+    if (isReload) {
+      window.scrollTo(0, 0);
+      const key = window.history.state?.key;
+      if (key) {
+        sessionStorage.removeItem(`scroll_${key}`);
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Nav />
@@ -2610,7 +2610,6 @@ function Home() {
         <Contact branches={branches} />
       </main>
       <Footer />
-      <MobileSticky />
       <FloatingWhatsApp />
     </div>
   );

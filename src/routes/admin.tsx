@@ -294,7 +294,7 @@ function AdminPage() {
       <main className="max-w-7xl mx-auto px-4 pt-28 space-y-8">
         {/* Supabase connection warning */}
         {usingFallback && (
-          <div className="p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-sm text-yellow-700 font-semibold animate-fade-up">
+          <div className="p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-sm text-yellow-700 font-semibold animate-slide-down-fade">
             ⚠️ Supabase environment variables are missing or unavailable. Dashboard modifications
             will update the local fallback states only.
           </div>
