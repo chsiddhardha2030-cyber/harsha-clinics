@@ -456,7 +456,7 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
                 <span className="gradient-text">Compassionate Care.</span>
               </h1>
               <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-muted-foreground leading-relaxed">
-                Your trusted neighborhood healthcare provider in Hyderabad, offering expert consultations, a fully stocked pharmacy, and advanced diagnostic services under one roof.
+                Your all-in-one healthcare destination, brings together expert clinical care, a fully stocked pharmacy, and advanced diagnostics under one roof.
               </p>
               <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
@@ -956,7 +956,7 @@ const FEATURED_SPECIALTIES = [
   {
     title: "Family Medicine",
     desc: "Compassionate primary healthcare including complete diagnostic checkups, wellness advice, and preventive care for family members of all ages.",
-    image: "/extras/IMG-20260619-WA0112.jpg",
+    image: "/extras/IMG-20260619-WA0109.jpg",
     icon: Stethoscope,
     anchor: "/specialties#family-medicine",
   },
@@ -970,14 +970,14 @@ const FEATURED_SPECIALTIES = [
   {
     title: "Nephrology",
     desc: "Dedicated clinical support for kidney diseases, electrolyte imbalance corrections, and coordinated care for outpatient dialysis.",
-    image: "/extras/IMG-20260619-WA0118.jpg",
+    image: "/extras/IMG-20260626-WA0014.jpg",
     icon: Droplet,
     anchor: "/specialties#nephrology",
   },
   {
     title: "Diabetes Care",
     desc: "Advanced therapeutic regimens, regular blood glucose evaluations, diet planning, and management of secondary diabetic symptoms.",
-    image: "/extras/IMG-20260619-WA0113.jpg",
+    image: "/extras/IMG-20260619-WA0107.jpg",
     icon: Activity,
     anchor: "/specialties#diabetes-care",
   },
@@ -1753,8 +1753,8 @@ function FAQ() {
                 </span>
                 <span
                   className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${isOpen
-                      ? "gradient-orange text-white rotate-180"
-                      : "bg-violet/10 text-violet-deep"
+                    ? "gradient-orange text-white rotate-180"
+                    : "bg-violet/10 text-violet-deep"
                     }`}
                 >
                   {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -2189,8 +2189,8 @@ function ClinicGallery() {
             key={tab.id}
             onClick={() => setFilter(tab.id as "all" | "madhapur" | "tngo" | "facilities")}
             className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${filter === tab.id
-                ? "bg-violet-deep text-white shadow-soft"
-                : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
+              ? "bg-violet-deep text-white shadow-soft"
+              : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
               }`}
           >
             {tab.label}

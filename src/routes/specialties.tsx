@@ -59,7 +59,7 @@ const DEPARTMENTS = [
     id: "nephrology",
     name: "Nephrology & Kidney Care",
     icon: Droplet,
-    image: "/extras/IMG-20260619-WA0118.jpg",
+    image: "/extras/IMG-20260626-WA0014.jpg",
     desc: "Dedicated clinical support to evaluate kidney functions, prevent disease progression, and coordinate ongoing care.",
     specialties: [
       { name: "Kidney Diseases Management", desc: "Outpatient treatment of chronic kidney disease (CKD) and nephrotic syndromes." },
@@ -71,7 +71,7 @@ const DEPARTMENTS = [
     id: "diabetes-care",
     name: "Diabetology & Endocrinology",
     icon: Activity,
-    image: "/extras/IMG-20260619-WA0113.jpg",
+    image: "/extras/IMG-20260619-WA0107.jpg",
     desc: "Specialized endocrinological care focusing on blood sugar control, thyroid health, and hormonal/metabolic balance.",
     specialties: [
       { name: "Diabetes Mellitus Care", desc: "Glycated hemoglobin (HbA1c) checks, insulin adjustments, and medication regimes." },
