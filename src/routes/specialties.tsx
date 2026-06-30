@@ -343,7 +343,7 @@ function SpecialtiesPage() {
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   to="/"
-                  hash="book"
+                  hash="appointment-form"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
                 >
                   <Calendar className="h-4 w-4" />

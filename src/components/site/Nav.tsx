@@ -63,7 +63,7 @@ export function Nav() {
 
           <div className="flex items-center gap-2">
             <a
-              href="/#book"
+              href="/#appointment-form"
               className="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-white gradient-orange shadow-soft hover:shadow-glow transition-all hover:-translate-y-0.5"
             >
               Book Appointment

@@ -460,7 +460,7 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
               </p>
               <div className="mt-5 sm:mt-7 flex flex-wrap gap-3">
                 <a
-                  href="#book"
+                  href="#appointment-form"
                   className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
                 >
                   <Calendar className="h-4 w-4" />
@@ -814,7 +814,7 @@ function DoctorCard({
           <div className="font-mono text-xs font-semibold text-foreground/95">{reg}</div>
         </div>
         <a
-          href="#book"
+          href="#appointment-form"
           onClick={onBook}
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white gradient-orange hover:shadow-glow transition-all hover:-translate-y-0.5"
         >
@@ -1508,8 +1508,9 @@ ${symptoms}`;
         </div>
 
         <form
+          id="appointment-form"
           onSubmit={onSubmit}
-          className="lg:col-span-3 glass-strong rounded-3xl p-6 sm:p-8 space-y-4"
+          className="lg:col-span-3 glass-strong rounded-3xl p-6 sm:p-8 space-y-4 scroll-mt-24"
         >
           <div className="grid sm:grid-cols-2 gap-4">
             {field("Full Name", <input name="name" className={inputCls} placeholder="Your name" />)}
@@ -1961,7 +1962,7 @@ export function Footer() {
       links: [
         { href: "/#about", label: "About" },
         { href: "/#doctors", label: "Doctors" },
-        { href: "/#book", label: "Book Appointment" },
+        { href: "/#appointment-form", label: "Book Appointment" },
         { href: "/#faq", label: "FAQ" },
       ],
     },
@@ -2366,7 +2367,7 @@ function ClinicGallery() {
 function MobileSticky() {
   return (
     <a
-      href="#book"
+      href="#appointment-form"
       className="sm:hidden fixed bottom-5 left-5 z-40 inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold text-white gradient-orange shadow-glow"
     >
       <Calendar className="h-4 w-4" />

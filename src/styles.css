@@ -214,3 +214,7 @@
     0 0 0 6px color-mix(in oklab, var(--violet) 22%, transparent),
     0 18px 40px -14px color-mix(in oklab, var(--violet) 45%, transparent);
 }
+
+#appointment-form {
+  scroll-margin-top: 96px;
+}
