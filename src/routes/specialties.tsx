@@ -136,16 +136,36 @@ const DEPARTMENTS = [
 
 function SpecialtiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isReady, setIsReady] = useState(false);
   const departmentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Ensure every time the user navigates here without a hash, it opens at the absolute top instantly
+  // Perform initial scroll positioning synchronously before the first paint
   useLayoutEffect(() => {
-    if (!window.location.hash) {
+    const hash = window.location.hash;
+    if (!hash) {
+      document.documentElement.classList.add("no-smooth-scroll");
       window.scrollTo(0, 0);
+      document.documentElement.classList.remove("no-smooth-scroll");
+    } else {
+      const id = hash.replace("#", "");
+      const targetElement = departmentRefs.current[id];
+      if (targetElement) {
+        document.documentElement.classList.add("no-smooth-scroll");
+        targetElement.scrollIntoView({ behavior: "auto", block: "start" });
+        document.documentElement.classList.remove("no-smooth-scroll");
+
+        // Add brief visual highlight class
+        targetElement.classList.add("ring-2", "ring-violet/30");
+        setTimeout(() => {
+          targetElement.classList.remove("ring-2", "ring-violet/30");
+        }, 2000);
+      }
     }
+    // Determinate isReady state synchronously in layout phase to ensure clean, shift-free rendering
+    setIsReady(true);
   }, []);
 
-  // Support direct deep links (e.g. /specialties#cardiology) if accessed directly
+  // Support runtime hash updates (hashchange event while already on the page)
   useEffect(() => {
     const handleHashScroll = () => {
       const hash = window.location.hash;
@@ -153,19 +173,15 @@ function SpecialtiesPage() {
         const id = hash.replace("#", "");
         const targetElement = departmentRefs.current[id];
         if (targetElement) {
+          targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+          targetElement.classList.add("ring-2", "ring-violet/30");
           setTimeout(() => {
-            targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
-            // Add brief visual highlight class
-            targetElement.classList.add("ring-2", "ring-violet/30");
-            setTimeout(() => {
-              targetElement.classList.remove("ring-2", "ring-violet/30");
-            }, 2000);
-          }, 200);
+            targetElement.classList.remove("ring-2", "ring-violet/30");
+          }, 2000);
         }
       }
     };
 
-    handleHashScroll();
     window.addEventListener("hashchange", handleHashScroll);
     return () => window.removeEventListener("hashchange", handleHashScroll);
   }, []);
@@ -192,7 +208,7 @@ function SpecialtiesPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Nav />
-      <main className="flex-grow pt-28">
+      <main className={`flex-grow pt-28 transition-opacity duration-150 ${isReady ? "opacity-100" : "opacity-0"}`}>
         
         {/* Hero Section */}
         <section className="relative overflow-hidden py-16 sm:py-20 text-center">

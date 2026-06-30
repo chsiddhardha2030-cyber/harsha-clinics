@@ -1,5 +1,5 @@
 import { useRouter, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 
 export function useScrollManager() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export function useScrollManager() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 2. Intercept before navigation to reset scroll for forward actions
+  // 2. Intercept before navigation to save scroll position (NO scrolling of current page)
   useEffect(() => {
     return router.subscribe("onBeforeNavigate", () => {
       const key = window.history.state?.key;
@@ -28,31 +28,32 @@ export function useScrollManager() {
       if (key && isPush) {
         // Save current scroll position before we transition away
         sessionStorage.setItem(`scroll_${key}`, window.scrollY.toString());
-        sessionStorage.setItem("lock_scroll_save", "true");
-        
-        // Reset scroll position to top instantly
-        document.documentElement.classList.add("no-smooth-scroll");
-        window.scrollTo(0, 0);
-
-        setTimeout(() => {
-          sessionStorage.removeItem("lock_scroll_save");
-          document.documentElement.classList.remove("no-smooth-scroll");
-        }, 100);
       }
     });
   }, [router]);
 
-  // 3. Restore scroll position when a page mounts / path changes
-  useEffect(() => {
+  // 3. Reset or restore scroll position when a page mounts / path changes
+  useLayoutEffect(() => {
     if (location.pathname === "/specialties") {
-      // Never restore scroll position for Specialties page
+      // Never restore scroll position for Specialties page (handled separately in specialties.tsx)
       return;
     }
     const key = window.history.state?.key;
-    if (!key) return;
+    if (!key) {
+      document.documentElement.classList.add("no-smooth-scroll");
+      window.scrollTo(0, 0);
+      document.documentElement.classList.remove("no-smooth-scroll");
+      return;
+    }
 
     const saved = sessionStorage.getItem(`scroll_${key}`);
-    if (saved === null) return;
+    if (saved === null) {
+      // If it's a new page (no saved scroll), reset scroll to top instantly before paint
+      document.documentElement.classList.add("no-smooth-scroll");
+      window.scrollTo(0, 0);
+      document.documentElement.classList.remove("no-smooth-scroll");
+      return;
+    }
 
     const targetScrollY = parseInt(saved, 10);
     if (isNaN(targetScrollY)) return;
@@ -71,8 +72,10 @@ export function useScrollManager() {
       window.scrollTo(0, targetScrollY);
     };
 
-    // Restore immediately
+    // Restore immediately before paint
+    document.documentElement.classList.add("no-smooth-scroll");
     restore();
+    document.documentElement.classList.remove("no-smooth-scroll");
 
     // Watch body height changes to adjust scroll (handles content shifting/lazy-loading layout)
     const ro = new ResizeObserver(() => {

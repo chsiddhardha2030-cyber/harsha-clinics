@@ -959,36 +959,42 @@ const FEATURED_SPECIALTIES = [
     desc: "Compassionate primary healthcare including complete diagnostic checkups, wellness advice, and preventive care for family members of all ages.",
     image: "/extras/IMG-20260626-WA0006.jpg",
     icon: Stethoscope,
+    id: "family-medicine",
   },
   {
     title: "Cardiology",
     desc: "Specialized cardiac assessments, ECG tests, blood pressure checkups, and expert management for complex cardiovascular conditions.",
     image: "/extras/IMG-20260626-WA0044.jpg",
     icon: HeartPulse,
+    id: "cardiology",
   },
   {
     title: "Nephrology",
     desc: "Dedicated clinical support for kidney diseases, electrolyte imbalance corrections, and coordinated care for outpatient dialysis.",
     image: "/extras/IMG-20260626-WA0023.jpg",
     icon: Droplet,
+    id: "nephrology",
   },
   {
     title: "Diabetes Care",
     desc: "Advanced therapeutic regimens, regular blood glucose evaluations, diet planning, and management of secondary diabetic symptoms.",
     image: "/extras/IMG-20260619-WA0107.jpg",
     icon: Activity,
+    id: "diabetes-care",
   },
   {
     title: "Emergency Medicine",
     desc: "Equipped to handle urgent clinical needs including minor surgeries, suturing, immediate patient stabilization, and nebulization.",
     image: "/extras/IMG-20260619-WA0117.jpg",
     icon: Bandage,
+    id: "emergency-medicine",
   },
   {
     title: "Diagnostics & Labs",
     desc: "Prompt and accurate clinical testing using state-of-the-art laboratory devices to ensure rapid confirmation and reliable results.",
     image: "/extras/Facilities/IMG-20260626-WA0001.jpg",
     icon: Microscope,
+    id: "diagnostics",
   },
 ];
 
@@ -1007,6 +1013,7 @@ function Specialties() {
           return (
             <Link
               to="/specialties"
+              hash={spec.id}
               key={spec.title}
               className="group glass-strong rounded-[24px] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full shadow-soft hover:shadow-glow border border-violet/10 hover:border-violet/20 cursor-pointer block text-left"
             >
@@ -1049,6 +1056,7 @@ function Specialties() {
           return (
             <Link
               to="/specialties"
+              hash={spec.id}
               key={spec.title}
               className="group glass-strong rounded-[24px] overflow-hidden flex flex-col h-full shadow-soft border border-violet/10 cursor-pointer block text-left"
             >
