@@ -653,9 +653,8 @@ function About() {
 
       {/* Expandable Section with smooth grid accordion height animation */}
       <div
-        className={`grid transition-all duration-500 ease-in-out ${
-          isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
-        }`}
+        className={`grid transition-all duration-500 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
+          }`}
       >
         <div className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 pb-2">
@@ -933,8 +932,8 @@ function ExpandableGrid<
               style={
                 isNew
                   ? {
-                      animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
-                    }
+                    animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
+                  }
                   : undefined
               }
             >
@@ -1804,9 +1803,8 @@ function Testimonials() {
                   if (autoplay) autoplay.reset();
                 }}
                 aria-label={`Go to testimonial ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${
-                  selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
-                }`}
+                className={`h-2 rounded-full transition-all ${selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
+                  }`}
               />
             ))}
           </div>
@@ -1838,9 +1836,8 @@ function FAQ() {
           return (
             <div
               key={i}
-              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${
-                isOpen ? "shadow-soft" : ""
-              }`}
+              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${isOpen ? "shadow-soft" : ""
+                }`}
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
@@ -1850,19 +1847,17 @@ function FAQ() {
                   {f.q}
                 </span>
                 <span
-                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
-                    isOpen
+                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${isOpen
                       ? "gradient-orange text-white rotate-180"
                       : "bg-violet/10 text-violet-deep"
-                  }`}
+                    }`}
                 >
                   {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                 </span>
               </button>
               <div
-                className={`grid transition-all duration-300 ease-out ${
-                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                }`}
+                className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  }`}
               >
                 <div className="overflow-hidden">
                   <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -2066,7 +2061,7 @@ export function Footer() {
         { href: "tel:+917989693477", label: "Call clinic" },
         { href: "https://wa.me/917989693477", label: "WhatsApp" },
         { href: "/#contact", label: "Get directions" },
-        { href: "mailto:hello@harshaclinic.in", label: "Email us" },
+        { href: "mailto:dr.ravikumar1351@gmail.com", label: "Email us" },
       ],
     },
   ];
@@ -2275,11 +2270,10 @@ function ClinicGallery() {
           <button
             key={tab.id}
             onClick={() => setFilter(tab.id as "all" | "madhapur" | "tngo" | "facilities")}
-            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
-              filter === tab.id
+            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${filter === tab.id
                 ? "bg-violet-deep text-white shadow-soft"
                 : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
-            }`}
+              }`}
           >
             {tab.label}
           </button>
@@ -2368,11 +2362,10 @@ function ClinicGallery() {
               type="button"
               onClick={() => emblaApi?.scrollTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                selectedIndex === idx
+              className={`h-1.5 rounded-full transition-all duration-300 ${selectedIndex === idx
                   ? "w-6 gradient-orange"
                   : "w-1.5 bg-violet/30 hover:bg-violet/50"
-              }`}
+                }`}
             />
           ))}
         </div>
@@ -2691,7 +2684,7 @@ function Home() {
         if (navEntries.length > 0) {
           return (navEntries[0] as PerformanceNavigationTiming).type === "reload";
         }
-      } catch (e) {}
+      } catch (e) { }
       return false;
     })();
 
