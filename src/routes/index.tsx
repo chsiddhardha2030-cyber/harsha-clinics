@@ -2061,7 +2061,7 @@ export function Footer() {
         { href: "tel:+917989693477", label: "Call clinic" },
         { href: "https://wa.me/917989693477", label: "WhatsApp" },
         { href: "/#contact", label: "Get directions" },
-        { href: "mailto:dr.ravikumar1351@gmail.com", label: "Email us" },
+        { href: "mailto:harshaclinics@gmail.com", label: "Email us" },
       ],
     },
   ];
@@ -2099,7 +2099,7 @@ export function Footer() {
                 <MessageSquare className="h-4 w-4" />
               </a>
               <a
-                href="mailto:hello@harshaclinic.in"
+                href="mailto:harshaclinics@gmail.com"
                 aria-label="Email"
                 className="grid h-9 w-9 place-items-center rounded-xl bg-violet/8 text-violet-deep hover:gradient-orange hover:text-white transition-all"
               >
