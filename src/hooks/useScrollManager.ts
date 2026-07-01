@@ -59,10 +59,21 @@ export function useScrollManager() {
     if (isNaN(targetScrollY)) return;
 
     let isUserScrolling = false;
-    const stopRestoration = () => {
+    let touchStarted = false;
+
+    const handleTouchStart = () => {
+      touchStarted = true;
+    };
+
+    const stopRestoration = (e: Event) => {
+      if (e.type === "touchmove" && !touchStarted) {
+        // Ignore touchmove events that carry over from navigation swipes
+        return;
+      }
       isUserScrolling = true;
     };
 
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("wheel", stopRestoration, { passive: true });
     window.addEventListener("touchmove", stopRestoration, { passive: true });
     window.addEventListener("keydown", stopRestoration, { passive: true });
@@ -101,6 +112,7 @@ export function useScrollManager() {
 
     // Cleanup restoration listeners for this path
     return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("wheel", stopRestoration);
       window.removeEventListener("touchmove", stopRestoration);
       window.removeEventListener("keydown", stopRestoration);

@@ -653,8 +653,9 @@ function About() {
 
       {/* Expandable Section with smooth grid accordion height animation */}
       <div
-        className={`grid transition-all duration-500 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
-          }`}
+        className={`grid transition-all duration-500 ease-in-out ${
+          isExpanded ? "grid-rows-[1fr] opacity-100 mt-8" : "grid-rows-[0fr] opacity-0"
+        }`}
       >
         <div className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 pb-2">
@@ -932,8 +933,8 @@ function ExpandableGrid<
               style={
                 isNew
                   ? {
-                    animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
-                  }
+                      animation: `fade-up 0.5s ease-out ${(i - initial) * 50}ms both`,
+                    }
                   : undefined
               }
             >
@@ -1322,9 +1323,11 @@ function BookingForm({
     }
     const mins = timeToMinutes(timeVal);
     const startMins = 10 * 60; // 10:00 AM
-    const endMins = 22 * 60;   // 10:00 PM
+    const endMins = 22 * 60; // 10:00 PM
     if (mins < startMins || mins > endMins) {
-      setTimeError("Clinic consultation timings are 10:00 AM – 10:00 PM. Please select a valid time.");
+      setTimeError(
+        "Clinic consultation timings are 10:00 AM – 10:00 PM. Please select a valid time.",
+      );
       return false;
     }
     setTimeError(null);
@@ -1443,7 +1446,9 @@ function BookingForm({
     }
 
     if (timeError || !validateTime(time)) {
-      toast.error("Clinic consultation timings are 10:00 AM – 10:00 PM. Please select a valid time.");
+      toast.error(
+        "Clinic consultation timings are 10:00 AM – 10:00 PM. Please select a valid time.",
+      );
       return;
     }
 
@@ -1803,8 +1808,9 @@ function Testimonials() {
                   if (autoplay) autoplay.reset();
                 }}
                 aria-label={`Go to testimonial ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
-                  }`}
+                className={`h-2 rounded-full transition-all ${
+                  selected === i ? "w-8 gradient-orange" : "w-2 bg-violet/30 hover:bg-violet/50"
+                }`}
               />
             ))}
           </div>
@@ -1836,8 +1842,9 @@ function FAQ() {
           return (
             <div
               key={i}
-              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${isOpen ? "shadow-soft" : ""
-                }`}
+              className={`glass-strong rounded-2xl overflow-hidden transition-all duration-300 ${
+                isOpen ? "shadow-soft" : ""
+              }`}
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
@@ -1847,17 +1854,19 @@ function FAQ() {
                   {f.q}
                 </span>
                 <span
-                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${isOpen
+                  className={`shrink-0 grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
+                    isOpen
                       ? "gradient-orange text-white rotate-180"
                       : "bg-violet/10 text-violet-deep"
-                    }`}
+                  }`}
                 >
                   {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                 </span>
               </button>
               <div
-                className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
+                className={`grid transition-all duration-300 ease-out ${
+                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                }`}
               >
                 <div className="overflow-hidden">
                   <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -2150,7 +2159,7 @@ const GALLERY_ITEMS = [
     desc: "A neat and welcoming lobby wait area in our Siddi Vinayak Nagar branch.",
   },
   {
-    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0079.jpg",
+    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0081.jpg",
     title: "Gachibowli Lounge Area",
     branch: "TNGO's Colony",
     category: "tngo",
@@ -2164,11 +2173,11 @@ const GALLERY_ITEMS = [
     desc: "Private and sanitised consult suite designed for thorough checkups.",
   },
   {
-    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0080.jpg",
-    title: "Gachibowli Front Lobby",
+    src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0088.jpg",
+    title: "Gachibowli Daycare Ward",
     branch: "TNGO's Colony",
     category: "tngo",
-    desc: "Comfortable and sanitized lounge area at the Gachibowli clinic.",
+    desc: "Equipped daycare beds for patient recovery and observation.",
   },
   {
     src: "/extras/Facilities/IMG-20260626-WA0001.jpg",
@@ -2186,10 +2195,10 @@ const GALLERY_ITEMS = [
   },
   {
     src: "/TNGO%20Colony%20Branch/IMG-20260619-WA0078.jpg",
-    title: "Gachibowli Entry Hall",
+    title: "Gachibowli Clinic Entrance",
     branch: "TNGO's Colony",
     category: "tngo",
-    desc: "Bright and hygienic passageway at our TNGO's Colony branch.",
+    desc: "Neat and professional entrance of our TNGO's Colony clinic branch.",
   },
   {
     src: "/Madhapur%20Branch/IMG-20260619-WA0098.jpg",
@@ -2211,19 +2220,46 @@ function ClinicGallery() {
   const [filter, setFilter] = useState<"all" | "madhapur" | "tngo" | "facilities">("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrev();
+    }
+  };
+
   const filteredItems = GALLERY_ITEMS.filter(
     (item) => filter === "all" || item.category === filter,
   );
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePrev = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (lightboxIndex === null) return;
     const prev = (lightboxIndex - 1 + filteredItems.length) % filteredItems.length;
     setLightboxIndex(prev);
   };
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (lightboxIndex === null) return;
     const next = (lightboxIndex + 1) % filteredItems.length;
     setLightboxIndex(next);
@@ -2270,10 +2306,11 @@ function ClinicGallery() {
           <button
             key={tab.id}
             onClick={() => setFilter(tab.id as "all" | "madhapur" | "tngo" | "facilities")}
-            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${filter === tab.id
+            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+              filter === tab.id
                 ? "bg-violet-deep text-white shadow-soft"
                 : "bg-violet/8 text-violet-deep hover:bg-violet/12 border border-violet/10"
-              }`}
+            }`}
           >
             {tab.label}
           </button>
@@ -2362,10 +2399,11 @@ function ClinicGallery() {
               type="button"
               onClick={() => emblaApi?.scrollTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${selectedIndex === idx
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                selectedIndex === idx
                   ? "w-6 gradient-orange"
                   : "w-1.5 bg-violet/30 hover:bg-violet/50"
-                }`}
+              }`}
             />
           ))}
         </div>
@@ -2386,11 +2424,14 @@ function ClinicGallery() {
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-8 animate-fade-in"
           onClick={() => setLightboxIndex(null)}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
           {/* Close button */}
           <button
             onClick={() => setLightboxIndex(null)}
-            className="absolute top-5 right-5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all"
+            className="absolute top-5 right-5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all z-10"
             aria-label="Close lightbox"
           >
             <X className="h-6 w-6" />
@@ -2399,7 +2440,7 @@ function ClinicGallery() {
           {/* Left Arrow */}
           <button
             onClick={handlePrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all z-10"
             aria-label="Previous image"
           >
             <ChevronLeft className="h-6 w-6" />
@@ -2408,7 +2449,7 @@ function ClinicGallery() {
           {/* Right Arrow */}
           <button
             onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all z-10"
             aria-label="Next image"
           >
             <ChevronRight className="h-6 w-6" />
@@ -2684,7 +2725,7 @@ function Home() {
         if (navEntries.length > 0) {
           return (navEntries[0] as PerformanceNavigationTiming).type === "reload";
         }
-      } catch (e) { }
+      } catch (e) {}
       return false;
     })();
 
