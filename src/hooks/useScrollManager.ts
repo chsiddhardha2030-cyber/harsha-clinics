@@ -34,8 +34,8 @@ export function useScrollManager() {
 
   // 3. Reset or restore scroll position when a page mounts / path changes
   useLayoutEffect(() => {
-    if (location.pathname === "/specialties") {
-      // Never restore scroll position for Specialties page (handled separately in specialties.tsx)
+    if (location.pathname === "/specialties" || location.pathname === "/credentials") {
+      // Never restore scroll position for Specialties or Credentials page (handled separately)
       return;
     }
     const key = window.history.state?.key;

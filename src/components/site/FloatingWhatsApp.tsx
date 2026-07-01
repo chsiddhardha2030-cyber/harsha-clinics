@@ -6,7 +6,7 @@ export function FloatingWhatsApp() {
 
   return (
     <a
-      href="https://wa.me/918309403610"
+      href="https://wa.me/917989693477"
       target="_blank"
       rel="noopener noreferrer"
       onMouseEnter={() => setHovered(true)}

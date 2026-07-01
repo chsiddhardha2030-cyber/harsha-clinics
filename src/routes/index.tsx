@@ -473,7 +473,7 @@ function Hero({ branches }: { branches: BranchStatus[] }) {
                   Book Appointment
                 </a>
                 <a
-                  href="tel:+918309403610"
+                  href="tel:+917989693477"
                   className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-sm font-semibold text-violet-deep glass-strong hover:-translate-y-0.5 transition-all"
                 >
                   <Phone className="h-4 w-4" />
@@ -1313,7 +1313,24 @@ function BookingForm({
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [preferredTime, setPreferredTime] = useState("10:00");
+  const [timeError, setTimeError] = useState<string | null>(null);
   const isMobile = useIsMobile();
+
+  const validateTime = (timeVal: string) => {
+    if (!timeVal) {
+      setTimeError(null);
+      return true;
+    }
+    const mins = timeToMinutes(timeVal);
+    const startMins = 10 * 60; // 10:00 AM
+    const endMins = 22 * 60;   // 10:00 PM
+    if (mins < startMins || mins > endMins) {
+      setTimeError("Clinic consultation timings are 10:00 AM – 10:00 PM. Please select a valid time.");
+      return false;
+    }
+    setTimeError(null);
+    return true;
+  };
 
   const todayStr = (() => {
     const today = new Date();
@@ -1325,6 +1342,7 @@ function BookingForm({
 
   useEffect(() => {
     setPreferredTime("10:00");
+    setTimeError(null);
   }, [isMobile]);
 
   const selectedDocObj = doctors.find((d) => d.name === selectedDoctor);
@@ -1425,6 +1443,11 @@ function BookingForm({
       return;
     }
 
+    if (timeError || !validateTime(time)) {
+      toast.error("Clinic consultation timings are 10:00 AM – 10:00 PM. Please select a valid time.");
+      return;
+    }
+
     // 1. Verify selected Preferred Time falls within a matching doctor_schedule where is_available = true
     const userMins = timeToMinutes(time);
     const matchingSchedule = availableSchedules.find((sched) => {
@@ -1462,7 +1485,7 @@ function BookingForm({
       return;
     }
 
-    const whatsappNum = (matchedBranchObj?.whatsapp_number || "918309403610").replace(/\D/g, "");
+    const whatsappNum = (matchedBranchObj?.whatsapp_number || "917989693477").replace(/\D/g, "");
     const formattedDate = formatAppointmentDate(date);
 
     const message = `New Appointment Request
@@ -1634,14 +1657,30 @@ ${symptoms}`;
             )}
             {field(
               "Preferred Time",
-              <input
-                type="time"
-                name="time"
-                className={inputCls}
-                value={preferredTime}
-                onChange={(e) => setPreferredTime(e.target.value)}
-                required
-              />,
+              <div className="space-y-1 text-left">
+                <input
+                  type="time"
+                  name="time"
+                  className={`${inputCls} ${timeError ? "border-red-500 focus:ring-red-200" : ""}`}
+                  value={preferredTime}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setPreferredTime(val);
+                    validateTime(val);
+                  }}
+                  required
+                />
+                {preferredTime && !timeError && (
+                  <p className="text-[10px] font-bold text-violet-deep mt-0.5">
+                    Selected: {formatSqlTime(preferredTime)}
+                  </p>
+                )}
+                {timeError && (
+                  <p className="text-xs text-red-500 font-semibold mt-0.5 animate-fade-up">
+                    {timeError}
+                  </p>
+                )}
+              </div>,
             )}
           </div>
           {field(
@@ -1856,8 +1895,8 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       name: "Harsha Clinics, Pharmacy & Diagnostics | Top Clinic in Madhapur",
       address:
         "Plot No. 337, Ground Floor, Opposite Hotel ITR, Chanda Nayak Nagar Thanda, Siddi Vinayak Nagar, Ayyappa Society, Madhapur, Hyderabad.",
-      phone: "+91 8309403610",
-      whatsapp: "918309403610",
+      phone: "+91 7989693477",
+      whatsapp: "917989693477",
       directionsUrl:
         "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+Madhapur+Hyderabad",
       mapEmbedUrl:
@@ -1871,8 +1910,8 @@ function Contact({ branches }: { branches: BranchStatus[] }) {
       name: "Harsha Clinics, Pharmacy & Diagnostics | Best Clinic in TNGO's Colony",
       address:
         "Plot No. 45, Ground Floor, TNGO's Colony Phase 2, Near TNGO's Colony Main Road, Gachibowli, Hyderabad.",
-      phone: "+91 8309403610",
-      whatsapp: "918309403610",
+      phone: "+91 7416276224",
+      whatsapp: "917416276224",
       directionsUrl:
         "https://www.google.com/maps/search/?api=1&query=Harsha+Clinics+TNGO+Colony+Gachibowli+Hyderabad",
       mapEmbedUrl:
@@ -2024,8 +2063,8 @@ export function Footer() {
     {
       title: "Contact",
       links: [
-        { href: "tel:+918309403610", label: "Call clinic" },
-        { href: "https://wa.me/918309403610", label: "WhatsApp" },
+        { href: "tel:+917989693477", label: "Call clinic" },
+        { href: "https://wa.me/917989693477", label: "WhatsApp" },
         { href: "/#contact", label: "Get directions" },
         { href: "mailto:hello@harshaclinic.in", label: "Email us" },
       ],
@@ -2056,7 +2095,7 @@ export function Footer() {
             </p>
             <div className="mt-5 flex items-center gap-2">
               <a
-                href="https://wa.me/918309403610"
+                href="https://wa.me/917989693477"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -2456,6 +2495,36 @@ function LabTests() {
             testing, helping our doctors provide prompt clinical decisions and treatment plans.
           </p>
 
+          {/* Lab operating hours and availability locations */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-violet/4 border border-violet/10 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-between items-start sm:items-center">
+            <div>
+              <div className="text-[10px] font-bold text-violet-deep uppercase tracking-widest mb-1 text-left">
+                Lab Operating Hours
+              </div>
+              <div className="text-sm font-extrabold text-foreground flex items-center gap-1.5 text-left">
+                <Clock className="h-4 w-4 text-orange-start" />
+                7:30 AM – 9:30 PM
+              </div>
+            </div>
+            <div className="hidden sm:block h-8 w-px bg-violet/10 shrink-0" />
+            <div className="w-full sm:w-auto">
+              <div className="text-[10px] font-bold text-violet-deep uppercase tracking-widest mb-1 text-left">
+                Available At
+              </div>
+              <div className="flex flex-wrap gap-1.5 text-left">
+                <span className="px-2 py-0.5 rounded-lg bg-white/80 border border-violet/10 text-[10px] font-bold text-foreground">
+                  📍 At Home
+                </span>
+                <span className="px-2 py-0.5 rounded-lg bg-white/80 border border-violet/10 text-[10px] font-bold text-foreground">
+                  🏥 At Lab
+                </span>
+                <span className="px-2 py-0.5 rounded-lg bg-white/80 border border-violet/10 text-[10px] font-bold text-foreground">
+                  🏢 At Work
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className="grid sm:grid-cols-2 gap-4">
             {highlights.map((h, idx) => {
               const Icon = h.icon;
@@ -2481,7 +2550,7 @@ function LabTests() {
           <div className="pt-2">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <a
-                href="tel:+918309403610"
+                href="tel:+917661937285"
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold text-white gradient-orange shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all"
               >
                 <Phone className="h-4 w-4 animate-pulse" />
@@ -2489,7 +2558,7 @@ function LabTests() {
               </a>
               <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="h-4 w-4 text-green-500 shrink-0" />
-                Emergency Dispatch: +91 8309403610
+                Laboratory Helpline: +91 7661937285
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-2 font-medium">
@@ -2594,14 +2663,14 @@ function Ambulance() {
 
           <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
             <a
-              href="tel:+918309403610"
+              href="tel:+917989693477"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 shadow-[0_8px_24px_rgba(220,38,38,0.35)] hover:shadow-[0_12px_32px_rgba(220,38,38,0.45)] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Phone className="h-4 w-4 animate-bounce" />
               Call Ambulance
             </a>
             <span className="text-xs text-muted-foreground font-semibold">
-              Emergency Dispatch: +91 8309403610
+              Ambulance Helpline: +91 7989693477
             </span>
           </div>
         </div>

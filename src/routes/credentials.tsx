@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useLayoutEffect } from "react";
 import {
   Award,
   ShieldCheck,
@@ -111,6 +111,12 @@ function parseCertificateMetadata(filePath: string): CertificateItem {
 }
 
 export function CredentialsPage() {
+  useLayoutEffect(() => {
+    document.documentElement.classList.add("no-smooth-scroll");
+    window.scrollTo(0, 0);
+    document.documentElement.classList.remove("no-smooth-scroll");
+  }, []);
+
   const [activeTab, setActiveTab] = useState<"all" | "ravi" | "madhapur" | "tngo">("all");
   const [searchQuery, setSearchQuery] = useState("");
 

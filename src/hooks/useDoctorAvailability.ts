@@ -49,7 +49,7 @@ const FALLBACK_BRANCHES: BranchStatus[] = [
     isOpen: true,
     openingTime: "10:00 AM",
     closingTime: "10:00 PM",
-    whatsapp_number: "918309403610",
+    whatsapp_number: "917989693477",
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ const FALLBACK_BRANCHES: BranchStatus[] = [
     isOpen: true,
     openingTime: "10:00 AM",
     closingTime: "10:00 PM",
-    whatsapp_number: "918309403610",
+    whatsapp_number: "917416276224",
   },
 ];
 
@@ -171,6 +171,12 @@ export function useDoctorAvailability() {
 
       if (doctorsData && doctorsData.length > 0) {
         console.log(`Found ${doctorsData.length} doctors in Supabase.`);
+        const activeSchedules = (scheduleData || []).map((s: any) => ({
+          doctor_id: Number(s.doctor_id),
+          branch_name: s.branch_name,
+          is_available: Boolean(s.is_available),
+        }));
+
         setDoctors(
           doctorsData.map((d: any) => {
             let normalizedName = d.name || "";
@@ -180,17 +186,43 @@ export function useDoctorAvailability() {
               normalizedName = "Dr. P. Pushpalatha";
             }
 
-            let normalizedBranch = d.current_branch || "";
+            // Find schedules for this doctor that are marked available
+            const docSchedules = activeSchedules.filter(
+              (s) => s.doctor_id === Number(d.id) && s.is_available,
+            );
+            const isAvailable = docSchedules.length > 0;
+
+            // Determine branch: if available, find branch name. Prefer Madhapur if scheduled at both.
+            let currentBranch = "";
+            if (isAvailable) {
+              const prefersMadhapur = docSchedules.find((s) =>
+                s.branch_name.toLowerCase().includes("madhapur"),
+              );
+              const selectedSched = prefersMadhapur || docSchedules[0];
+              currentBranch = selectedSched.branch_name;
+            }
+
+            let normalizedBranch = currentBranch;
             if (normalizedBranch.toLowerCase().includes("madhapur")) {
               normalizedBranch = "Madhapur";
             } else if (normalizedBranch.toLowerCase().includes("tngo")) {
               normalizedBranch = "TNGO Colony";
+            } else if (!normalizedBranch) {
+              // fallback to database's branch if unavailable
+              let dbBranch = d.current_branch || "";
+              if (dbBranch.toLowerCase().includes("madhapur")) {
+                normalizedBranch = "Madhapur";
+              } else if (dbBranch.toLowerCase().includes("tngo")) {
+                normalizedBranch = "TNGO Colony";
+              } else {
+                normalizedBranch = "Madhapur";
+              }
             }
 
             return {
               id: Number(d.id),
               name: normalizedName,
-              available: Boolean(d.available),
+              available: isAvailable,
               currentBranch: normalizedBranch,
             };
           }),
@@ -247,7 +279,7 @@ export function useDoctorAvailability() {
                 b.closing_time && String(b.closing_time).trim() !== ""
                   ? b.closing_time
                   : "10:00 PM",
-              whatsapp_number: b.whatsapp_number || b.whatsapp || "918309403610",
+              whatsapp_number: b.whatsapp_number || b.whatsapp || "917989693477",
             };
           }),
         );
@@ -330,9 +362,26 @@ export function useDoctorAvailability() {
       )
       .subscribe();
 
+    const channelDoctors = supabase
+      .channel("realtime_doctors_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "doctors",
+        },
+        () => {
+          console.log("Realtime update received for doctors table. Refreshing live data...");
+          fetchLiveAvailability();
+        },
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channelBranches);
       supabase.removeChannel(channelSchedule);
+      supabase.removeChannel(channelDoctors);
     };
   }, []);
 

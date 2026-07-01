@@ -20,6 +20,7 @@ import {
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "./index";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
+import { useDoctorAvailability } from "@/hooks/useDoctorAvailability";
 
 export const Route = createFileRoute("/specialties")({
   component: SpecialtiesPage,
@@ -240,6 +241,13 @@ function SpecialtiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isReady, setIsReady] = useState(false);
   const departmentRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const { branches } = useDoctorAvailability();
+  const madhapurBranch = branches.find((b) => b.name.toLowerCase().includes("madhapur"));
+  const tngoBranch = branches.find((b) => b.name.toLowerCase().includes("tngo"));
+
+  const isMadhapurOpen = madhapurBranch ? madhapurBranch.isOpen : true;
+  const isTngoOpen = tngoBranch ? tngoBranch.isOpen : true;
 
   // Perform initial scroll positioning synchronously before the first paint
   useLayoutEffect(() => {
@@ -478,7 +486,7 @@ function SpecialtiesPage() {
                 </Link>
 
                 <a
-                  href="tel:+918309403610"
+                  href="tel:+917989693477"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl text-sm font-bold text-violet-deep glass-strong hover:bg-violet/12 hover:-translate-y-0.5 transition-all"
                 >
                   <Phone className="h-4 w-4" />
@@ -487,14 +495,22 @@ function SpecialtiesPage() {
               </div>
 
               <div className="mt-6 flex justify-center items-center gap-4 text-xs font-semibold text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  Madhapur Branch
+                <span className="flex items-center gap-1.5">
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      isMadhapurOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
+                    }`}
+                  />
+                  <span>Madhapur Branch {isMadhapurOpen ? "" : "(Closed)"}</span>
                 </span>
                 <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  TNGO's Colony Branch
+                <span className="flex items-center gap-1.5">
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      isTngoOpen ? "bg-green-500 animate-pulse" : "bg-red-500"
+                    }`}
+                  />
+                  <span>TNGO's Colony Branch {isTngoOpen ? "" : "(Closed)"}</span>
                 </span>
               </div>
             </div>

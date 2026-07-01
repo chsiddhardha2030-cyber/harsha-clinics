@@ -125,7 +125,7 @@ function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === "admin" && password === "harsha123") {
+    if (username === "Admin" && password === "9441811700") {
       setIsLoggedIn(true);
       sessionStorage.setItem("harsha_admin_logged_in", "true");
       toast.success("Logged in successfully");
